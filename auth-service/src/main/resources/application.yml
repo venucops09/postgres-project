@@ -1,0 +1,57 @@
+server:
+   servlet:
+      contextPath: /auth-service
+   port: 8089
+
+#DB Config
+spring:
+   application:
+      name: auth
+   main:
+      allow-bean-definition-overriding: true
+   datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://mypostgres:5432/telecounselor?serverTimezone=UTC
+      username : postgres
+      password : root
+   servlet:
+      multipart:
+         max-file-size: 15MB
+         max-request-size: 15MB
+   jpa:
+      show-sql: true
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+   mvc:
+      pathmatch:
+         matching-strategy: ant_path_matcher
+
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://servicediscovery:8761/eureka/
+
+logging:
+   file: ${LOG_PATH:/usr/local/telecounselor/log/TelecounselorAuthService.log}
+   pattern:
+      console: '%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan} %clr(:){faint}
+         %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+      file: '%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan} %clr(:){faint}
+         %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+   level:
+      org.springframework: WARN
+      org.hibernate: WARN
+app:
+   url: http://localhost
+   sendgrid-apikey: 1234
+   mail-from: noreply-test@test.com
+   mail-host: ${MAIL_HOST:localhost}
+   mail-port: ${MAIL_PORT:465}
+   mail-user: ${MAIL_USER:noreply-test}
+   mail-password: ${MAIL_PASSWORD:noreply123}
+   mail-send: ${MAIL_SEND:true}
+   user-role: ${USER_ROLE:TELE_USER}
+   admin-role: ${ADMIN_ROLE:TELE_ADMIN}
+   public-key: public_key.der
+   private-key: private_key.der
