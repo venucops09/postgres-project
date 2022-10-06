@@ -1,0 +1,63 @@
+server:
+  port: 8762
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://servicediscovery:8761/eureka/
+
+logging:
+  pattern: 
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+              
+spring:
+  application:
+      name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: auth-service
+        uri: lb://auth-service
+        predicates:
+        - Path=/auth-service/**
+        filters:
+        - RewritePath=/auth-service/(?<path>.*), /$\{path}
+      - id: user-service
+        uri: lb://user-service
+        predicates:
+        - Path=/user-service/**
+        filters:
+        - RewritePath=/user-service/(?<path>.*), /$\{path}
+      - id: spice-service
+        uri: lb://spice-service
+        predicates:
+        - Path=/spice-service/**
+        filters:
+        - RewritePath=/spice-service/(?<path>.*), /$\{path}
+      - id: admin-service
+        uri: lb://admin-service
+        predicates:
+        - Path=/admin-service/**
+        filters:
+        - RewritePath=/admin-service/(?<path>.*), /$\{path}
+      - id: openapi
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/v3/api-docs/**
+        filters:
+        - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: auth-service
+        url: /v3/api-docs/auth-service/auth-service
+      - name: user-service
+        url: /v3/api-docs/user-service/user-service
+      - name: spice-service
+        url: /v3/api-docs/spice-service/spice-service
+      - name: admin-service
+        url: /v3/api-docs/admin-service/admin-service

@@ -1,0 +1,33 @@
+<configuration>
+	<appender name="ConsoleOutput"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] :
+				%msg%n%throwable
+			</Pattern>
+		</layout>
+	</appender>
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./log/SpiceApplicationLog.log</file>
+		<prudent>true</prudent>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>./log/SpiceApplicationLog.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="ConsoleOutput" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

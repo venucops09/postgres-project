@@ -1,0 +1,72 @@
+server:
+   servlet:
+      contextPath: /admin-service
+   port: 8086
+
+#DB Config
+spring:
+   application:
+      name: admin
+   main:
+      allow-bean-definition-overriding: true
+   datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://mypostgres:5432/spice
+      username : postgres
+      password : postgres
+   servlet:
+      multipart:
+         max-file-size: 15MB
+         max-request-size: 15MB
+   jpa:
+      show-sql: true
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+            format_sql: true
+   jackson:
+      serialization:
+         FAIL_ON_EMPTY_BEANS: false
+   redis:
+      host: localhost
+      port: 6379
+      password: null
+      jedis:
+         pool:
+            max-active: 7
+            max-idle: 7
+            min-idle: 2
+            max-wait: -1ms
+
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://servicediscovery:8761/eureka/
+
+logging:
+   file: ${LOG_PATH:/home/ubuntu/Desktop/log/SpiceAdminService.log}
+   pattern:
+      console: '%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan} %clr(:){faint}
+         %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+      file: '%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan} %clr(:){faint}
+         %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+   level:
+      org.springframework: WARN
+      org.hibernate: WARN
+app:
+   url: http://localhost
+   sendgrid-apikey: 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
+   mail-from: notifications@test.com
+   mail-host: ${MAIL_HOST:smtp.sendgrid.net}
+   mail-port: ${MAIL_PORT:587}
+   mail-user: ${MAIL_USER:apikey}
+   mail-password: ${MAIL_PASSWORD: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}
+   file-path: /home/ideas2it/Desktop
+   mail-send: ${MAIL_SEND:true}
+   page-count: ${PAGE_COUNT:10}
+   time-limit-in-hour: ${TIME_LIMIT_IN_HOUR:1}
+   login-count-limit: ${LOGIN_COUNT_LIMIT:5}
+   reset-password-count-limit: ${RESET_PASSWORD_COUNT_LIMIT:5}
+   forget-password-count-limit: ${FORGET_PASSWORD_COUNT_LIMIT:5}
+   public-key: public_key.der
+   private-key: private_key.der

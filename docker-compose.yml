@@ -14,8 +14,10 @@ services:
       - SPRING_DATASOURCE_URL=${DATABASE_URL}
       - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ${PROJECT_PATH}/log:/log
     networks:
-      - telecounselor-app-db-network    
+      - spice-app-db-network    
        
   userservice:
     image: user-service
@@ -31,5 +33,81 @@ services:
       - SPRING_DATASOURCE_URL=${DATABASE_URL}
       - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ${PROJECT_PATH}/log:/log
     networks:
-      - telecounselor-app-db-network
+      - spice-app-db-network
+      
+  adminservice:
+    image: admin-service
+    build:
+      context: ${PROJECT_PATH}/admin-service
+      dockerfile: ${PROJECT_PATH}/admin-service/Dockerfile
+    ports:
+      - "8086:8086"
+    restart: always
+    depends_on:
+      - mypostgres
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - spice-app-db-network
+
+  spiceservice:
+    image: spice-service
+    build:
+      context: ${PROJECT_PATH}/spice-service
+      dockerfile: ${PROJECT_PATH}/spice-service/Dockerfile
+    ports:
+      - "8087:8087"
+    restart: always
+    depends_on:
+      - mypostgres
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - spice-app-db-network
+
+  servicediscovery:
+    image: eureka-server
+    build:
+      context: ${PROJECT_PATH}/servicediscovery
+      dockerfile: ${PROJECT_PATH}/servicediscovery/Dockerfile
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - spice-app-db-network
+      
+  mypostgres:
+    image: postgres
+    restart: always
+    ports:
+     - "5432:5432"
+    environment:
+     - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+     - POSTGRES_USER=${DATABASE_USERNAME}
+     - POSTGRES_DB=${DATABASE_NAME}
+    networks:
+      - spice-app-db-network
+      
+  gatewayservice:
+    image: gateway-service
+    build:
+      context: ${PROJECT_PATH}/gateway-service
+      dockerfile: ${PROJECT_PATH}/gateway-service/Dockerfile
+    ports:
+      - "8762:8762"
+    restart: always
+    networks:
+      - spice-app-db-network
+      
+networks:
+  spice-app-db-network:
+volumes:
+  mypostgres:
+    driver: local
