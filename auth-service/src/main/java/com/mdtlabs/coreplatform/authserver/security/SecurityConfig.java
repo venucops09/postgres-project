@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 
 /**
  * <p>
@@ -80,15 +81,20 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll().anyRequest()
-				.authenticated().and().formLogin().loginProcessingUrl("/session").usernameParameter(Constants.USERNAME)
-				.passwordParameter(Constants.PASSWORD).successHandler(authenticationSuccess())
-				.failureHandler(authenticationFailure()).and().exceptionHandling()
-				.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and().logout()
-				.logoutUrl("/logout").deleteCookies("JSESSIONID").addLogoutHandler(logoutSuccess())
-				.invalidateHttpSession(Boolean.TRUE).logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-				.and().csrf().disable();
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { 
+		http.cors().and().authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+				.anyRequest().authenticated().and()
+				.formLogin().loginProcessingUrl("/session")
+				.usernameParameter(FieldConstants.USERNAME).passwordParameter(FieldConstants.PASSWORD)
+				.successHandler(authenticationSuccess())
+				.failureHandler(authenticationFailure()).and()
+				.exceptionHandling()
+				.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+				.and().logout().logoutUrl("/logout")
+				.deleteCookies("JSESSIONID").invalidateHttpSession(Boolean.TRUE)
+				.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()).and()
+				.csrf().disable();
 		return http.build();
 	}
 

@@ -20,6 +20,7 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.UserService;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.UserContextHolder;
 import com.mdtlabs.coreplatform.common.model.dto.UserDTO;
 import com.mdtlabs.coreplatform.common.model.dto.UserProfileDTO;
@@ -106,7 +107,7 @@ public class UserController {
 	 * @return boolean - count response of the deleted user
 	 */
 	@PutMapping(value= "/delete/{id}")
-	public SuccessResponse<Boolean> deleteUserById(@PathVariable(value = Constants.ID) long userId) {
+	public SuccessResponse<Boolean> deleteUserById(@PathVariable(value = FieldConstants.ID) long userId) {
 		return new SuccessResponse(SuccessCode.USER_DELETE, userService.deleteUserById(userId), HttpStatus.OK);
 	}
 
@@ -117,7 +118,7 @@ public class UserController {
 	 * @return User - response of the user
 	 */
 	@GetMapping(value = "/{id}")
-	public SuccessResponse<UserDTO> getUserById(@PathVariable(value = Constants.ID) long userId) {
+	public SuccessResponse<UserDTO> getUserById(@PathVariable(value = FieldConstants.ID) long userId) {
 		UserDTO userDTO = modelMapper.map(userService.getUserById(userId), UserDTO.class);
 		return new SuccessResponse(SuccessCode.GET_USER, userDTO, HttpStatus.OK);
 	}
@@ -145,7 +146,7 @@ public class UserController {
 	 * @return User - response of the user
 	 */
 	@GetMapping(value = "username/{username}")
-	public SuccessResponse<User> getUserByUsername(@PathVariable(value = Constants.USERNAME) String username) {
+	public SuccessResponse<User> getUserByUsername(@PathVariable(value = FieldConstants.USERNAME) String username) {
 		return new SuccessResponse<>(SuccessCode.GET_USER, userService.getUserByUsername(username), HttpStatus.OK);
 	}
 
@@ -160,7 +161,7 @@ public class UserController {
 	public SuccessResponse<Boolean> updatePassword(@PathVariable(Constants.TOKEN) String token,
 			@RequestBody Map<String, String> userInfo) {
 		return new SuccessResponse<>(SuccessCode.PASSWORD_UPDATED,
-				userService.updatePassword(token, userInfo.get(Constants.PASSWORD)), HttpStatus.OK);
+				userService.updatePassword(token, userInfo.get(FieldConstants.PASSWORD)), HttpStatus.OK);
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class UserController {
 	 * @return User - response of the user token update
 	 */
 	@PostMapping(value = "/user-token/{id}")
-	public SuccessResponse<UserToken> createUserToken(@PathVariable(Constants.ID) long id,
+	public SuccessResponse<UserToken> createUserToken(@PathVariable(FieldConstants.ID) long id,
 			@RequestBody Map<String, String> userInfo) {
 		UserToken userToken = modelMapper.map(userService.createUserToken(id, userInfo), UserToken.class);
 		return new SuccessResponse(SuccessCode.GET_USER, userToken, HttpStatus.OK);
@@ -196,7 +197,7 @@ public class UserController {
 	 * @return boolean - response of the limit exceed as true or false
 	 */
 	@GetMapping(value = "/login-limit-exceed/{username}")
-	public SuccessResponse<Boolean> loginLimitExceed(@PathVariable(value = Constants.USERNAME) String username) {
+	public SuccessResponse<Boolean> loginLimitExceed(@PathVariable(value = FieldConstants.USERNAME) String username) {
 		Boolean response = userService.loginLimitExceed(username);
 		return Boolean.TRUE.equals(response)
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
@@ -211,7 +212,7 @@ public class UserController {
 	 */
 	@PostMapping(value = "/forget-password-limit-exceed/{username}")
 	public SuccessResponse<Boolean> forgetPasswordLimitExceed(
-			@PathVariable(value = Constants.USERNAME) String username) {
+			@PathVariable(value = FieldConstants.USERNAME) String username) {
 		Boolean response = userService.forgetPasswordLimitExceed(username);
 		return Boolean.TRUE.equals(response)
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
@@ -226,7 +227,7 @@ public class UserController {
 	 */
 	@PostMapping(value = "/reset-password-limit-exceed/{username}")
 	public SuccessResponse<Boolean> resetPasswordLimitExceed(
-			@PathVariable(value = Constants.USERNAME) String username) {
+			@PathVariable(value = FieldConstants.USERNAME) String username) {
 		Boolean response = userService.resetPasswordLimitExceed(username);
 		return Boolean.TRUE.equals(response)
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)

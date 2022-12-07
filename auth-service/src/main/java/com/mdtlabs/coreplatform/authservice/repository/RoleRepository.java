@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 
 
@@ -36,5 +37,5 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	 * @return List<Role> - List of Role Entity
 	 */
 	@Query(value = GET_ALL_ROLES)
-	public List<Role> getAllRoles(@Param(Constants.STATUS) boolean status);
+	public List<Role> getAllRoles(@Param(FieldConstants.STATUS) boolean status);
 }

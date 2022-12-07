@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.CustomDateSerializer;
+import com.mdtlabs.coreplatform.common.ErrorConstants;
 import com.mdtlabs.coreplatform.common.logger.Logger;
 import com.mdtlabs.coreplatform.common.model.dto.TimezoneDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
@@ -108,7 +109,7 @@ public class AuthenticationProvider implements org.springframework.security.auth
 			}
 		}
 		if (!isActiveRole) {
-			throw new BadCredentialsException(Constants.ERROR_INVALID_USER);
+			throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_USER);
 		}
 		boolean isAuthenticated = Boolean.FALSE;
 		if (password.equals(user.getPassword())) {
@@ -123,8 +124,8 @@ public class AuthenticationProvider implements org.springframework.security.auth
 			user.setRoles(roles);
 			return new UsernamePasswordAuthenticationToken(user, password, authorityList);
 		}
-		Logger.logError(StringUtil.constructString(Constants.INFO_USER_PASSWORD_NOT_MATCH, username));
-		throw new BadCredentialsException(Constants.ERROR_INVALID_USER);
+		Logger.logError(StringUtil.constructString(ErrorConstants.INFO_USER_PASSWORD_NOT_MATCH, username));
+		throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_USER);
 	}
 
 	/**
@@ -136,21 +137,21 @@ public class AuthenticationProvider implements org.springframework.security.auth
 	 */
 	private User authenticationCheck(String username, String password) {
 		if ((isBlank(username)) || (isBlank(password))) {
-			throw new BadCredentialsException(Constants.ERROR_USERNAME_PASSWORD_BLANK);
+			throw new BadCredentialsException(ErrorConstants.ERROR_USERNAME_PASSWORD_BLANK);
 		}
 		User user = userRepository.getUserByUsername(username, Boolean.TRUE);
 		if (null == user) {
-			Logger.logError(StringUtil.constructString(Constants.INFO_USER_NOT_EXIST, username));
-			throw new BadCredentialsException(Constants.ERROR_INVALID_USER);
+			Logger.logError(StringUtil.constructString(ErrorConstants.INFO_USER_NOT_EXIST, username));
+			throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_USER);
 		}
 
 		if (Boolean.TRUE.equals(user.getIsBlocked())) {
-			Logger.logError(StringUtil.constructString(Constants.ERROR_INVALID_ATTEMPTS));
-			throw new BadCredentialsException(Constants.ERROR_INVALID_ATTEMPTS);
+			Logger.logError(StringUtil.constructString(ErrorConstants.ERROR_INVALID_ATTEMPTS));
+			throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_ATTEMPTS);
 		}
 		if ((!user.getPassword().equals(password) && isLoginLimitExceed(user)) || !user.isEnabled()) {
-			Logger.logError(StringUtil.constructString(Constants.ERROR_ACCOUNT_DISABLED));
-			throw new BadCredentialsException(Constants.ERROR_ACCOUNT_DISABLED);
+			Logger.logError(StringUtil.constructString(ErrorConstants.ERROR_ACCOUNT_DISABLED));
+			throw new BadCredentialsException(ErrorConstants.ERROR_ACCOUNT_DISABLED);
 		}
 
 		Logger.logInfo(StringUtil.constructString(Constants.INFO_USER_EXIST, String.valueOf(user.isEnabled())));

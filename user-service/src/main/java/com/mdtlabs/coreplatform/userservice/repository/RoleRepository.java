@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 
 
@@ -41,7 +42,7 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	 * @return List<Role> - List of Role Entity
 	 */
 	@Query(value = GET_ALL_ROLES)
-	public List<Role> getAllRoles(@Param(Constants.STATUS) boolean status);
+	public List<Role> getAllRoles(@Param(FieldConstants.STATUS) boolean status);
 
 	/**
 	 * <p>
@@ -54,7 +55,7 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	 * @return int response of role update
 	 */
 	@Query(value = UPDATE_ROLE_STATUS_BY_ID)
-	public int updateRoleStatusById(@Param(Constants.STATUS) Boolean status, @Param(Constants.ROLE_ID_PARAM) long roleId);
+	public int updateRoleStatusById(@Param(FieldConstants.STATUS) Boolean status, @Param(Constants.ROLE_ID_PARAM) long roleId);
 
 	/**
 	 * <p>
@@ -76,6 +77,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	 * @return Role Entity
 	 */
 	@Query(value = GET_ROLE_BY_NAME)
-	public Role getRoleByName(@Param(Constants.NAME) String name);
+	public Role getRoleByName(@Param(FieldConstants.NAME) String name);
 
 }

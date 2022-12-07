@@ -37,6 +37,8 @@ import com.nimbusds.jose.crypto.RSAEncrypter;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.ErrorConstants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.logger.Logger;
 import com.mdtlabs.coreplatform.common.model.dto.AuthUserDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
@@ -79,7 +81,7 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 			KeyFactory kf = KeyFactory.getInstance(Constants.RSA);
 			this.publicRsaKey = (RSAPublicKey) kf.generatePublic(spec);
 		} catch (Exception e) {
-			Logger.logError(Constants.EXCEPTION_TOKEN_UTILS, e);
+			Logger.logError(ErrorConstants.EXCEPTION_TOKEN_UTILS, e); 
 		}
 
 	}
@@ -101,10 +103,10 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 					response.getWriter().write(json);
 					responseHeaderUser(response, user);
 				} else {
-					response.getWriter().write(Constants.INVALID_USER_ERROR);
+					response.getWriter().write(ErrorConstants.INVALID_USER_ERROR); 
 				}
 			} catch (IOException e) {
-				Logger.logError(Constants.LOGIN_ERROR + e);
+				Logger.logError(ErrorConstants.LOGIN_ERROR+ e);
 			}
 
 		}
@@ -127,11 +129,11 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 			authToken = authTokenCreation(user, userInfo);
 			refreshToken = refreshTokenCreation(user);
 		} catch (JOSEException execption) {
-			Logger.logError(Constants.ERROR_JWE_TOKEN, execption);
+			Logger.logError(ErrorConstants.ERROR_JWE_TOKEN, execption);
 		}
 		createUserToken(user.getId(), authToken, refreshToken);
 		response.setHeader(Constants.AUTHORIZATION, authToken);
-		response.setHeader(Constants.REFRESH_TOKEN, refreshToken);
+		response.setHeader(FieldConstants.REFRESH_TOKEN, refreshToken);
 	}
 
 	/**

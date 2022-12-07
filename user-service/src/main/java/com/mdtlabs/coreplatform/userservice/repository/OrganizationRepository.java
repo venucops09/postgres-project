@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
 
 
@@ -39,7 +40,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	 * @return List<Organization> - List of Organization Entity
 	 */
 	@Query(value = GET_ALL_ORGANIZATIONS)
-	public List<Organization> getAllOrganizations(@Param(Constants.STATUS) boolean status);
+	public List<Organization> getAllOrganizations(@Param(FieldConstants.STATUS) boolean status);
 
 	/**
 	 * <p>
@@ -52,7 +53,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	 * @return int response of organization update
 	 */
 	@Query(value = UPDATE_ORGANIZATION_STATUS_BY_ID)
-	public int updateOrganizationStatusById(@Param(Constants.STATUS) Boolean status, @Param(Constants.ID) long id);
+	public int updateOrganizationStatusById(@Param(FieldConstants.STATUS) Boolean status, @Param(FieldConstants.ID) long id);
 
 	/**
 	 * <p>
@@ -63,7 +64,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	 * @return Organization Entity
 	 */
 	@Query(value = GET_ORGANIZATION_BY_ID)
-	public Organization getOrganizationById(@Param(Constants.ID) long id);
+	public Organization getOrganizationById(@Param(FieldConstants.ID) long id);
 
 	/**
 	 * <p>
@@ -74,6 +75,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	 * @return Organization Entity
 	 */
 	@Query(value = GET_ORGANIZATION_BY_NAME)
-	public Organization getOrganizationByName(@Param(Constants.NAME) String name);
+	public Organization getOrganizationByName(@Param(FieldConstants.NAME) String name);
 
 }

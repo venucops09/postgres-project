@@ -17,6 +17,7 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.RoleService;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 
 import io.swagger.annotations.Api;
@@ -99,7 +100,7 @@ public class RoleController {
 	 * @return Role - role information
 	 */
 	@GetMapping(value = "/{id}")
-	public SuccessResponse<Role> getRoleById(@PathVariable(value = Constants.ID) long roleId) {
+	public SuccessResponse<Role> getRoleById(@PathVariable(value = FieldConstants.ID) long roleId) {
 		return new SuccessResponse<>(SuccessCode.GET_ROLE, roleService.getRoleById(roleId), HttpStatus.OK);
 	}
 
@@ -110,7 +111,7 @@ public class RoleController {
 	 * @return Role - role information
 	 */
 	@GetMapping(value = "/{name}")
-	public SuccessResponse<Role> getRoleByName(@PathVariable(value = Constants.NAME) String name) {
+	public SuccessResponse<Role> getRoleByName(@PathVariable(value = FieldConstants.NAME) String name) {
 		return new SuccessResponse<>(SuccessCode.GET_ROLE, roleService.getRoleByName(name), HttpStatus.OK);
 	}
 

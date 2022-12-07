@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.mdtlabs.coreplatform.authserver.service.UserService;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -36,13 +37,13 @@ public class AuthServerController {
 	@PostMapping("/generate-token")
 	public Map<String, String> generateRefreshToken(@RequestBody Map<String, Object> requestBody,
 			HttpServletResponse response) throws JsonMappingException, JsonProcessingException, ParseException {
-		String refreshToken = String.valueOf(requestBody.get(Constants.REFRESH_TOKEN));
-		long userId = Long.parseLong(requestBody.get(Constants.USER_ID).toString());
+		String refreshToken = String.valueOf(requestBody.get(FieldConstants.REFRESH_TOKEN));
+		long userId = Long.parseLong(requestBody.get(FieldConstants.USER_ID).toString());
 		Map<String, String> tokensMap = userService.generateRefreshToken(userId, refreshToken);
 
 		if (!tokensMap.isEmpty()) {
 			response.setHeader(Constants.AUTHORIZATION, tokensMap.get("authToken"));
-			response.setHeader(Constants.REFRESH_TOKEN, tokensMap.get("refreshToken"));
+			response.setHeader(FieldConstants.REFRESH_TOKEN, tokensMap.get("refreshToken"));
 		}
 
 		return tokensMap;

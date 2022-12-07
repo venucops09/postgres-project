@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.User;
 
 
@@ -42,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 * @return User - user entity
 	 */
 	@Query(value = GET_USER_BY_ID)
-	public User getUserById(@Param(Constants.USER_ID_PARAM) long userId, @Param(Constants.STATUS) Boolean status);
+	public User getUserById(@Param(Constants.USER_ID_PARAM) long userId, @Param(FieldConstants.STATUS) Boolean status);
 
 	/**
 	 * This method is used to get user with respect to user name
@@ -52,7 +53,7 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 * @return User - user entity
 	 */
 	@Query(value = GET_USER_BY_USERNAME)
-	public User getUserByUsername(@Param(Constants.USERNAME) String username, @Param(Constants.STATUS) Boolean status);
+	public User getUserByUsername(@Param(FieldConstants.USERNAME) String username, @Param(FieldConstants.STATUS) Boolean status);
 
 	/**
 	 * This method is used to get users within an organization
@@ -64,7 +65,7 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 * @return Page<User> - pageable user entity
 	 */
 	@Query(value = GET_ALL_USERS)
-	Page<User> getUsers(@Param(Constants.STATUS) Boolean status, Pageable pageable);
+	Page<User> getUsers(@Param(FieldConstants.STATUS) Boolean status, Pageable pageable);
 	
 
 	/**
@@ -76,5 +77,5 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 * @return List<User> - list of user entity
 	 */
 	@Query(value = GET_ALL_USERS)
-	List<User> getUsers(@Param(Constants.STATUS) Boolean status);
+	List<User> getUsers(@Param(FieldConstants.STATUS) Boolean status);
 }

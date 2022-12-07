@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Timezone;
 import com.mdtlabs.coreplatform.common.model.entity.User;
 
@@ -38,7 +39,7 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 * @return User - user information which is stored
 	 */
 	@Query(value = GET_USER_BY_USERNAME)
-	public User getUserByUsername(@Param(Constants.USERNAME) String username, @Param(Constants.STATUS) Boolean status);
+	public User getUserByUsername(@Param(FieldConstants.USERNAME) String username, @Param(FieldConstants.STATUS) Boolean status);
 
 	/**
 	 * This method is used to update user token

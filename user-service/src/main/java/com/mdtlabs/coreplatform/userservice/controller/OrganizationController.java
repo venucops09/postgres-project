@@ -17,6 +17,7 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.OrganizationService;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
 
 /**
@@ -84,7 +85,7 @@ public class OrganizationController {
 	 * @return Organization - response count of delete
 	 */
 	@DeleteMapping
-	public SuccessResponse<Organization> deleteOrganizationById(@PathVariable(value = Constants.ID) long organizationId) {
+	public SuccessResponse<Organization> deleteOrganizationById(@PathVariable(value = FieldConstants.ID) long organizationId) {
 		int organization = organizationService.deleteOrganizationById(organizationId);
 		return new SuccessResponse<>((organization == Constants.ONE) ? SuccessCode.ORGANIZATION_DELETE : SuccessCode.ORGANIZATION_DELETE_ERROR, organizationService.deleteOrganizationById(organizationId), HttpStatus.OK);
 	}
@@ -96,7 +97,7 @@ public class OrganizationController {
 	 * @return Organization - organization information
 	 */
 	@GetMapping(value = "/{id}")
-	public SuccessResponse<Organization> getOrganizationById(@PathVariable(value = Constants.ID) long organizationId) {
+	public SuccessResponse<Organization> getOrganizationById(@PathVariable(value = FieldConstants.ID) long organizationId) {
 		return new SuccessResponse<>(SuccessCode.GET_ORGANIZATION, organizationService.getOrganizationById(organizationId), HttpStatus.OK);
 	}
 
@@ -107,7 +108,7 @@ public class OrganizationController {
 	 * @return Organization - organization information
 	 */
 	@GetMapping(value = "/{name}")
-	public SuccessResponse<Organization> getOrganizationByName(@PathVariable(value = Constants.NAME) String name) {
+	public SuccessResponse<Organization> getOrganizationByName(@PathVariable(value = FieldConstants.NAME) String name) {
 		return new SuccessResponse<>(SuccessCode.GET_ORGANIZATION, organizationService.getOrganizationByName(name), HttpStatus.OK);
 	}
 

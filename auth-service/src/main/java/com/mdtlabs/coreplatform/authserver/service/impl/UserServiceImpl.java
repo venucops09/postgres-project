@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mdtlabs.coreplatform.authserver.service.UserService;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.CustomDateSerializer;
+import com.mdtlabs.coreplatform.common.ErrorConstants;
 import com.mdtlabs.coreplatform.common.exception.Validation;
 import com.mdtlabs.coreplatform.common.logger.Logger;
 import com.mdtlabs.coreplatform.common.model.dto.AuthUserDTO;
@@ -149,7 +150,7 @@ public class UserServiceImpl implements UserService {
 		Date expDateRefresh = pstFormat.parse(pstFormat.format(jwtRefresh.getJWTClaimsSet().getClaim(Constants.EXP)));
 
 		if ((expDateRefresh.getTime() - currentDate.getTime()) / Constants.THOUSAND < Constants.ZERO) {
-			throw new ExpiredJwtException(null, null, Constants.TOKEN_EXPIRED);
+			throw new ExpiredJwtException(null, null, ErrorConstants.TOKEN_EXPIRED);
 		} else {
 
 			Map<String, Object> userInfo = new ObjectMapper().convertValue(userDetail, Map.class);
@@ -159,9 +160,9 @@ public class UserServiceImpl implements UserService {
 				newRefreshToken = refreshTokenCreation(userDetail);
 				updateUserToken(userDetail.getId(), newAuthToken, newRefreshToken);
 			} catch (JOSEException e) {
-				Logger.logError(Constants.JOSE_EXCEPTION + e);
+				Logger.logError(ErrorConstants.JOSE_EXCEPTION + e);
 			} catch (Exception e) {
-				Logger.logError(Constants.EXCEPTION_DURING_TOKEN_UTIL, e);
+				Logger.logError(ErrorConstants.EXCEPTION_DURING_TOKEN_UTIL, e);
 			}
 			tokensMap.put("authToken", newAuthToken);
 			tokensMap.put("refreshToken", newRefreshToken);
@@ -182,7 +183,7 @@ public class UserServiceImpl implements UserService {
 			KeyFactory kf = KeyFactory.getInstance(Constants.RSA);
 			this.privateRsaKey = (RSAPrivateKey) kf.generatePrivate(privateKeySpec);
 		} catch (Exception execption) {
-			Logger.logError(Constants.EXCEPTION_DURING_TOKEN_UTIL, execption);
+			Logger.logError(ErrorConstants.EXCEPTION_DURING_TOKEN_UTIL, execption);
 		}
 
 	}

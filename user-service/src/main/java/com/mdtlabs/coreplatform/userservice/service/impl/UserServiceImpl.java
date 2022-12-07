@@ -43,6 +43,8 @@ import com.mdtlabs.coreplatform.userservice.repository.UserRepository;
 import com.mdtlabs.coreplatform.userservice.service.UserService;
 import com.mdtlabs.coreplatform.AuthenticationFilter;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.ErrorConstants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.Validation;
 
@@ -197,15 +199,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public Boolean updatePassword(String token, String password) {
 		Key secretKeySpec = secretKeySpecCreation();
 		Claims body = Jwts.parser().setSigningKey(secretKeySpec).parseClaimsJws(token).getBody();
-		String userName = (String) body.get(Constants.USERNAME);
+		String userName = (String) body.get(FieldConstants.USERNAME);
 		User user = userRepository.getUserByUsername(userName, Boolean.TRUE);
 		String oldPassword = user.getPassword();
 		if (null == user || !token.equals(user.getForgetPasswordToken())) {
-			Logger.logError(StringUtil.constructString(Constants.LINK_EXPIRED));
+			Logger.logError(StringUtil.constructString(ErrorConstants.LINK_EXPIRED));
 			throw new Validation(3009);
 		}
 		if (null != oldPassword && oldPassword.equals(password)) {
-			Logger.logError(StringUtil.constructString(Constants.SAME_PASSWORD));
+			Logger.logError(StringUtil.constructString(ErrorConstants.SAME_PASSWORD));
 			throw new Validation(1012);
 		}
 		try {
@@ -252,7 +254,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Constants.AES_KEY_TOKEN);
 		Key secretKeySpec = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 		Map<String, Object> userInfo = new HashMap<>();
-		userInfo.put(Constants.USERNAME, user.getUsername());
+		userInfo.put(FieldConstants.USERNAME, user.getUsername());
 		JwtBuilder jwtBuilder = Jwts.builder().setClaims(userInfo).signWith(signatureAlgorithm, secretKeySpec);
 		String jwtToken = jwtBuilder.setId(String.valueOf(user.getId()))
 				.setExpiration(Date.from(ZonedDateTime.now().plusHours(Constants.TWENTY_FOUR).toInstant()))
@@ -301,7 +303,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 						notificationIp + "/email-type/" + Constants.NEW_USER_CREATION, HttpMethod.GET, entity,
 						Map.class);
 				if (emailTemplateResponse.getBody() == null
-						|| emailTemplateResponse.getBody().get(Constants.ENTITY) == null) {
+						|| emailTemplateResponse.getBody().get(FieldConstants.ENTITY) == null) {
 					throw new Validation(3010);
 				} else {
 					constructEmail(user, jweToken, data, emailDto, emailTemplateResponse);
@@ -310,7 +312,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				ResponseEntity<Map> emailTemplateResponse = restService
 						.getForEntity(notificationIp + "/email-type/" + Constants.FORGOT_PASSWORD_USER, Map.class);
 				if (emailTemplateResponse.getBody() == null
-						|| emailTemplateResponse.getBody().get(Constants.ENTITY) == null) {
+						|| emailTemplateResponse.getBody().get(FieldConstants.ENTITY) == null) {
 					throw new Validation(3010);
 				} else {
 					constructMail(user, jweToken, data, emailDto, emailTemplateResponse);
@@ -333,15 +335,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 */
 	private void constructMail(User user, String jwtToken, Map<String, String> data, EmailDTO emailDto,
 			ResponseEntity<Map> emailTemplateResponse) {
-		EmailTemplate emailTemplate= modelMapper.map(emailTemplateResponse.getBody().get(Constants.ENTITY),
+		EmailTemplate emailTemplate= modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY),
 				EmailTemplate.class);
 		for (EmailTemplateValue emailTemplateValue : emailTemplate.getEmailTemplateValues()) {
 			if (Constants.APP_URL_EMAIL.equals(emailTemplateValue.getName())) {
 				emailTemplateValue.setValue(appUrl + jwtToken);
 				data.put(Constants.APP_URL_EMAIL, appUrl + jwtToken);
-			} else if (Constants.FORGET_PASSWORD_TOKEN.equals(emailTemplateValue.getName())) {
+			} else if (FieldConstants.FORGET_PASSWORD_TOKEN.equals(emailTemplateValue.getName())) {
 				emailTemplateValue.setValue(jwtToken);
-				data.put(Constants.FORGET_PASSWORD_TOKEN, jwtToken);
+				data.put(FieldConstants.FORGET_PASSWORD_TOKEN, jwtToken);
 			}
 		}
 		emailDto.setBody(parseEmailTemplate(emailTemplate.getBody(), data));
@@ -364,7 +366,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 */
 	private void constructEmail(User user, String jwtToken, Map<String, String> data, EmailDTO emailDto,
 			ResponseEntity<Map> emailTemplateResponse) {
-		EmailTemplate emailTemplate = modelMapper.map(emailTemplateResponse.getBody().get(Constants.ENTITY), EmailTemplate.class);
+		EmailTemplate emailTemplate = modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY), EmailTemplate.class);
 		for (EmailTemplateValue emailTemplateValue : emailTemplate.getEmailTemplateValues()) {
 			if (Constants.APP_URL_EMAIL.equalsIgnoreCase(emailTemplateValue.getName())) {
 				data.put(Constants.APP_URL_EMAIL, appUrl + jwtToken);
@@ -395,7 +397,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 						HttpMethod.POST, emailEntity, Map.class);
 				if (null != emailResponse.getBody()) {
 					createNotificationAndSendEmail(emailDto,
-							modelMapper.map(emailResponse.getBody().get(Constants.ENTITY), Boolean.class));
+							modelMapper.map(emailResponse.getBody().get(FieldConstants.ENTITY), Boolean.class));
 				} else {
 					throw new Validation(3011);
 				}
@@ -579,7 +581,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		try {
 			Notification notification = new Notification(email.getSubject(), email.getBody(), email.getTo());
 			notification.setStatus(
-					!sendStatus ? Constants.NOTIFICAION_STATUS_FAILED : Constants.NOTIFICAION_STATUS_PROCESSED);
+					!sendStatus ? ErrorConstants.NOTIFICAION_STATUS_FAILED : Constants.NOTIFICAION_STATUS_PROCESSED);
 			String emailIp = getNotificationInfo() + "/notification-service/notification";
 			UserDTO userDto = UserContextHolder.getUserDto();
 			notification.setCreatedAt(DateUtil.formatDate(CommonUtil.getCurrentTimeStamp()));
@@ -591,7 +593,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			ResponseEntity<Map> notificationResponse = restService.exchange(emailIp, HttpMethod.POST,
 					notificationEntity, Map.class);
 			if (null != notificationResponse.getBody()
-					&& null != notificationResponse.getBody().get(Constants.ENTITY)) {
+					&& null != notificationResponse.getBody().get(FieldConstants.ENTITY)) {
 				return Constants.SUCCESS;
 			} else {
 				return Constants.ERROR;
@@ -618,7 +620,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			sb.append(Integer.toString((bytes[hash] & 0xff) + 0x100, 16).substring(Constants.ONE));
 		}
 		if (password.equals(sb.toString())) {
-			Logger.logError(StringUtil.constructString(Constants.PASSWORD_ERROR));
+			Logger.logError(StringUtil.constructString(ErrorConstants.PASSWORD_ERROR));
 			throw new Validation(1014);
 		}
 	}
