@@ -51,6 +51,11 @@ public class SecurityConfig {
 	}
 
 	@Bean
+	public LogoutSuccess logoutSuccess() {
+		return new LogoutSuccess();
+	}
+
+	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		final CorsConfiguration config = new CorsConfiguration();
@@ -64,30 +69,26 @@ public class SecurityConfig {
 		config.addAllowedMethod(HttpMethod.DELETE);
 		config.addAllowedMethod(HttpMethod.PATCH);
 		config.addAllowedMethod(HttpMethod.OPTIONS);
-		source.registerCorsConfiguration(Constants.FORWARD_SLASH + Constants.ASTERISK_SYMBOL + Constants.ASTERISK_SYMBOL,
-				config);
+		source.registerCorsConfiguration(
+				Constants.FORWARD_SLASH + Constants.ASTERISK_SYMBOL + Constants.ASTERISK_SYMBOL, config);
 		return source;
 	}
+
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return web -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { 
-		http.cors().and().authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
-				.anyRequest().authenticated().and()
-				.formLogin().loginProcessingUrl("/session")
-				.usernameParameter(Constants.USERNAME).passwordParameter(Constants.PASSWORD)
-				.successHandler(authenticationSuccess())
-				.failureHandler(authenticationFailure()).and()
-				.exceptionHandling()
-				.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-				.and().logout().logoutUrl("/logout")
-				.deleteCookies("JSESSIONID").invalidateHttpSession(Boolean.TRUE)
-				.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()).and()
-				.csrf().disable();
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.cors().and().authorizeRequests().antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll().anyRequest()
+				.authenticated().and().formLogin().loginProcessingUrl("/session").usernameParameter(Constants.USERNAME)
+				.passwordParameter(Constants.PASSWORD).successHandler(authenticationSuccess())
+				.failureHandler(authenticationFailure()).and().exceptionHandling()
+				.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and().logout()
+				.logoutUrl("/logout").deleteCookies("JSESSIONID").addLogoutHandler(logoutSuccess())
+				.invalidateHttpSession(Boolean.TRUE).logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+				.and().csrf().disable();
 		return http.build();
 	}
 

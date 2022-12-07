@@ -2,7 +2,6 @@ package com.mdtlabs.coreplatform.authserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -26,9 +25,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @ComponentScan(value = Constants.PACKAGE_CORE_PLATFORM)
 @EnableJpaRepositories(value = Constants.PACKAGE_CORE_PLATFORM)
 @SpringBootApplication
-@OpenAPIDefinition(info =
-@Info(title = Constants.AUTH_API, version = Constants.VERSION, description = Constants.DOCUMENTATION_AUTH_API)
-)
+@OpenAPIDefinition(info = @Info(title = Constants.AUTH_API, version = Constants.VERSION, description = Constants.DOCUMENTATION_AUTH_API))
 public class AuthServerApplication {
 
 	/**

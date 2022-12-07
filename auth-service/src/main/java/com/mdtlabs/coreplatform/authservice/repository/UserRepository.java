@@ -13,7 +13,6 @@ import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.model.entity.Timezone;
 import com.mdtlabs.coreplatform.common.model.entity.User;
 
-
 /**
  * <p>
  * This is the repository class for communicate link between server side and
@@ -29,6 +28,7 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
 public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
 
 	public static final String GET_USER_BY_USERNAME = "select user from User as user where user.username =:username and user.isActive =:status";
+//	public static final String UPDATE_USER_TOKEN = "update User as user set user.authToken =:jwtToken, user.refreshToken =:jwtRefreshToken where user.id =:id";
 
 	/**
 	 * This method is used to get user data by passing username
@@ -39,5 +39,18 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 */
 	@Query(value = GET_USER_BY_USERNAME)
 	public User getUserByUsername(@Param(Constants.USERNAME) String username, @Param(Constants.STATUS) Boolean status);
+
+	/**
+	 * This method is used to update user token
+	 * 
+	 * @param id              - the user id
+	 * @param jwtToken        - jwt token of the logged in user
+	 * @param jwtRefreshToken - jwt refresh token of the logged in user
+	 * @return int - update status of the user
+	 */
+//	@Modifying
+//	@Transactional
+//	@Query(value = UPDATE_USER_TOKEN)
+//	int updateUserToken(long id, String jwtToken, String jwtRefreshToken);
 
 }

@@ -165,7 +165,7 @@
 			<artifactId>hibernate-types-52</artifactId>
 			<version>2.20.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-webmvc-core</artifactId>

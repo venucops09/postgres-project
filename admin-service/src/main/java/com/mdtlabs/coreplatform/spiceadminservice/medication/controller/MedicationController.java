@@ -158,7 +158,7 @@ public class MedicationController {
 
 		OtherMedicationDTO otherMedicationDTO = modelMapper.map(medication, new TypeToken<OtherMedicationDTO>() {
 		}.getType());
-		System.out.println("other medication dto in controller" + otherMedicationDTO.toString());
+//		System.out.println("other medication dto in controller" + otherMedicationDTO.toString());
 //		return new SuccessResponse<OtherMedicationDTO>(SuccessCode.GET_OTHER_MEDICATION, otherMedicationDTO,
 //				HttpStatus.OK);
 		return new ResponseEntity<OtherMedicationDTO>(otherMedicationDTO, HttpStatus.OK);

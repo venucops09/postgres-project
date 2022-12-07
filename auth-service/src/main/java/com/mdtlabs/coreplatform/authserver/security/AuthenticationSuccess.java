@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,10 @@ import com.mdtlabs.coreplatform.common.logger.Logger;
 import com.mdtlabs.coreplatform.common.model.dto.AuthUserDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
 import com.mdtlabs.coreplatform.common.model.entity.UserToken;
+import com.mdtlabs.coreplatform.common.repository.CommonRepository;
 import com.mdtlabs.coreplatform.common.repository.GenericRepository;
+import com.mdtlabs.coreplatform.common.service.UserTokenService;
+import com.mdtlabs.coreplatform.common.util.DateUtil;
 import com.mdtlabs.coreplatform.authservice.repository.UserRepository;
 
 /**
@@ -60,19 +64,22 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
-	private GenericRepository<UserToken> genericRepository;
+	private UserTokenService userTokenService;
+
+	@Autowired
+	private GenericRepository genericRepository;
 
 	public void init() {
 		try {
 			Resource resource = new ClassPathResource(publicKey);
 			byte[] bdata = FileCopyUtils.copyToByteArray(resource.getInputStream());
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(bdata);
-			KeyFactory kf = KeyFactory.getInstance(Constants.RSA); 
+			KeyFactory kf = KeyFactory.getInstance(Constants.RSA);
 			this.publicRsaKey = (RSAPublicKey) kf.generatePublic(spec);
 		} catch (Exception e) {
-			Logger.logError(Constants.EXCEPTION_TOKEN_UTILS, e); 
+			Logger.logError(Constants.EXCEPTION_TOKEN_UTILS, e);
 		}
 
 	}
@@ -94,10 +101,10 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 					response.getWriter().write(json);
 					responseHeaderUser(response, user);
 				} else {
-					response.getWriter().write(Constants.INVALID_USER_ERROR); 
+					response.getWriter().write(Constants.INVALID_USER_ERROR);
 				}
 			} catch (IOException e) {
-				Logger.logError(Constants.LOGIN_ERROR+ e);
+				Logger.logError(Constants.LOGIN_ERROR + e);
 			}
 
 		}
@@ -148,7 +155,8 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 //		claimsSet.claim(Constants.TENANT_IDS_CLAIM, tenantData);
 		claimsSet.claim(Constants.USER_DATA, userInfo);
 		claimsSet.claim(Constants.APPLICATION_TYPE, Constants.WEB);
-		claimsSet.expirationTime(Date.from(ZonedDateTime.now().plusMinutes(Constants.AUTH_TOKEN_EXPIRY_MINUTES).toInstant()));
+		claimsSet.expirationTime(
+				Date.from(ZonedDateTime.now().plusMinutes(Constants.AUTH_TOKEN_EXPIRY_MINUTES).toInstant()));
 		claimsSet.notBeforeTime(new Date());
 		claimsSet.jwtID(UUID.randomUUID().toString());
 		JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
@@ -171,7 +179,8 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 		claimsSet.subject(Constants.REFRESH_TOKEN_SUBJECT);
 		claimsSet.claim(Constants.USER_ID_PARAM, user.getId());
 		claimsSet.claim(Constants.APPLICATION_TYPE, Constants.WEB);
-		claimsSet.expirationTime(Date.from(ZonedDateTime.now().plusHours(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant())); 
+		claimsSet.expirationTime(
+				Date.from(ZonedDateTime.now().plusHours(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant()));
 		claimsSet.notBeforeTime(new Date());
 		claimsSet.jwtID(UUID.randomUUID().toString());
 		JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
@@ -191,9 +200,35 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 	private void createUserToken(long userId, String jwtToken, String jwtRefreshToken) {
 		UserToken userToken = new UserToken();
 		userToken.setUserId(userId);
-		userToken.setAuthToken(jwtToken);
-		userToken.setRefreshToken(jwtRefreshToken);
+		userToken.setAuthToken(jwtToken.substring(Constants.BEARER.length(), jwtToken.length()));
+		userToken.setRefreshToken(jwtRefreshToken.substring(Constants.BEARER.length(), jwtRefreshToken.length()));
+		userToken.setActive(true);
 		genericRepository.save(userToken);
+		Optional<List<UserToken>> userTokens = userTokenService.getUserTokenByUserID(userId);
+		List<String> tokensToDelete = getTokensToDelete(userTokens);
+//		System.out.println("list of tokens" + tokensToDelete);
+		if (!tokensToDelete.isEmpty()) {
+			userTokenService.deleteUserTokenByToken(tokensToDelete, userId);
+		}
+		userTokenService.saveUserToken(userToken);
+	}
+
+	private List<String> getTokensToDelete(Optional<List<UserToken>> userTokens) {
+		List<String> tokenList = new ArrayList<>();
+		userTokens.ifPresent(userToken -> userToken.forEach(userTokenRecord -> {
+			String authToken = userTokenRecord.getAuthToken();
+			Date createdTime = userTokenRecord.getCreatedAt();
+
+			Date createdDate = DateUtil.formatDate(createdTime.toString());
+			Date currentDate = DateUtil.formatDate(new Date());
+			assert currentDate != null;
+			assert createdDate != null;
+			long expiryTimeInMinutes = DateUtil.getDiffInMinutes(currentDate, createdDate);
+			if (expiryTimeInMinutes > Constants.EXPIRY_MINUTES) {
+				tokenList.add(authToken);
+			}
+		}));
+		return tokenList;
 	}
 
 	/**
@@ -209,7 +244,8 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(Constants.ANONYMOUS_USER)) {
 			return null;
 		}
-		return new ModelMapper().map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), AuthUserDTO.class);
+		return new ModelMapper().map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+				AuthUserDTO.class);
 	}
 
 }

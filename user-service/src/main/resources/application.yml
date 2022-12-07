@@ -14,12 +14,12 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       username : postgres
-      password : root
+      password : postgres
    flyway:
       locations: classpath:db/migration
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       user : postgres
-      password : root
+      password : postgres
       baseline-on-migrate: true
       out-of-order: true
    jpa:
@@ -48,3 +48,12 @@ app:
    email-app-url: ${EMAIL_APP_URL:http://3.7.123.198:3000/reset-password/}
    public-key: public_key.der
    private-key: private_key.der
+   
+spicelog: 
+   fileName: './log/SpiceApplicationLog.log'
+   fileNamePattern: './log/SpiceApplicationLog.%d{yyyy-MM-dd}.%i.log.gz'
+   consolePattern: '%white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] :  %msg%n%throwable'
+   filePattern: '%-4relative [%thread] %-5level %logger{35} - %msg%n'
+   maxHistory: 2
+   totalSizeCap: 3GB
+   maxFileSize: 10MB

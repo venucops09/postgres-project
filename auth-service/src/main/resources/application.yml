@@ -14,7 +14,7 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       username : postgres
-      password : root
+      password : postgres
    jpa:
       show-sql: true
       properties:
@@ -35,3 +35,12 @@ app:
    private-key: private_key.der
    login-time-limit-in-hour: ${LOGIN_TIME_LIMIT_IN_HOUR:1}
    login-count-limit: ${LOGIN_COUNT_LIMIT:5}
+
+spicelog: 
+   fileName: './log/SpiceApplicationLog.log'
+   fileNamePattern: './log/SpiceApplicationLog.%d{yyyy-MM-dd}.%i.log.gz'
+   consolePattern: '%white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] :  %msg%n%throwable'
+   filePattern: '%-4relative [%thread] %-5level %logger{35} - %msg%n'
+   maxHistory: 2
+   totalSizeCap: 3GB
+   maxFileSize: 10MB
