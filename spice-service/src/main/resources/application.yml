@@ -1,6 +1,7 @@
 server:
    servlet:
-      contextPath: /spice-service
+      #contextPath: /spice-service
+      contextPath: /
    port: 8087
 
 #DB Config
@@ -14,13 +15,6 @@ spring:
       url: jdbc:postgresql://mypostgres:5432/spice
       username : postgres
       password : postgres
-   flyway:
-      locations: classpath:db/migration
-      url: jdbc:postgresql://mypostgres:5432/spice
-      user : postgres
-      password : postgres
-      baseline-on-migrate: true
-      out-of-order: true
    servlet:
       multipart:
          max-file-size: 15MB

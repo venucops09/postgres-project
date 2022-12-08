@@ -45,7 +45,7 @@ import com.mdtlabs.coreplatform.AuthenticationFilter;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.ErrorConstants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
-import com.mdtlabs.coreplatform.common.UserContextHolder;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.Validation;
 
 import io.jsonwebtoken.Claims;
@@ -276,8 +276,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserToken createUserToken(long id, Map<String, String> userInfo) {
 		UserToken userToken = new UserToken();
 		userToken.setUserId(id);
-		userToken.setAuthToken(userInfo.get(Constants.JWT_TOKEN));
-		userToken.setRefreshToken(userInfo.get(Constants.JWT_REFRESH_TOKEN));
+		userToken.setAuthToken(userInfo.get(Constants.JWE_TOKEN));
+		userToken.setRefreshToken(userInfo.get(Constants.JWE_REFRESH_TOKEN));
 		return genericRepository.save(userToken);
 	}
 

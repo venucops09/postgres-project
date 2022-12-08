@@ -1,6 +1,6 @@
 server:
    servlet:
-      contextPath: /admin-service
+      contextPath: /
    port: 8086
 
 #DB Config

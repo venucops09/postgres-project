@@ -1,6 +1,7 @@
 server:
    servlet:
-      contextPath: /user-service
+      #contextPath: /user-service
+      contextPath: /
    port: 8085
 
 #DB Config

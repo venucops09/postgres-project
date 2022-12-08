@@ -115,9 +115,9 @@ public class AuthenticationProvider implements org.springframework.security.auth
 		if (password.equals(user.getPassword())) {
 			isAuthenticated = Boolean.TRUE;
 		}
-		if (null != user.getTimezoneId()) {
+		if (null != user.getTimezone()) {
 			ModelMapper modelMapper = new ModelMapper();
-			CustomDateSerializer.USER_ZONE_ID = modelMapper.map(user.getTimezoneId(), TimezoneDTO.class).getOffset();
+			CustomDateSerializer.USER_ZONE_ID = modelMapper.map(user.getTimezone(), TimezoneDTO.class).getOffset();
 		}
 		if (isAuthenticated) {
 			Set<GrantedAuthority> authorityList = user.getAuthorities();
@@ -144,7 +144,6 @@ public class AuthenticationProvider implements org.springframework.security.auth
 			Logger.logError(StringUtil.constructString(ErrorConstants.INFO_USER_NOT_EXIST, username));
 			throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_USER);
 		}
-
 		if (Boolean.TRUE.equals(user.getIsBlocked())) {
 			Logger.logError(StringUtil.constructString(ErrorConstants.ERROR_INVALID_ATTEMPTS));
 			throw new BadCredentialsException(ErrorConstants.ERROR_INVALID_ATTEMPTS);

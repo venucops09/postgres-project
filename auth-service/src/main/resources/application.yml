@@ -1,12 +1,13 @@
 server:
    servlet:
-      contextPath: /auth-service
+      #contextPath: /auth-service
+      contextPath: /
    port: 8089
 
 #DB Config
 spring:
    application:
-      name: auth
+      name: auth-service
    main:
       allow-bean-definition-overriding: true
       allow-circular-references: true

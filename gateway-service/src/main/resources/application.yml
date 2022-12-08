@@ -54,10 +54,10 @@ springdoc:
   swagger-ui:
     urls:
       - name: auth-service
-        url: /v3/api-docs/auth-service/auth-service
+        url: /v3/api-docs/auth-service
       - name: user-service
-        url: /v3/api-docs/user-service/user-service
+        url: /v3/api-docs/user-service
       - name: spice-service
-        url: /v3/api-docs/spice-service/spice-service
+        url: /v3/api-docs/spice-service
       - name: admin-service
-        url: /v3/api-docs/admin-service/admin-service
+        url: /v3/api-docs/admin-service

@@ -21,7 +21,7 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.UserService;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
-import com.mdtlabs.coreplatform.common.UserContextHolder;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.model.dto.UserDTO;
 import com.mdtlabs.coreplatform.common.model.dto.UserProfileDTO;
 import com.mdtlabs.coreplatform.common.model.entity.User;
