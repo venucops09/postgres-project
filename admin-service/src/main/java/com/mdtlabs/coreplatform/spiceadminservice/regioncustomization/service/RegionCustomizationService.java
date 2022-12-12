@@ -1,5 +1,8 @@
 package com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.mdtlabs.coreplatform.common.model.dto.spice.CustomizationRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
 
@@ -39,4 +42,6 @@ public interface RegionCustomizationService {
 	 * @author Niraimathi S
 	 */
 	public RegionCustomization updateCustomization(RegionCustomization regionCustomization);
+
+	public List<RegionCustomization> getRegionCustomizations(Map<String, Object> requestData);
 }

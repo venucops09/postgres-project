@@ -115,5 +115,10 @@ public class AccountWorkflowServiceImpl implements AccountWorkflowService {
 		accountWorkflowRepository.save(existingAccountWorkflow);
 		return true;
 	}
+	
+	public List<AccountWorkflow> getAllAccountWorkFlows() {
+		return accountWorkflowRepository.findAll();
+	}
+
 
 }

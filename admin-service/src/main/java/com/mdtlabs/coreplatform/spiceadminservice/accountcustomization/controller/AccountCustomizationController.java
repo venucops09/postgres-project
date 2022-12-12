@@ -1,5 +1,6 @@
 package com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,4 +93,10 @@ public class AccountCustomizationController {
         accountCustomizationService.removeCustomization(requestMap);
         return new SuccessResponse<>(SuccessCode.ACCOUNT_CUSTOMIZATION_DELETE, HttpStatus.OK);
     }
+    
+	@PostMapping("/static-data/get-list")
+	public List<AccountCustomization> getAccountCustomizations(@RequestBody Map<String, Object> requestData) {
+		return accountCustomizationService.getAccountCustomizations(requestData);
+				
+	}
 }

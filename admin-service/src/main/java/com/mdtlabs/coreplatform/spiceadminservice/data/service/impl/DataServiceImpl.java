@@ -24,9 +24,9 @@ import com.mdtlabs.coreplatform.spiceadminservice.data.repository.CountyReposito
 import com.mdtlabs.coreplatform.spiceadminservice.data.repository.SubCountyRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.data.service.DataService;
 
-
 /**
- * This class is responsible for performing operations on Country, county and sub-county entities.
+ * This class is responsible for performing operations on Country, county and
+ * sub-county entities.
  *
  * @author Niraimathi S
  */
@@ -45,6 +45,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Country createCountry(Country country) {
 		if (Objects.isNull(country)) {
 			throw new BadRequestException(12006);
@@ -62,6 +63,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Country updateCountry(Country country) {
 		if (Objects.isNull(country)) {
 			throw new BadRequestException(12006);
@@ -87,6 +89,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Country> getAllCountries(RequestDTO requestObject) {
 		int pageNumber = 0 != requestObject.getPageNumber() ? requestObject.getPageNumber() : 0;
 		int limit = 0 != requestObject.getLimit() ? requestObject.getLimit() : 10;
@@ -105,6 +108,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public County addCounty(County county) {
 		if (Objects.isNull(county)) {
 			throw new BadRequestException(12006);
@@ -119,6 +123,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}}
 	 */
+	@Override
 	public County getCountyById(long id) {
 		County county = countyRepository.findByIdAndIsDeleted(id, false);
 		if (Objects.isNull(county)) {
@@ -130,6 +135,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}}
 	 */
+	@Override
 	public List<County> getAllCountyByCountryId(long id) {
 		return countyRepository.findByCountryId(id);
 	}
@@ -137,6 +143,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}}
 	 */
+	@Override
 	public Country getCountryById(long countryId) {
 		Country country = countryRepository.findByIdAndIsDeleted(countryId, false);
 		if (Objects.isNull(country)) {
@@ -148,6 +155,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public County updateCounty(County county) {
 		getCountyById(county.getId());
 		County countyDetails = countyRepository.findByCountryIdAndName(county.getCountryId(), county.getName());
@@ -160,6 +168,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Subcounty createSubCounty(Subcounty subCounty) {
 		if (Objects.isNull(subCounty)) {
 			throw new BadRequestException(12006);
@@ -176,6 +185,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Subcounty updateSubCounty(Subcounty subCounty) {
 		getSubCountyById(subCounty.getId());
 		Subcounty subCountyDetails = subCountyRepository.findByCountryIdAndCountyIdAndName(subCounty.getCountryId(),
@@ -189,6 +199,7 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Subcounty getSubCountyById(long id) {
 		Subcounty subCounty = subCountyRepository.findByIdAndIsDeleted(id, false);
 		if (Objects.isNull(subCounty)) {
@@ -200,7 +211,14 @@ public class DataServiceImpl implements DataService {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Subcounty> getAllSubCounty(long countryId, long countyId) {
 		return subCountyRepository.getAllSubCounty(countryId, countyId);
 	}
+
+	@Override
+	public List<Subcounty> getAllSubCountyByCountryId(Long countryId) {
+		return subCountyRepository.findByCountryId(countryId);
+	}
+
 }

@@ -64,5 +64,4 @@ public class MedicalReviewController {
 		return new SuccessResponse<>(SuccessCode.GET_MEDICAL_REVIEW_COUNT,
 				medicalReviewService.getPrescriptionAndLabtestCount(request), HttpStatus.OK);
 	}
-
 }

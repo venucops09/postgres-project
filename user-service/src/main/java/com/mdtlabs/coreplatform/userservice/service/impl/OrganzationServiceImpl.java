@@ -70,5 +70,11 @@ public class OrganzationServiceImpl implements OrganizationService {
 	public Organization getOrganizationByName(String name) {
 		return organizationRepository.getOrganizationByName(name);
 	}
+	
+	public 	List<Long> getUserTenants(long userId) {
+//		return organizationRepository.getUserTenants(userId);
+		return null;
+	}
+
 
 }

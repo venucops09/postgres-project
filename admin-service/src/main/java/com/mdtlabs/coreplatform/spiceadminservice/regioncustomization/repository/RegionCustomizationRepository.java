@@ -1,5 +1,7 @@
 package com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,5 +44,10 @@ public interface RegionCustomizationRepository extends JpaRepository<RegionCusto
 	@Query(value = GET_COUNTRY_CUSOMIZATION_WITH_CONDITIONS)
 	public RegionCustomization findByCountryIdAndCategoryAndType(@Param("countryId") Long countryId,
 			@Param("category") String category, @Param("type") String type, @Param("isDeleted") boolean isDeleted);
+
+	public List<RegionCustomization> findByCategoryAndTypeIn(String category, List<String> regionCustomizationTypes);
+
+	public List<RegionCustomization> findByCategoryInAndTypeIn(List<String> regionConsentFormTypes,
+			List<String> regionCustomizationTypes);
 
 }

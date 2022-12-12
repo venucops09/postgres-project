@@ -111,5 +111,10 @@ public class OrganizationController {
 	public SuccessResponse<Organization> getOrganizationByName(@PathVariable(value = FieldConstants.NAME) String name) {
 		return new SuccessResponse<>(SuccessCode.GET_ORGANIZATION, organizationService.getOrganizationByName(name), HttpStatus.OK);
 	}
+	
+	@GetMapping("/get-user-tenants/{id}")
+	public List<Long> getUserTenants(@PathVariable long id) {
+		return organizationService.getUserTenants(id);
+	}
 
 }

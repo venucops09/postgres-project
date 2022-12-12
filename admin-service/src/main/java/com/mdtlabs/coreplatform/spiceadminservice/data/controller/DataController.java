@@ -8,6 +8,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,14 +105,14 @@ public class DataController {
      * @author Niraimathi S
      */
     @RequestMapping(value = "/county-list/{id}", method = RequestMethod.GET)
-    public SuccessResponse<List<County>> getAllCountyByCountryId(@PathVariable(value = "id") long id) {
+    public List<County> getAllCountyByCountryId(@PathVariable(value = "id") long id) {
         SpiceLogger.logInfo("Getting all County based on Country");
         List<County> counties = dataService.getAllCountyByCountryId(id);
-
-        if (counties.isEmpty()) {
-            return new SuccessResponse<List<County>>(SuccessCode.GET_COUNTIES, noDataList, 0, HttpStatus.OK);
-        }
-        return new SuccessResponse<List<County>>(SuccessCode.GET_COUNTIES, counties, counties.size(), HttpStatus.OK);
+//
+//        if (counties.isEmpty()) {
+//            return new SuccessResponse<List<County>>(SuccessCode.GET_COUNTIES, noDataList, 0, HttpStatus.OK);
+////        }
+        return counties;
     }
 
     /**
@@ -232,4 +233,16 @@ public class DataController {
         return new SuccessResponse<List<Subcounty>>(SuccessCode.GET_SUBCOUNTIES, subCounties, subCounties.size(),
                 HttpStatus.OK);
     }
+    
+	@GetMapping(value = "/subcounty-list/{id}")
+	public List<Subcounty> getAllSubCountyByCountryId(@PathVariable(value = "id") long countryId) {
+		return dataService.getAllSubCountyByCountryId(countryId);
+		
+	}
+	
+	@GetMapping(value = "/get-country/{id}")
+	public Country getCountry(@PathVariable(value = "id") long countryId) {
+		return dataService.getCountryById(countryId);
+	}
+
 }

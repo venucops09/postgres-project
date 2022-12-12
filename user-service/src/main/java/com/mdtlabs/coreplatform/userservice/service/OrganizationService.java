@@ -73,5 +73,8 @@ public interface OrganizationService {
 	 * @return Organization - organization entity
 	 */
 	Organization getOrganizationByName(String name);
+	
+	List<Long> getUserTenants(long userId);
+
 
 }

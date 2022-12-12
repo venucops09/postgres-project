@@ -51,4 +51,7 @@ public interface AccountWorkflowService {
 	 */
 	public boolean removeAccountWorkflow(long id);
 
+	public List<AccountWorkflow> getAllAccountWorkFlows();
+
+
 }

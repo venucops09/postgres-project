@@ -1,5 +1,6 @@
 package com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.CustomizationRequestDTO;
@@ -50,5 +51,13 @@ public interface AccountCustomizationService {
 	 * @author Jeyaharini T A
 	 */
 	public boolean removeCustomization(Map<String, Object> requestMap);
+
+	/**
+	 * To get account customization list
+	 * 
+	 * @param requestData request data
+	 * @return List of AccountCustomization 
+	 */
+	public List<AccountCustomization> getAccountCustomizations(Map<String, Object> requestData);
 
 }

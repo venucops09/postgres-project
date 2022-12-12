@@ -76,7 +76,7 @@ public class AccountController {
 	 * @return Account entity
 	 * @author Jeyaharini T A
 	 */
-	@GetMapping("/list/{id}")
+	@GetMapping("/{id}")
 	public SuccessResponse<Account> getAccountById(@PathVariable("id") long id) {
 		return new SuccessResponse<Account>(SuccessCode.GET_ACCOUNT, accountService.getAccountById(id), HttpStatus.OK);
 	}
@@ -123,5 +123,10 @@ public class AccountController {
 		}
 		return new SuccessResponse<List<Account>>(SuccessCode.GET_DEACTIVATE_ACCOUNT, noDataList, 0, HttpStatus.OK);
 	}
-
+	
+	@GetMapping("/get-account/{id}")
+	public Account getAccount(@PathVariable("id") long id) {
+		return accountService.getAccountById(id);
+	}
+	
 }

@@ -30,7 +30,9 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	public static final String GET_ORGANIZATIONS_BY_IDS = "select organization from Organization as organization where organization.id in (:organizationIds)";
 	public static final String GET_ORGANIZATION_BY_ID = "select organization from Organization as organization where organization.id =:id ";
 	public static final String GET_ORGANIZATION_BY_NAME = "select organization from Organization as organization where organization.name =:name ";
-
+//	public static final String GET_ORGANISATION_IDS_BY_USER = "select uo.organization_id from user_organization as uo where uo.userId=:userId";
+	
+	
 	/**
 	 * <p>
 	 * This method get all the active organization details from the database.
@@ -76,5 +78,9 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	 */
 	@Query(value = GET_ORGANIZATION_BY_NAME)
 	public Organization getOrganizationByName(@Param(FieldConstants.NAME) String name);
+	
+	
+//	@Query(value = GET_ORGANISATION_IDS_BY_USER)
+//	public List<Long> getUserTenants(@Param("userId") Long userId);
 
 }

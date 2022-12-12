@@ -1,5 +1,7 @@
 package com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service.impl;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.modelmapper.Conditions;
@@ -79,4 +81,23 @@ public class RegionCustomizationServiceImpl implements RegionCustomizationServic
 		return repository.save(existingRegionCustomization);
 
 	}
+	
+	public List<RegionCustomization> getRegionCustomizations(Map<String, Object> requestData) {
+		List<String> regionCustomizationTypes = (List<String>) requestData.get("regionCustomizationTypes");
+		List<String> regionConsentFormTypes = (List<String>) requestData.get("regionConsentFormTypes");
+		
+		String category =null;
+//		
+//		if (regionConsentFormTypes.isEmpty()) {
+//			category = Constants.INPUT_FORM;
+//			regionCustomizationTypes.removeAll(regionConsentFormTypes);
+//		} else {
+//			category = Constants.CONSENT_FORM;
+//		}
+		
+		
+		
+		return repository.findByCategoryInAndTypeIn(regionConsentFormTypes, regionCustomizationTypes);
+	}
+
 }

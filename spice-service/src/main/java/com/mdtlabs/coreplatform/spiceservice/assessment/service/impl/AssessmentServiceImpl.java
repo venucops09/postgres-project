@@ -17,16 +17,16 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ComplianceDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RiskAlgorithmDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SymptomDTO;
-import com.mdtlabs.coreplatform.common.model.entity.spice.AssessmentLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.MentalHealth;
+import com.mdtlabs.coreplatform.common.model.entity.spice.PatientAssessment;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientMedicalCompliance;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientSymptom;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTreatmentPlan;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RedRiskNotification;
-import com.mdtlabs.coreplatform.spiceservice.assessment.repository.AssessmentLogRepository;
+import com.mdtlabs.coreplatform.spiceservice.assessment.repository.PatientAssessmentRepository;
 import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentService;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.common.RedRiskService;
@@ -38,7 +38,6 @@ import com.mdtlabs.coreplatform.spiceservice.patientSymptom.service.PatientSympt
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 import com.mdtlabs.coreplatform.spiceservice.patientmedicalcompliance.service.PatientMedicalComplianceService;
 import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.PatientTreatmentPlanService;
-
 
 /**
  * This class implements the AssessmentService interface and contains actual
@@ -73,10 +72,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private MentalHealthService mentalHealthService;
 
 	@Autowired
-    private CustomizedModulesService customizedModulesService;
+	private CustomizedModulesService customizedModulesService;
 
 	@Autowired
-	private AssessmentLogRepository assessmentLogRepository;
+	private PatientAssessmentRepository assessmentLogRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -107,7 +106,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 				glucoseLog = glucoseLogService.addGlucoseLog(glucoseLog, Constants.BOOLEAN_FALSE);
 				glucoseId = glucoseLog.getId();
 			}
-			Long assessmentLogId = assessmentLogRepository.save(new AssessmentLog(bpLog.getId(), glucoseId)).getId();
+			Long assessmentLogId = assessmentLogRepository.save(new PatientAssessment(bpLog.getId(), glucoseId))
+					.getId();
 			updatePatientTracker(patientTracker, assessmentDTO);
 			if (riskLevel.equals(Constants.HIGH)) {
 				patientTracker.setRedRiskPatient(Constants.BOOLEAN_TRUE);
@@ -119,7 +119,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 						assessmentDTO.getPatientTrackId(), assessmentLogId);
 			}
 			if (!Objects.isNull(assessmentDTO.getCompliances()) && !assessmentDTO.getCompliances().isEmpty()) {
-				createPatientCompliances(assessmentDTO.getCompliances(), bpLog.getId(), assessmentDTO.getPatientTrackId(), assessmentLogId);
+				createPatientCompliances(assessmentDTO.getCompliances(), bpLog.getId(),
+						assessmentDTO.getPatientTrackId(), assessmentLogId);
 			}
 			if (!Objects.isNull(assessmentDTO.getPhq4())) {
 				MentalHealth mentalHealth = assessmentDTO.getPhq4();
@@ -152,12 +153,12 @@ public class AssessmentServiceImpl implements AssessmentService {
 				updateTreatmentPlan(patientTracker, assessmentDTO, patientTreatmentPlan);
 			}
 
-			//TODO : customized workflow
+			// TODO : customized workflow
 			if (!Objects.isNull(assessmentDTO.getCustomizedWorkflows())
-                    && !assessmentDTO.getCustomizedWorkflows().isEmpty()) {
-                customizedModulesService.createCustomizedModules(assessmentDTO.getCustomizedWorkflows(),
-                        Constants.WORKFLOW_ASSESSMENT, patientTracker.getId());
-            }
+					&& !assessmentDTO.getCustomizedWorkflows().isEmpty()) {
+				customizedModulesService.createCustomizedModules(assessmentDTO.getCustomizedWorkflows(),
+						Constants.WORKFLOW_ASSESSMENT, patientTracker.getId());
+			}
 			patientTrackerService.addOrUpdatePatientTracker(patientTracker);
 		}
 		return null;
@@ -256,85 +257,87 @@ public class AssessmentServiceImpl implements AssessmentService {
 		glucoseLog.setPatientTrackId(assessmentDTO.getPatientTrackId());
 		glucoseLog.setType(Constants.ASSESSMENT);
 		// glucoseLog.setPatientTrackerId(assessmentDTO.getPatientTrackId());
-		//tenantid add
+		// tenantid add
 		return glucoseLog;
 	}
 
-    /**
-     * Creates a red risk notification for a patient
-     *
-     * @param patientTracker PatientTracker entity
-     * @param bpLogId        bpLog id
-     * @param glucoseLogId   glucoseLog id
-     */
-    public void createRedRiskNotification(PatientTracker patientTracker, Long bpLogId, Long glucoseLogId, Long assessmentLogId) {
-        RedRiskNotification redRiskNotification = new RedRiskNotification();
-        redRiskNotification.setPatientTrackId(patientTracker.getId());
-        redRiskNotification.setBpLogId(bpLogId);
-        redRiskNotification.setGlucoseLogId(glucoseLogId);
-        redRiskNotification.setTenentId(patientTracker.getTenantId());
+	/**
+	 * Creates a red risk notification for a patient
+	 *
+	 * @param patientTracker PatientTracker entity
+	 * @param bpLogId        bpLog id
+	 * @param glucoseLogId   glucoseLog id
+	 */
+	public void createRedRiskNotification(PatientTracker patientTracker, Long bpLogId, Long glucoseLogId,
+			Long assessmentLogId) {
+		RedRiskNotification redRiskNotification = new RedRiskNotification();
+		redRiskNotification.setPatientTrackId(patientTracker.getId());
+		redRiskNotification.setBpLogId(bpLogId);
+		redRiskNotification.setGlucoseLogId(glucoseLogId);
+		redRiskNotification.setTenentId(patientTracker.getTenantId());
 		redRiskNotification.setAssessmentLogId(assessmentLogId);
-        redRiskNotification.setStatus(Constants.NEW);
-        RedRiskService.createRedRiskNotification(redRiskNotification);
+		redRiskNotification.setStatus(Constants.NEW);
+		RedRiskService.createRedRiskNotification(redRiskNotification);
 
 	}
 
-    /**
-     * Create a patient symptoms
-     *
-     * @param symptomDTOs      set of SymptomDTO
-     * @param bpLogId          bpLog id
-     * @param glucoseLogId     glucoseLog id
-     * @param patientTrackerId patientTracker id
-     */
-    public void createPatientSymptoms(Set<SymptomDTO> symptomDTOs, Long bpLogId, Long glucoseLogId,
-									  Long patientTrackerId, Long assessmentLogId) {
-        List<PatientSymptom> patientSymptomList = new ArrayList<>();
+	/**
+	 * Create a patient symptoms
+	 *
+	 * @param symptomDTOs      set of SymptomDTO
+	 * @param bpLogId          bpLog id
+	 * @param glucoseLogId     glucoseLog id
+	 * @param patientTrackerId patientTracker id
+	 */
+	public void createPatientSymptoms(Set<SymptomDTO> symptomDTOs, Long bpLogId, Long glucoseLogId,
+			Long patientTrackerId, Long assessmentLogId) {
+		List<PatientSymptom> patientSymptomList = new ArrayList<>();
 
-        for (SymptomDTO symptom : symptomDTOs) {
-            PatientSymptom patientSymptom = new PatientSymptom();
-            if (Constants.HYPERTENSION.equals(symptom.getType())) {
-                patientSymptom.setBpLogId(bpLogId);
-            }
-            if (Constants.DIABETES.equals(symptom.getType()) && !Objects.isNull(glucoseLogId)) {
-                patientSymptom.setGlucoseLogId(glucoseLogId);
-            }
-            if (symptom.getType() == Constants.OTHER) {
-                patientSymptom.setBpLogId(bpLogId);
-                if (!Objects.isNull(glucoseLogId)) {
-                    patientSymptom.setGlucoseLogId(glucoseLogId);
-                }
-            }
-            patientSymptom.setType(symptom.getType());
-            patientSymptom.setName(symptom.getName());
-            patientSymptom.setSymptomId(symptom.getSymptomId());
-            patientSymptom.setPatientTrackerId(patientTrackerId);
+		for (SymptomDTO symptom : symptomDTOs) {
+			PatientSymptom patientSymptom = new PatientSymptom();
+			if (Constants.HYPERTENSION.equals(symptom.getType())) {
+				patientSymptom.setBpLogId(bpLogId);
+			}
+			if (Constants.DIABETES.equals(symptom.getType()) && !Objects.isNull(glucoseLogId)) {
+				patientSymptom.setGlucoseLogId(glucoseLogId);
+			}
+			if (symptom.getType() == Constants.OTHER) {
+				patientSymptom.setBpLogId(bpLogId);
+				if (!Objects.isNull(glucoseLogId)) {
+					patientSymptom.setGlucoseLogId(glucoseLogId);
+				}
+			}
+			patientSymptom.setType(symptom.getType());
+			patientSymptom.setName(symptom.getName());
+			patientSymptom.setSymptomId(symptom.getSymptomId());
+			patientSymptom.setPatientTrackerId(patientTrackerId);
 			patientSymptom.setAssessmentLogId(assessmentLogId);
-            patientSymptomList.add(patientSymptom);
-        }
-        patientSymptomService.addPatientSymptoms(patientSymptomList);
-    }
+			patientSymptomList.add(patientSymptom);
+		}
+		patientSymptomService.addPatientSymptoms(patientSymptomList);
+	}
 
-    /**
-     * Creates the patient compliances
-     *
-     * @param compliances
-     * @param bpLogId
-     * @param patientTrackId
-     */
-    public void createPatientCompliances(Set<ComplianceDTO> compliances, Long bpLogId, Long patientTrackId, Long assessmentLogId) {
-        List<PatientMedicalCompliance> patientMedicalCompliances = new ArrayList<>();
-        for (ComplianceDTO compliance : compliances) {
-            PatientMedicalCompliance patientMedicalCompliance = new PatientMedicalCompliance();
-            patientMedicalCompliance.setBpLogId(bpLogId);
-            patientMedicalCompliance.setComplianceId(compliance.getComplianceId());
-            patientMedicalCompliance.setPatientTrackId(patientTrackId);
-            patientMedicalCompliance.setName(compliance.getName());
+	/**
+	 * Creates the patient compliances
+	 *
+	 * @param compliances
+	 * @param bpLogId
+	 * @param patientTrackId
+	 */
+	public void createPatientCompliances(Set<ComplianceDTO> compliances, Long bpLogId, Long patientTrackId,
+			Long assessmentLogId) {
+		List<PatientMedicalCompliance> patientMedicalCompliances = new ArrayList<>();
+		for (ComplianceDTO compliance : compliances) {
+			PatientMedicalCompliance patientMedicalCompliance = new PatientMedicalCompliance();
+			patientMedicalCompliance.setBpLogId(bpLogId);
+			patientMedicalCompliance.setComplianceId(compliance.getComplianceId());
+			patientMedicalCompliance.setPatientTrackId(patientTrackId);
+			patientMedicalCompliance.setName(compliance.getName());
 			patientMedicalCompliance.setAssessmentLogId(assessmentLogId);
-            patientMedicalCompliance.setOtherCompliance(compliance.getOtherCompliance());
-            patientMedicalCompliances.add(patientMedicalCompliance);
-        }
-        patientMedicalComplianceService.addPatientMedicalCompliance(patientMedicalCompliances);
+			patientMedicalCompliance.setOtherCompliance(compliance.getOtherCompliance());
+			patientMedicalCompliances.add(patientMedicalCompliance);
+		}
+		patientMedicalComplianceService.addPatientMedicalCompliance(patientMedicalCompliances);
 
 	}
 }

@@ -3,6 +3,7 @@ package com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.controlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +16,9 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service.RegionCustomizationService;
 
 import io.swagger.annotations.Api;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -74,5 +78,17 @@ public class RegionCustomizationController {
 		regionCustomizationService.updateCustomization(regionCustomization);
 		return new SuccessResponse<RegionCustomization>(SuccessCode.REGION_CUSTOMIZATION_UPDATE, HttpStatus.OK);
 	}
+	
+	/**
+	 * Gets list of customizatons 
+	 * 
+	 * @param requestData
+	 * @return List of RegionCustomization
+	 */
+	@PostMapping("/static-data/get-list")
+	public List<RegionCustomization> getRegionCustomizations(@RequestBody Map<String, Object> requestData) {
+		return regionCustomizationService.getRegionCustomizations(requestData);
+	}
+
 
 }

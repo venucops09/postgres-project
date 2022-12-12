@@ -19,6 +19,8 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 
 import io.swagger.annotations.Api;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 /**
@@ -88,4 +90,15 @@ public class AccountWorkflowController {
 		accountWorkflowService.removeAccountWorkflow(id);
 		return new SuccessResponse<>(SuccessCode.ACCOUNT_WORKFLOW_DELETE, HttpStatus.OK);
 	}
+	
+	/**
+	 * Gets all wokrflows
+	 * 
+	 * @return List of AccountWorkflows
+	 */
+	@GetMapping("/get-all-workflows")
+	public List<AccountWorkflow> getAllAccountWorkFlows() {
+		return accountWorkflowService.getAllAccountWorkFlows();
+	}
+
 }

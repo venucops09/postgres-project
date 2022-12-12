@@ -11,7 +11,8 @@ CREATE TABLE organization (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE country (
@@ -25,7 +26,8 @@ CREATE TABLE country (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 insert into country(created_by,updated_by, name, country_code, unit_measurement) values(1,1,'uk', '123', 'metric');
@@ -75,7 +77,8 @@ CREATE TABLE "user" (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 -- INSERT INTO users (created_by, updated_by, username, first_name, last_name, middle_name, password, phone_number, forget_password_token,forget_password_count, is_blocked, is_active, invalid_login_attempts, is_password_reset_enabled, password_reset_attempts)
@@ -173,7 +176,8 @@ CREATE TABLE county (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE sub_county (
@@ -187,7 +191,8 @@ CREATE TABLE sub_county (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE clinical_workflow (
@@ -204,7 +209,8 @@ CREATE TABLE clinical_workflow (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE account (
@@ -219,7 +225,8 @@ CREATE TABLE account (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE account_clinical_workflow (
@@ -243,7 +250,8 @@ CREATE TABLE operating_unit (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE culture (
@@ -268,7 +276,8 @@ CREATE TABLE program (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE site (
@@ -299,7 +308,8 @@ CREATE TABLE site (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  is_deleted BOOLEAN DEFAULT false,
+  ref_id VARCHAR
 );
 
 CREATE TABLE site_program (
@@ -484,7 +494,7 @@ CREATE TABLE screening_log (
 
 CREATE TABLE patient_tracker (
   id SERIAL PRIMARY KEY,
-  program_id BIGINT, FOREIGN KEY (program_id) REFERENCES program(id),
+  program_id BIGINT,
   national_id VARCHAR,
   first_name VARCHAR,
   last_Name VARCHAR,
@@ -657,7 +667,7 @@ CREATE TABLE patient_symptom (
 );
 
 CREATE TABLE patient_visit (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   visit_date TIMESTAMP,
   is_prescription BOOLEAN,
   is_investigation BOOLEAN,
@@ -673,7 +683,7 @@ CREATE TABLE patient_visit (
 );
 
 CREATE TABLE complication (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR,
   status BOOLEAN,
   display_order INT,
@@ -686,7 +696,7 @@ CREATE TABLE complication (
 );
 
 CREATE TABLE patient_complication (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   other_complication VARCHAR,
   complication_id BIGINT, FOREIGN KEY (complication_id) REFERENCES complication(id),
   patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
@@ -701,7 +711,7 @@ CREATE TABLE patient_complication (
 );
 
 CREATE TABLE diagnosis (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR,
   description VARCHAR,
   display_order INT,
@@ -716,7 +726,7 @@ CREATE TABLE diagnosis (
 );
 
 CREATE TABLE patient_diagnosis (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   htn_year_of_diagnosis INT,
   diabetes_patient_type VARCHAR,
   htn_patient_type VARCHAR,
@@ -737,7 +747,7 @@ CREATE TABLE patient_diagnosis (
 );
 
 CREATE TABLE comorbidity (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR,
   status BOOLEAN,
   display_order INT,
@@ -750,7 +760,7 @@ CREATE TABLE comorbidity (
 );
 
 CREATE TABLE patient_comorbidity (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   other_comorbidity VARCHAR,
   comorbidity_id BIGINT, FOREIGN KEY (comorbidity_id) REFERENCES comorbidity(id),
   patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
@@ -765,7 +775,7 @@ CREATE TABLE patient_comorbidity (
 );
 
 CREATE TABLE current_medication (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR,
   type VARCHAR,
   status BOOLEAN,
@@ -779,7 +789,7 @@ CREATE TABLE current_medication (
 );
 
 CREATE TABLE patient_current_medication (
-  id BIGINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   adhering_med_comment VARCHAR,
   is_adhering_current_med BOOLEAN,
   allergies_comment VARCHAR,
@@ -1346,3 +1356,117 @@ $$;
     roles VARCHAR
 );
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE risk_algorithm(
+  id SERIAL PRIMARY KEY,
+  risk_algorithm jsonb,
+  country_id BIGINT, FOREIGN KEY (country_id) REFERENCES country(id),
+  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  created_by BIGINT NOT NULL,
+  updated_by BIGINT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  display_order int,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE reason(
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  type VARCHAR,
+  display_order INT,
+  created_by BIGINT,
+  updated_by BIGINT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE dosage_frequency(
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  description VARCHAR,
+  display_order INT,
+  created_by BIGINT,
+  updated_by BIGINT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE side_menu(
+  id SERIAL PRIMARY KEY,
+  role_name VARCHAR,
+  menus jsonb,
+  display_order INT,
+  created_by BIGINT,
+  updated_by BIGINT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE culture (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  code VARCHAR,
+  created_by BIGINT default 1,
+  updated_by BIGINT default 1,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+create table model_questions (
+    id SERIAL PRIMARY KEY, 
+    questions VARCHAR,
+    display_order int,
+    is_default BOOLEAN,
+    is_mandadory BOOLEAN,
+    "type" VARCHAR,
+    country_id BIGINT, FOREIGN KEY(country_id) REFERENCES country(id),
+    ref_id BIGINT,
+    created_by BIGINT NOT NULL,
+    updated_by BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT false,
+    is_active BOOLEAN DEFAULT true
+);
+
+CREATE TABLE model_answers (
+    id SERIAL PRIMARY KEY,
+    answer VARCHAR, 
+    display_order int,
+    is_default BOOLEAN,
+    is_mandadory BOOLEAN,
+    question_id BIGINT, FOREIGN KEY(question_id) REFERENCES model_questions(id),
+    value int,
+    ref_id BIGINT,
+    created_by BIGINT NOT NULL,
+    updated_by BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT false,
+    is_active BOOLEAN DEFAULT true
+);
+
+CREATE TABLE country_customization(
+    id SERIAL PRIMARY KEY, 
+    form_input VARCHAR,
+    type VARCHAR, 
+    category VARCHAR, 
+    country_id BIGINT, FOREIGN KEY(country_id) REFERENCES country(id),
+    created_by BIGINT NOT NULL,
+    updated_by BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT false,
+    is_active BOOLEAN DEFAULT true
+);
+

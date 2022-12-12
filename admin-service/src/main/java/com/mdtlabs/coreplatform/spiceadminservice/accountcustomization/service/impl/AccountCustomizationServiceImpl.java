@@ -1,5 +1,6 @@
 package com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.service.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -100,4 +101,19 @@ public class AccountCustomizationServiceImpl implements AccountCustomizationServ
 
 		return true;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<AccountCustomization> getAccountCustomizations(Map<String, Object> requestData) {
+		Long countryId = Long.parseLong(requestData.get("countryId").toString());
+		List<String> screenTypes = (List<String>) requestData.get("screenTypes");
+		List<String> category = (List<String>) requestData.get("category");
+		System.out.println("screenTypes" +screenTypes);
+		System.out.println("category " + category);
+		List<AccountCustomization> list = accountCustomizationRepository.findByCountryIdAndCategoryInAndTypeIn(countryId, category, screenTypes);
+		System.out.println("AccountCustomizationlist " + list);
+		return list;
+	}
+
 }

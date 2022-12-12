@@ -6,7 +6,6 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.MedicalReviewDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.MedicalReviewResponseDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 
-
 /**
  * This is an interface to perform any actions in medical review related
  * entities

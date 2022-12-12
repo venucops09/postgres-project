@@ -1,5 +1,7 @@
 package com.mdtlabs.coreplatform.spiceadminservice.site.service;
 
+import java.util.List;
+
 import com.mdtlabs.coreplatform.common.model.entity.Site;
 
 public interface SiteService {
@@ -31,5 +33,22 @@ public interface SiteService {
 	 * @author Jeyaharini T A
 	 */
 	public Site activateDeactivateSite(long id, boolean isActiveStatus);
+
+	/**
+	 * Gets list of sites using tenantIds.
+	 * 
+	 * @param tenants List of tenantIds
+	 * @return List of Site Entities.
+	 * @author Niraimathi S
+	 */
+	public List<Site> getSitesByTenantIds(List<Long> tenants);
+
+	/**
+	 * Gets list if sites based onperating unit Id.
+	 * 
+	 * @param operatingUnitId operating unit Id.
+	 * @return List of Site Entities.
+	 */
+	public List<Site> getSitesByOperatingUnitId(Long operatingUnitId);
 
 }

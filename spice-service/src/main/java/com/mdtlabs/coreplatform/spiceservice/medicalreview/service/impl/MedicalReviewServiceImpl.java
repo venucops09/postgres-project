@@ -52,7 +52,6 @@ import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitSe
 import com.mdtlabs.coreplatform.spiceservice.prescription.repository.PrescriptionHistoryRepository;
 import com.mdtlabs.coreplatform.spiceservice.prescription.repository.PrescriptionRepository;
 
-
 /**
  * This class implements the MedicalReviewService interface and contains actual
  * business logic to perform operations on medical review entity.
@@ -107,6 +106,20 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 
 	@Autowired
 	private PatientNutritionLifestyleRepository lifestyleRepository;
+//	@Autowired
+//	private ComorbidityService comorbidityService;
+//	@Autowired
+//	private ComplicationService complicationService;
+//	@Autowired
+//	private LifestyleService lifestyleService;
+//	@Autowired
+//	private PhysicalExaminationService physicalExaminationService;
+//	@Autowired
+//	private ComplaintsService complaintsService;
+//	@Autowired
+//	private CurrentMedicationService currentMedicationService;
+//	@Autowired
+//	private FrequencyService frequencyService;
 
 	/**
 	 * {@inheritDoc}
@@ -157,7 +170,8 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 				.getPhysicalExaminationByIds(medicalReviewDTO.getContinuousMedicalReview().getPhysicalExams()));
 		System.out.println(patientMedicalReview);
 		medicalReviewRepository.save(patientMedicalReview);
-		PatientVisit patientVisit = patientVisitService.getPatientVisit(medicalReviewDTO.getPatientVisitId(), medicalReviewDTO.getTenantId());
+		PatientVisit patientVisit = patientVisitService.getPatientVisit(medicalReviewDTO.getPatientVisitId(),
+				medicalReviewDTO.getTenantId());
 		patientVisit.setMedicalReview(true);
 		patientVisitService.updatePatientVisit(patientVisit);
 
@@ -353,9 +367,9 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 	 * Create PatientCurrentMedication for given track id and visit id
 	 * 
 	 * @param currentMedication CurrentMedicationDetailsDTO
-	 * @param patientTrackId           patientTrackId
-	 * @param patientVisitId           patientVisitId
-	 * @param tenantId                 tenantId
+	 * @param patientTrackId    patientTrackId
+	 * @param patientVisitId    patientVisitId
+	 * @param tenantId          tenantId
 	 */
 	public void createPatientCurrentMedication(CurrentMedicationDetailsDTO currentMedication, Long patientTrackId,
 			Long patientVisitId, Long tenantId) {
@@ -456,7 +470,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 	private MedicalReviewResponseDTO getMedicalReviewSummary(RequestDTO medicalReviewListDTO,
 			PatientVisit patientVisit) {
 		MedicalReviewResponseDTO medicalReviewResponse = new MedicalReviewResponseDTO();
-		
+
 		if (patientVisit.isMedicalReview()) {
 			List<PatientMedicalReview> patientMedicalReviews = medicalReviewRepository.getPatientMedicalReview(
 					medicalReviewListDTO.getPatientTrackId(), medicalReviewListDTO.getPatientVisitId());
@@ -465,22 +479,27 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 			medicalReviewResponse.setMedicalReviews(new ArrayList<>());
 		}
 		if (patientVisit.isInvestigation()) {
-			medicalReviewResponse.setInvestigations(patientLabTestService.getPatientLabTest(medicalReviewListDTO.getPatientTrackId(), patientVisit.getId()));
+			medicalReviewResponse.setInvestigations(patientLabTestService
+					.getPatientLabTest(medicalReviewListDTO.getPatientTrackId(), patientVisit.getId()));
 		} else {
 			medicalReviewResponse.setInvestigations(new ArrayList<>());
 		}
 		if (medicalReviewListDTO.isDetailedSummaryRequired()) {
-          // To get recent visit prescription details, prefer to use prescription instead of prescription history collection
+			// To get recent visit prescription details, prefer to use prescription instead
+			// of prescription history collection
 			if (patientVisit.isPrescription()) {
-				List<Prescription> prescriptions = prescriptionRepository.findByPatientTrackIdAndPatientVisitIdAndIsDeleted(medicalReviewListDTO.getPatientTrackId(),patientVisit.getId(), false);
+				List<Prescription> prescriptions = prescriptionRepository
+						.findByPatientTrackIdAndPatientVisitIdAndIsDeleted(medicalReviewListDTO.getPatientTrackId(),
+								patientVisit.getId(), false);
 				medicalReviewResponse.setPrescriptions(prescriptions);
 				medicalReviewResponse.setIsSigned(!prescriptions.isEmpty());
 			}
-			PatientTracker patientTracker = patientTrackerService.getPatientTrackerById(medicalReviewListDTO.getPatientTrackId());
+			PatientTracker patientTracker = patientTrackerService
+					.getPatientTrackerById(medicalReviewListDTO.getPatientTrackId());
 
-			medicalReviewResponse.setPatientDetails(
-				Map.of("provisional_diagnosis", patientTracker.getProvisionalDiagnosis(), "confirm_diagnosis", patientTracker.getConfirmDiagnosis(), "is_confirm_diagnosis", patientTracker.getIsConfirmDiagnosis())
-			);
+			medicalReviewResponse.setPatientDetails(Map.of("provisional_diagnosis",
+					patientTracker.getProvisionalDiagnosis(), "confirm_diagnosis", patientTracker.getConfirmDiagnosis(),
+					"is_confirm_diagnosis", patientTracker.getIsConfirmDiagnosis()));
 
 			PatientTreatmentPlan treatmentPlan = patientTreatmentPlanService.getPatientTreatmentPlanDetails(
 					medicalReviewListDTO.getPatientTrackId(), medicalReviewListDTO.getTenantId());
@@ -488,7 +507,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 				medicalReviewResponse.setMedicalReviewFrequency(treatmentPlan.getMedicalReviewFrequency());
 			}
 			medicalReviewResponse.setReviewedAt(patientVisit.getCreatedAt());
-			
+
 			// TODO : reviewer details from user model
 		}
 		if (!medicalReviewListDTO.isDetailedSummaryRequired() && patientVisit.isPrescription()) {
@@ -518,9 +537,8 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		return patientMedicalReviewDTOs;
 	}
 
-
 	private List<PrescriptionHistory> getPrescriptionHistory(PatientVisit patientVisit) {
-		 return prescriptionHistoryRepository.getPrescriptions(patientVisit.getId());
+		return prescriptionHistoryRepository.getPrescriptions(patientVisit.getId());
 
 	}
 
@@ -528,12 +546,26 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		if (!Objects.isNull(request.getPatientTrackId())) {
 			throw new SpiceValidation();
 		}
-		int prescriptionDaysCompletedCount = prescriptionRepository.getPrecriptionCount(new Date(), request.getPatientTrackId());
+		int prescriptionDaysCompletedCount = prescriptionRepository.getPrecriptionCount(new Date(),
+				request.getPatientTrackId());
 		int nonReviewedTestCount = patientLabTestService.getLabtestCount(request.getPatientTrackId());
-		int nutritionLifestyleReviewedCount = lifestyleRepository.nutritionLifestyleReviewedCount(request.getPatientTrackId());
-		return Map.of("prescriptionDaysCompletedCount", prescriptionDaysCompletedCount, "nonReviewedTestCount", nonReviewedTestCount, "nutritionLifestyleReviewedCount", nutritionLifestyleReviewedCount);
+		int nutritionLifestyleReviewedCount = lifestyleRepository
+				.nutritionLifestyleReviewedCount(request.getPatientTrackId());
+		return Map.of("prescriptionDaysCompletedCount", prescriptionDaysCompletedCount, "nonReviewedTestCount",
+				nonReviewedTestCount, "nutritionLifestyleReviewedCount", nutritionLifestyleReviewedCount);
 	}
 
-
+//	public MedicalReviewStaticDataDTO getMedicalReviewStaticData() {
+//		MedicalReviewStaticDataDTO response = new MedicalReviewStaticDataDTO();
+//		response.setComorbidity(comorbidityService.findByIsDeletedFalseAndIsActiveTrue());
+//		response.setComplaints(complaintsService.findByIsDeletedFalseAndIsActiveTrue());
+//		response.setCurrentMedication(currentMedicationService.findByIsDeletedFalseAndIsActiveTrue());
+//		response.setComplications(complicationService.findByIsDeletedFalseAndIsActiveTrue());
+//		response.setPhysicalExamination(physicalExaminationService.findByIsDeletedFalseAndIsActiveTrue());
+//		response.setLifestyle(lifestyleService.findByIsDeletedFalseAndIsActiveTrue());
+//		List<Frequency> frequencies = frequencyService.findByIsDeletedFalseAndIsActiveTrue();
+//		
+//		return response;
+//	}
 
 }

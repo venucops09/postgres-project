@@ -1,5 +1,7 @@
 package com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -65,4 +67,15 @@ public interface AccountCustomizationRepository extends JpaRepository<AccountCus
 	@Query(value = REMOVE_ACCOUNT_CUSTOMIZATION)
 	public void removeAccountCustomization(@Param("isDeleted") boolean isDeleted, @Param("tenantId") long tenantId,
 			@Param("id") long id);
+			
+	/**
+	 * Gets list by countryID, category list and type list.
+	 * 
+	 * @param countryId countryId
+	 * @param category list of category
+	 * @param screenTypes lsit of types
+	 * @return List of AccountCustomization entites.
+	 */
+	public List<AccountCustomization> findByCountryIdAndCategoryInAndTypeIn(Long countryId, List<String> category,
+			List<String> screenTypes);
 }

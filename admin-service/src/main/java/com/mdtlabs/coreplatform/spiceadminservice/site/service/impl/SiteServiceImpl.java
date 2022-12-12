@@ -1,8 +1,7 @@
 package com.mdtlabs.coreplatform.spiceadminservice.site.service.impl;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -76,4 +75,18 @@ public class SiteServiceImpl implements SiteService {
 		return siteRepository.save(siteToUpdate);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Site> getSitesByTenantIds(List<Long> tenants) {
+		return siteRepository.findByIsDeletedFalseAndTenantIdIn(tenants);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Site> getSitesByOperatingUnitId(Long operatingUnitId) {
+		return siteRepository.findByOperatingUnitIdAndIsDeletedFalse(operatingUnitId);
+	}
+
 }
