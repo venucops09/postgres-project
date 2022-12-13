@@ -26,6 +26,7 @@ public interface ProgramRepository extends JpaRepository<Program, Long>{
     " and program.isDeleted=false and (:searchTerm is null or lower(program.name) LIKE CONCAT('%',lower(:searchTerm),'%')) order by program.updatedAt DESC";
 
 
+    public static final String GET_PROGRAM_BY_SITE_IDS = "select program from Program program join program.sites as site where site.id in (:siteIds)";
     /**
      * Finds the program based on its name and isDeleted
      * 
@@ -73,6 +74,14 @@ public interface ProgramRepository extends JpaRepository<Program, Long>{
      */
     @Query(value = GET_ALL_PROGRAMS)
     public Page<Program> searchPrograms(@Param("searchTerm") String searchTerm, @Param("countryId") Long countryId, Pageable pageable);
-                            
+
+    /**
+     * Gets list of programs using list of site Ids
+     * 
+     * @param siteIds List of siteIds
+     * @return List of Program Entities
+     */
+    @Query(value = GET_PROGRAM_BY_SITE_IDS)
+	public List<Program> findProgramsBySiteIds(@Param("siteIds") List<Long> siteIds);                     
     
 }

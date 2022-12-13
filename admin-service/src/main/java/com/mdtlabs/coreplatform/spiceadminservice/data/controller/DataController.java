@@ -137,9 +137,8 @@ public class DataController {
      * @author karthick M
      */
     @RequestMapping(method = RequestMethod.POST, value = "/country")
-    public SuccessResponse<Country> createCountry(@Valid @RequestBody Country country) {
-        SpiceLogger.logInfo("Creates a Country based on Request");
-        dataService.createCountry(country);
+    public SuccessResponse<Country> createCountry(@Valid @RequestBody CountryDTO countryDTO) {
+        dataService.createCountry(countryDTO);
         return new SuccessResponse<>(SuccessCode.COUNTRY_SAVE,
                 HttpStatus.CREATED);
     }

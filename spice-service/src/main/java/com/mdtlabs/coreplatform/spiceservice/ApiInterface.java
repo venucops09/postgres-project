@@ -17,6 +17,7 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Account;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
+import com.mdtlabs.coreplatform.common.model.entity.Program;
 import com.mdtlabs.coreplatform.common.model.entity.Site;
 import com.mdtlabs.coreplatform.common.model.entity.Subcounty;
 import com.mdtlabs.coreplatform.common.model.entity.spice.AccountCustomization;
@@ -80,4 +81,6 @@ public interface ApiInterface {
 	public List<Site> getSitesByOperatingUnitId(@RequestHeader("Authorization") String token,
 			@PathVariable(value = "operatingUnitId") Long operatingUnitId);
 
+	@PostMapping("program/get-by-site-ids")
+	public List<Program> getPrograms(@RequestHeader("Authorization") String token, @RequestBody List<Long> siteIds);
 }

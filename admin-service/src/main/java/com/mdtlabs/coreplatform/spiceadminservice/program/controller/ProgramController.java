@@ -1,9 +1,14 @@
 package com.mdtlabs.coreplatform.spiceadminservice.program.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,8 +21,6 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceadminservice.program.service.ProgramService;
 
 import io.swagger.annotations.Api;
-
-import javax.validation.*;
 
 /**
  * This class is a controller class to perform operation on Program entity.
@@ -98,4 +101,16 @@ public class ProgramController {
 		programService.updateProgram(program);
 		return new SuccessResponse<>(SuccessCode.PROGRAM_STATUS_UPDATE, HttpStatus.OK);
 	}
+	
+    /**
+     * Gets list of programs using list of site Ids
+     * 
+     * @param siteIds List of siteIds
+     * @return List of Program Entities
+     */
+	@PostMapping("/get-by-site-ids")
+	public List<Program> getProgramsBySiteIds(@RequestBody List<Long> siteIds) {
+		return programService.getProgramsBySiteIds(siteIds);
+	}
+
 }

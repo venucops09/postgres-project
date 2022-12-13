@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.spiceadminservice.data.service;
 
 import java.util.List;
 
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
@@ -22,7 +23,7 @@ public interface DataService {
 	 * @return Country Entity
 	 * @author Karthick M
 	 */
-	Country createCountry(Country country);
+	Country createCountry(CountryDTO countryDTO);
 
 	/**
 	 * This method is used to update a country details like name.

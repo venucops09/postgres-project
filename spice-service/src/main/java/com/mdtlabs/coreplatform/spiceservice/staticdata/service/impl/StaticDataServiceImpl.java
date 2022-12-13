@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
+import com.mdtlabs.coreplatform.common.exception.Validation;
 import com.mdtlabs.coreplatform.common.model.dto.UserDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CustomizationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.MedicalReviewStaticDataDTO;
@@ -29,11 +32,6 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.Frequency;
 import com.mdtlabs.coreplatform.common.model.entity.spice.ModelQuestions;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
 import com.mdtlabs.coreplatform.spiceservice.ApiInterface;
-//import com.mdtlabs.coreplatform.spiceadminservice.account.repository.AccountRepository;
-//import com.mdtlabs.coreplatform.spiceadminservice.data.repository.CountryRepository;
-//import com.mdtlabs.coreplatform.spiceadminservice.data.repository.CountyRepository;
-//import com.mdtlabs.coreplatform.spiceadminservice.data.repository.SubCountyRepository;
-//import com.mdtlabs.coreplatform.spiceadminservice.site.repository.SiteRepository;
 import com.mdtlabs.coreplatform.spiceservice.common.repository.NutritionLifestyleRepository;
 import com.mdtlabs.coreplatform.spiceservice.frequency.service.FrequencyService;
 import com.mdtlabs.coreplatform.spiceservice.metaData.repository.DiagnosisRepository;
@@ -142,6 +140,9 @@ public class StaticDataServiceImpl implements StaticDataService {
 			siteDto.setRoleName(userRoles);
 			siteDto.setDisplayName(roleDisplayNames);
 		}
+
+		List<Long> siteIds = sites.stream().map(Site::getId).collect(Collectors.toList());
+		response.setPrograms(apiInterface.getPrograms(token, siteIds));
 		response.setMenus(sideMenuRepository.findByRoleNameIn(userRoles));
 
 		response.setClinicalWorkflow(clinicalWorkflowResponse);
@@ -268,16 +269,28 @@ public class StaticDataServiceImpl implements StaticDataService {
 		if (Objects.isNull(modelQuestions) || modelQuestions.isEmpty()) {
 			modelQuestions = modelQuestionsRepository.findByIsDefaultAndIsDeleted(true, false);
 		}
+		ObjectMapper mapper = new ObjectMapper();
 
 		Map<String, List<ModelQuestions>> questions = new HashMap<>();
 		List<Map<String, String>> response = new ArrayList<>();
 
-		modelQuestions.stream()
-				.map(question -> response
-						.add(Map.of(Constants.TYPE, question.getType(), Constants.QUESTIONS, question.toString())))
-				.collect(Collectors.toList());
+		for (ModelQuestions question : modelQuestions) {
+			if (questions.keySet().contains(question.getType())) {
+				questions.get(question.getType()).add(question);
+			} else {
+				questions.put(question.getType(), new ArrayList<ModelQuestions>());
+				questions.get(question.getType()).add(question);
+			}
+		}
 
-		System.out.println(" mental health response" + response);
+		for (List<ModelQuestions> question : questions.values()) {
+			try {
+				response.add(Map.of(Constants.TYPE, question.get(Constants.ZERO).getType(), Constants.QUESTIONS,
+						mapper.writeValueAsString(question)));
+			} catch (JsonProcessingException e) {
+				throw new Validation(1001);
+			}
+		}
 		return response;
 	}
 

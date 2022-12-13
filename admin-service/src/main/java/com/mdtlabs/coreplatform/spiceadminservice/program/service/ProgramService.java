@@ -52,4 +52,13 @@ public interface ProgramService {
      * @return List<Program>
      */
     List<Program> getAllPrograms(RequestDTO requestObject);
+
+    
+    /**
+     * Gets list of programs using list of site Ids
+     * 
+     * @param siteIds List of siteIds
+     * @return List of Program Entities
+     */
+	List<Program> getProgramsBySiteIds(List<Long> siteIds);
 }

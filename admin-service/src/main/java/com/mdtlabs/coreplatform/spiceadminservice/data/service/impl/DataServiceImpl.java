@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,10 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.google.common.reflect.TypeToken;
 import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataConflictException;
 import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
@@ -41,22 +45,30 @@ public class DataServiceImpl implements DataService {
 
 	@Autowired
 	SubCountyRepository subCountyRepository;
+	
+	ModelMapper modelMapper = new ModelMapper();
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Country createCountry(Country country) {
-		if (Objects.isNull(country)) {
+	public Country createCountry(CountryDTO countryDTO) {
+		if (Objects.isNull(countryDTO)) {
 			throw new BadRequestException(12006);
 		} else {
 			List<Country> existingCountryByCodeOrName = countryRepository
-					.findByCountryCodeOrName(country.getCountryCode(), country.getName());
+					.findByCountryCodeOrName(countryDTO.getCountryCode(), countryDTO.getName());
 			if (!existingCountryByCodeOrName.isEmpty()) {
 				throw new DataConflictException(19001);
 			}
-			Country countryResponce = countryRepository.save(country);
-			return countryResponce;
+			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+			Country country = modelMapper.map(countryDTO, new TypeToken<Country>(){}.getType());
+//			List<User> users = countryDTO.getUsers().stream().map(user -> {
+//				user.setRoles(user.getRoles().add(new Role(Constants.ROLE_REGION_ADMIN)));
+//				return user;
+//			}).collect(Collectors.toList());
+			Country countryResponse = countryRepository.save(country);
+			return countryResponse;
 		}
 	}
 

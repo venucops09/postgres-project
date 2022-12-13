@@ -8,9 +8,7 @@ import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
@@ -121,4 +119,12 @@ public class ProgramServiceImpl implements ProgramService {
 		return programs.stream().collect(Collectors.toList());
 
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Program> getProgramsBySiteIds(List<Long> siteIds) {
+		return programRepository.findProgramsBySiteIds(siteIds);
+	}
+
 }

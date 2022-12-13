@@ -1,12 +1,12 @@
 server:
    servlet:
-      contextPath: /admin-service
+      contextPath: /
    port: 8086
 
 #DB Config
 spring:
    application:
-      name: admin
+      name: admin-service
    main:
       allow-bean-definition-overriding: true
    datasource:
@@ -24,6 +24,7 @@ spring:
          hibernate:
             dialect: org.hibernate.dialect.PostgreSQLDialect
             format_sql: true
+            enable_lazy_load_no_trans: true
    jackson:
       serialization:
          FAIL_ON_EMPTY_BEANS: false
@@ -53,6 +54,10 @@ logging:
    level:
       org.springframework: WARN
       org.hibernate: WARN
+     
+springdoc:
+  packagesToScan: com.mdtlabs.coreplatform.spiceadminservice
+  
 app:
    url: http://localhost
    sendgrid-apikey: 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
