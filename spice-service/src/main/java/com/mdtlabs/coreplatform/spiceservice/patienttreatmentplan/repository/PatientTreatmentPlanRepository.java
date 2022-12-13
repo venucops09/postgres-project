@@ -33,4 +33,6 @@ public interface PatientTreatmentPlanRepository extends JpaRepository<PatientTre
 
 	PatientTreatmentPlan findByIdAndIsDeleted(long id, boolean isDeleted);
 
+	PatientTreatmentPlan findByPatientTrackId(long patientTrackId);
+
 }

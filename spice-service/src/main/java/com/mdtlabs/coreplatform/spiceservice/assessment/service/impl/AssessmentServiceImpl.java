@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ComplianceDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RiskAlgorithmDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.SmsDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SymptomDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
@@ -27,6 +29,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTreatmentPlan;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RedRiskNotification;
 import com.mdtlabs.coreplatform.spiceservice.assessment.repository.PatientAssessmentRepository;
+import com.mdtlabs.coreplatform.spiceservice.NotificationApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentService;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.common.RedRiskService;
@@ -77,6 +80,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 	@Autowired
 	private PatientAssessmentRepository assessmentLogRepository;
 
+	@Autowired
+	private NotificationApiInterface apiInterface;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,7 +98,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 			if (patientTracker.getPatientStatus().equals(Constants.ENROLLED) && patientTracker.isInitialReview()
 					&& !patientTracker.isRedRiskPatient()) {
 				riskLevel = calculateRiskLevel(assessmentDTO, patientTracker);
-				riskLevel = RedRiskService.convertRiskLevelToBPRiskLevel(riskLevel);
+				assessmentDTO.getBpLog().setRiskLevel(RedRiskService.convertRiskLevelToBPRiskLevel(riskLevel));
 				riskMessage = RedRiskService.calculateRiskMessage(riskLevel);
 			}
 
@@ -111,7 +117,14 @@ public class AssessmentServiceImpl implements AssessmentService {
 			updatePatientTracker(patientTracker, assessmentDTO);
 			if (riskLevel.equals(Constants.HIGH)) {
 				patientTracker.setRedRiskPatient(Constants.BOOLEAN_TRUE);
-				createRedRiskNotification(patientTracker, bpLog.getId(), glucoseId, assessmentLogId);
+				RedRiskNotification notification = createRedRiskNotification(patientTracker, bpLog.getId(), glucoseId,
+						assessmentLogId);
+				SmsDTO smsDTO = new SmsDTO();
+				smsDTO.setNotificationId(notification.getId());
+				smsDTO.setTenantId(notification.getTenentId());
+				smsDTO.setFormDataId(patientTracker.getPatientId());
+				String token = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
+				apiInterface.saveOutBoundSMS(token, smsDTO);
 			}
 
 			if (!Objects.isNull(assessmentDTO.getSymptoms()) && !assessmentDTO.getSymptoms().isEmpty()) {
@@ -153,7 +166,6 @@ public class AssessmentServiceImpl implements AssessmentService {
 				updateTreatmentPlan(patientTracker, assessmentDTO, patientTreatmentPlan);
 			}
 
-			// TODO : customized workflow
 			if (!Objects.isNull(assessmentDTO.getCustomizedWorkflows())
 					&& !assessmentDTO.getCustomizedWorkflows().isEmpty()) {
 				customizedModulesService.createCustomizedModules(assessmentDTO.getCustomizedWorkflows(),
@@ -267,8 +279,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 	 * @param patientTracker PatientTracker entity
 	 * @param bpLogId        bpLog id
 	 * @param glucoseLogId   glucoseLog id
+	 * @return
 	 */
-	public void createRedRiskNotification(PatientTracker patientTracker, Long bpLogId, Long glucoseLogId,
+
+	public RedRiskNotification createRedRiskNotification(PatientTracker patientTracker, Long bpLogId, Long glucoseLogId,
 			Long assessmentLogId) {
 		RedRiskNotification redRiskNotification = new RedRiskNotification();
 		redRiskNotification.setPatientTrackId(patientTracker.getId());
@@ -277,7 +291,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 		redRiskNotification.setTenentId(patientTracker.getTenantId());
 		redRiskNotification.setAssessmentLogId(assessmentLogId);
 		redRiskNotification.setStatus(Constants.NEW);
-		RedRiskService.createRedRiskNotification(redRiskNotification);
+
+		return RedRiskService.createRedRiskNotification(redRiskNotification);
 
 	}
 

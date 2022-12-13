@@ -7,8 +7,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 /**
  * <p>
- *  In this class we need to check the status of the available service and used to communicate between each of them.
+ * In this class we need to check the status of the available service and used
+ * to communicate between each of them.
  * </p>
+ * 
  * @author Vigneshkumar created on 30, Jun 2022.
  */
 @SpringBootApplication

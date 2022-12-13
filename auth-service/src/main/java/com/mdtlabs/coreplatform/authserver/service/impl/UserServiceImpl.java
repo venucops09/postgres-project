@@ -94,6 +94,8 @@ public class UserServiceImpl implements UserService {
 		UserToken userToken = userTokenService.validateRefreshToken(userId,
 				refreshToken.substring(Constants.BEARER.length(), refreshToken.length()));
 
+		System.out.println("userToken: " + userToken);
+
 		if (Objects.isNull(userToken)) {
 			throw new Validation(3013);
 		}
@@ -103,7 +105,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		RSADecrypter decrypter = new RSADecrypter(privateRsaKey);
-
+		System.out.println("line 108-----------------------------------");
 		EncryptedJWT jwt;
 		try {
 			jwt = EncryptedJWT.parse(userToken.getAuthToken());
@@ -111,6 +113,7 @@ public class UserServiceImpl implements UserService {
 			Logger.logError(e);
 			throw new Validation(3013);
 		}
+		System.out.println("line 116----------------------------------------");
 
 		try {
 			jwt.decrypt(decrypter);
@@ -118,7 +121,7 @@ public class UserServiceImpl implements UserService {
 			Logger.logError(e);
 			throw new Validation(3013);
 		}
-
+		System.out.println("line 124------------------------------------");
 		EncryptedJWT jwtRefresh;
 		try {
 			jwtRefresh = EncryptedJWT.parse(refreshToken.substring(Constants.BEARER.length(), refreshToken.length()));
@@ -126,18 +129,20 @@ public class UserServiceImpl implements UserService {
 			Logger.logError(e);
 			throw new Validation(3013);
 		}
+		System.out.println("line 132------------------------------------------");
 		try {
 			jwtRefresh.decrypt(decrypter);
 		} catch (JOSEException e) {
 			Logger.logError(e);
 			throw new Validation(3013);
 		}
-
+		System.out.println("line 139----------------------------------------------");
 		String rawJson = String.valueOf(jwt.getJWTClaimsSet().getClaim(Constants.USER_DATA));
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		userDetail = objectMapper.readValue(rawJson, UserDTO.class);
 		userDetail.setAuthorization(userToken.getAuthToken());
+		System.out.println("line 145------------------------------------------");
 //		if (null != userDetail.getTimezone()) {
 ////			CustomDateSerializer.USER_ZONE_ID = userDetail.getTimezone().getOffset();
 //			ModelMapper modelMapper = new ModelMapper();
@@ -150,9 +155,10 @@ public class UserServiceImpl implements UserService {
 		Date expDateRefresh = pstFormat.parse(pstFormat.format(jwtRefresh.getJWTClaimsSet().getClaim(Constants.EXP)));
 
 		if ((expDateRefresh.getTime() - currentDate.getTime()) / Constants.THOUSAND < Constants.ZERO) {
+			System.out.println("line 158---------------------------------------");
 			throw new ExpiredJwtException(null, null, ErrorConstants.TOKEN_EXPIRED);
 		} else {
-
+			System.out.println("line 161-------------------------------------");
 			Map<String, Object> userInfo = new ObjectMapper().convertValue(userDetail, Map.class);
 			try {
 				generateKey();
@@ -239,7 +245,7 @@ public class UserServiceImpl implements UserService {
 		claimsSet.claim(Constants.USER_ID_PARAM, user.getId());
 		claimsSet.claim(Constants.APPLICATION_TYPE, Constants.WEB);
 		claimsSet.expirationTime(
-				Date.from(ZonedDateTime.now().plusHours(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant()));
+				Date.from(ZonedDateTime.now().plusMinutes(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant()));
 		claimsSet.notBeforeTime(new Date());
 		claimsSet.jwtID(UUID.randomUUID().toString());
 		JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);

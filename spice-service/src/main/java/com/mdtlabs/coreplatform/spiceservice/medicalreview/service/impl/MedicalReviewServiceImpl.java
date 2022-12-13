@@ -196,7 +196,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 	}
 
 	/**
-	 * Creates a patient initial encounter fro given patient
+	 * Creates a patient initial encounter from given patient
 	 * 
 	 * @param medicalReview  MedicalReview Request Data
 	 * @param patientTracker PatientTracker
@@ -554,18 +554,5 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		return Map.of("prescriptionDaysCompletedCount", prescriptionDaysCompletedCount, "nonReviewedTestCount",
 				nonReviewedTestCount, "nutritionLifestyleReviewedCount", nutritionLifestyleReviewedCount);
 	}
-
-//	public MedicalReviewStaticDataDTO getMedicalReviewStaticData() {
-//		MedicalReviewStaticDataDTO response = new MedicalReviewStaticDataDTO();
-//		response.setComorbidity(comorbidityService.findByIsDeletedFalseAndIsActiveTrue());
-//		response.setComplaints(complaintsService.findByIsDeletedFalseAndIsActiveTrue());
-//		response.setCurrentMedication(currentMedicationService.findByIsDeletedFalseAndIsActiveTrue());
-//		response.setComplications(complicationService.findByIsDeletedFalseAndIsActiveTrue());
-//		response.setPhysicalExamination(physicalExaminationService.findByIsDeletedFalseAndIsActiveTrue());
-//		response.setLifestyle(lifestyleService.findByIsDeletedFalseAndIsActiveTrue());
-//		List<Frequency> frequencies = frequencyService.findByIsDeletedFalseAndIsActiveTrue();
-//		
-//		return response;
-//	}
 
 }

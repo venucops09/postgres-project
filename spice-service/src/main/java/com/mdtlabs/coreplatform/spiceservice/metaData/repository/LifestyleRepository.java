@@ -22,4 +22,5 @@ public interface LifestyleRepository extends GenericRepository<Lifestyle> {
 	 * @return Lifestyle entities List
 	 */
 	List<Lifestyle> findByIsDeletedFalseAndIsActiveTrue();
+
 }

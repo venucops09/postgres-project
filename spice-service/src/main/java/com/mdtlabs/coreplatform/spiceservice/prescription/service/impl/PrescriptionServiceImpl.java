@@ -14,14 +14,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -40,31 +42,17 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionHistoryRespon
 import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescription;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescriptionHistory;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientVisit;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PrescriptionHistory;
-import com.mdtlabs.coreplatform.common.util.CommonUtil;
 import com.mdtlabs.coreplatform.common.util.DateUtil;
 import com.mdtlabs.coreplatform.spiceservice.ApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
-import com.mdtlabs.coreplatform.spiceservice.patientvisit.repository.PatientVisitRepository;
+import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.PatientTreatmentPlanService;
 import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitService;
-import com.mdtlabs.coreplatform.spiceservice.prescription.repository.FillPrescriptionHistoryRepository;
-import com.mdtlabs.coreplatform.spiceservice.prescription.repository.FillPrescriptionRepository;
 import com.mdtlabs.coreplatform.spiceservice.prescription.repository.PrescriptionHistoryRepository;
 import com.mdtlabs.coreplatform.spiceservice.prescription.repository.PrescriptionRepository;
 import com.mdtlabs.coreplatform.spiceservice.prescription.service.PrescriptionService;
-
-import javax.validation.*;
-
-/**
- * This service class maintains the CRUD operations for Prescription
- * 
- * @author Jeyaharini T A
- *
- */
 
 @Service
 @Validated
@@ -77,15 +65,6 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	private PrescriptionHistoryRepository prescriptionHistoryRepository;
 
 	@Autowired
-	private FillPrescriptionRepository fillPrescriptionRepository;
-
-	@Autowired
-	private FillPrescriptionHistoryRepository fillPrescriptionHistoryRepository;
-
-	@Autowired
-	private PatientVisitRepository patientVisitRepository;
-
-	@Autowired
 	private PatientVisitService patientVisitService;
 
 	@Autowired
@@ -96,6 +75,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 	@Autowired
 	private PatientTrackerService patientTrackerService;
+
+	@Autowired
+	private PatientTreatmentPlanService patientTreatmentPlanService;
 
 	ModelMapper modelMapper = new ModelMapper();
 
@@ -134,6 +116,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		List<Prescription> prescriptionListToUpdate = new ArrayList<>();
 		Date date = DateUtil.getCurrentDay();
 		for (PrescriptionDTO prescriptionDTO : prescriptionList) {
+
 			if (!Objects.isNull(prescriptionDTO.getIsDeleted()) && prescriptionDTO.getIsDeleted()) {
 				throw new DataNotAcceptableException(29008);
 			}
@@ -153,10 +136,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 				prescription.setBrandName(otherMedication.getBrandName());
 				prescription.setClassificationName(otherMedication.getClassificationName());
 			}
-			prescription.setEndDate(
-					DateUtil.addDate(DateUtil.subtractDates(date, 1), prescriptionDTO.getPrescribedDays()));
+			prescription
+					.setEndDate(DateUtil.addDate(DateUtil.subtractDates(date, 1), prescriptionDTO.getPrescribedDays()));
 			if (Objects.isNull(prescriptionDTO.getId())) {
 				prescription.setId(null);
+				prescription.setRemainingPrescriptionDays(
+						!Objects.isNull(prescription.getPrescribedDays()) ? prescription.getPrescribedDays()
+								: Constants.ZERO);
+				prescription.setPrescriptionFilledDays(Constants.ZERO);
 				prescriptionListToCreate.add(prescription);
 			} else if (!Objects.isNull(prescriptionDTO.getId()) && ((Objects.isNull(prescriptionDTO.getIsDeleted()))
 					|| (!Objects.isNull(prescriptionDTO.getIsDeleted()) && !prescriptionDTO.getIsDeleted()))) {
@@ -175,7 +162,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		}
 
 		updatePrescriptionPatientVisit(prescriptionRequestDTO);
-		updateMedicationPrescribed(prescriptionRequestDTO.getPatientTrackId(), Constants.BOOLEAN_TRUE);
+		updateMedicationPrescribed(prescriptionRequestDTO.getPatientTrackId(), Constants.BOOLEAN_TRUE,
+				Constants.BOOLEAN_TRUE);
 		return prescriptions;
 	}
 
@@ -186,27 +174,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 */
 	public OtherMedicationDTO getOtherMedication() {
 		// As of now, sent countryid as 1
-//		Medication otherMedication = medicationRepository.getOtherMedication(1, Constants.OTHER, Constants.OTHER,
-//				Constants.OTHER, Constants.OTHER);
+		// TODO::Need to get countryid from header
 		long countryId = 1;
-//		HttpEntity<String> entity = CommonUtil.getCurrentEntity();
-//		HttpHeaders headers = new HttpHeaders();
-//		RestTemplate restTemplate = new RestTemplate();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		ResponseEntity<Map> userResponse = restTemplate.exchange(
-//				"http://192.168.20.179/admin-service/medication/other-medication/{countryId}", HttpMethod.GET,
-//				new HttpEntity<>(null, headers), Map.class, countryId);
-//		OtherMedicationDTO medicationDTO = modelMapper.map(userResponse.getBody().get("entity"),
-//				new TypeToken<OtherMedicationDTO>() {
-//				}.getType());
-
 		ResponseEntity<OtherMedicationDTO> obj = apiInterface.getOtherMedication(countryId);
-
-//		HttpEntity entity = new HttpEntity<>(null, headers);
-//		OtherMedicationDTO medicationDTO = restService
-//				.exchange("http://192.168.20.179/admin-service/medication/other-medication/" + countryId,
-//						HttpMethod.GET, entity, OtherMedicationDTO.class)
-//				.getBody();
 		OtherMedicationDTO medicationDTO = obj.getBody();
 		return medicationDTO;
 	}
@@ -220,9 +190,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	public List<Prescription> addNewPrescriptions(List<Prescription> prescriptions) {
 		SpiceLogger.logInfo("Adding new prescriptions");
 		List<Prescription> addedPrescriptions = prescriptionRepository.saveAll(prescriptions);
-		List<FillPrescription> fillPrescriptions = createOrUpdateFillPrescription(addedPrescriptions, null, true);
-		addPrescriptionHistoryData(addedPrescriptions);
-		addFillPrescriptionHistoryData(fillPrescriptions);
+//		List<FillPrescription> fillPrescriptions = createOrUpdateFillPrescription(addedPrescriptions, null, true);
+		addPrescriptionHistoryData(addedPrescriptions, false);
+//		addFillPrescriptionHistoryData(fillPrescriptions);
 		return addedPrescriptions;
 	}
 
@@ -240,7 +210,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 			throw new DataNotAcceptableException(29017);
 		}
 
-		List<Prescription> existingPrescriptions = prescriptionRepository.findByIds(prescriptionIds);
+		List<Prescription> existingPrescriptions = prescriptionRepository.getPrescriptions(prescriptionIds);
 
 		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull()).setFullTypeMatchingRequired(true);
 
@@ -255,14 +225,19 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 					.filter(prescription -> (prescription.getId() == existingPrescripiton.getId())).findFirst()
 					.orElseThrow(() -> new DataNotAcceptableException(29010));
 
+			if (existingPrescripiton.getPrescribedDays() != prescriptionToUpdate.getPrescribedDays()) {
+				prescriptionToUpdate.setPrescriptionFilledDays(Constants.ZERO);
+				prescriptionToUpdate.setRemainingPrescriptionDays(prescriptionToUpdate.getPrescribedDays());
+			}
+
 			existingPrescriptionsToUpdate.add(prescriptionToUpdate);
 		}
 
 		List<Prescription> updatedPrescriptions = prescriptionRepository.saveAll(existingPrescriptionsToUpdate);
-		List<FillPrescription> fillPrescriptions = createOrUpdateFillPrescription(updatedPrescriptions, prescriptionIds,
-				false);
-		addPrescriptionHistoryData(updatedPrescriptions);
-		addFillPrescriptionHistoryData(fillPrescriptions);
+//		List<FillPrescription> fillPrescriptions = createOrUpdateFillPrescription(updatedPrescriptions, prescriptionIds,
+//				false);
+		addPrescriptionHistoryData(updatedPrescriptions, false);
+//		addFillPrescriptionHistoryData(fillPrescriptions);
 		return updatedPrescriptions;
 	}
 
@@ -272,41 +247,41 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 * @param prescriptions
 	 * @return List of PrescriptionHistory
 	 */
-	public List<PrescriptionHistory> addPrescriptionHistoryData(List<Prescription> prescriptions) {
+	public List<PrescriptionHistory> addPrescriptionHistoryData(List<Prescription> prescriptions,
+			boolean addRefillDate) {
 		SpiceLogger.logInfo("constructing prescription history data");
 		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull()).setFullTypeMatchingRequired(true);
 		List<PrescriptionHistory> prescriptionHistories = prescriptions.stream()
 				.map(prescription -> modelMapper.map(prescription, PrescriptionHistory.class))
 				.collect(Collectors.toList());
-		prescriptionHistories.stream().forEach(prescriptionHistory -> {
-			SpiceLogger.logInfo("in prescriptionHistory: " + prescriptionHistory.getId());
-			// 1. While doing model mapping, as the id fields are matched, id of
-			// prescription entity will be added for id of prescription history entity,
-			// setting null to the id field
-			prescriptionHistory.setPrescriptionId(prescriptionHistory.getId());
-			prescriptionHistory.setId(null);
-		});
-		return prescriptionHistoryRepository.saveAll(prescriptionHistories);
-	}
 
-	/**
-	 * To add or update a fill prescription
-	 * 
-	 * @param prescriptions
-	 * @param existingPrescriptionIds
-	 * @param doCreate
-	 * @return List of FillPrescription
-	 */
-	public List<FillPrescription> createOrUpdateFillPrescription(List<Prescription> prescriptions,
-			Set<Long> existingPrescriptionIds, boolean doCreate) {
-		SpiceLogger.logInfo(doCreate ? "Creating fill prescriptions" : "Updating fill prescriptions");
-		List<FillPrescription> existingFillPrescriptions = null;
-		if (!Objects.isNull(existingPrescriptionIds)) {
-			existingFillPrescriptions = fillPrescriptionRepository.findByPrescriptionIds(existingPrescriptionIds);
+//		List<Long> prescriptionIds = prescriptionHistories.stream().map(presc -> presc.getPrescriptionId())
+//				.collect(Collectors.toList());
+
+		if (addRefillDate) {
+			prescriptionHistories.stream().forEach(presc -> presc.setLastRefillDate(new Date()));
+//			prescriptionHistoriesToUpdate.addAll(prescriptionHistories);
 		}
-		List<FillPrescription> fillPrescriptions = constructFillPrescriptionData(prescriptions,
-				existingFillPrescriptions, doCreate);
-		return fillPrescriptionRepository.saveAll(fillPrescriptions);
+//		else {
+//			List<PrescriptionHistory> existingPrescriptions = prescriptionHistoryRepository
+//					.getLastRefilledPrescriptions(prescriptionIds);
+//			if (!existingPrescriptions.isEmpty()) {
+//
+//				for (PrescriptionHistory prescHistory : prescriptionHistories) {
+//					PrescriptionHistory prescription = existingPrescriptions.stream()
+//							.filter(presc -> (presc.getPrescriptionId() == prescHistory.getPrescriptionId()))
+//							.findFirst().orElse(new PrescriptionHistory());
+//					if (!Objects.isNull(prescription.getLastRefillDate())) {
+//						prescHistory.setLastRefillDate(prescription.getLastRefillDate());
+//					}
+//					prescriptionHistoriesToUpdate.add(prescHistory);
+//				}
+//			}
+//
+//		}
+
+		System.out.println("prescriptionHistories: " + prescriptionHistories.toString());
+		return prescriptionHistoryRepository.saveAll(prescriptionHistories);
 	}
 
 	/**
@@ -315,36 +290,36 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 * @param prescriptions
 	 * @return List of FillPrescription
 	 */
-	public List<FillPrescription> constructFillPrescriptionData(List<Prescription> prescriptions,
-			List<FillPrescription> existingFillPrescriptions, boolean doCreate) {
-		SpiceLogger.logInfo("constructing fill prescription data");
-		List<FillPrescription> fillPrescriptions = new ArrayList<FillPrescription>();
-		FillPrescription fillPrescription = null;
-		for (Prescription prescription : prescriptions) {
-			fillPrescription = new FillPrescription();
-			if (doCreate) {
-				fillPrescription.setRemainingPrescriptionDays(Constants.ZERO);
-				if (!Objects.isNull(prescription.getPrescribedDays())) {
-					fillPrescription.setRemainingPrescriptionDays(prescription.getPrescribedDays());
-				}
-			} else {
-				FillPrescription existingFillPrescription = existingFillPrescriptions.stream()
-						.filter(existingFillPrescriptionEntity -> (existingFillPrescriptionEntity
-								.getPrescriptionId() == prescription.getId()))
-						.findFirst().orElseThrow(() -> new DataNotAcceptableException(29010));
-				fillPrescription.setRemainingPrescriptionDays(prescription.getPrescribedDays());
-				fillPrescription.setId(existingFillPrescription.getId());
-			}
-			fillPrescription.setTenantId(prescription.getTenantId());
-			fillPrescription.setPatientTrackId(prescription.getPatientTrackId());
-			fillPrescription.setPatientVisitId(prescription.getPatientVisitId());
-			fillPrescription.setPrescribedDays(prescription.getPrescribedDays());
-			fillPrescription.setPrescriptionFilledDays(Constants.ZERO);
-			fillPrescription.setPrescriptionId(prescription.getId());
-			fillPrescriptions.add(fillPrescription);
-		}
-		return fillPrescriptions;
-	}
+//	public List<FillPrescription> constructFillPrescriptionData(List<Prescription> prescriptions,
+//			List<FillPrescription> existingFillPrescriptions, boolean doCreate) {
+//		SpiceLogger.logInfo("constructing fill prescription data");
+//		List<FillPrescription> fillPrescriptions = new ArrayList<FillPrescription>();
+//		FillPrescription fillPrescription = null;
+//		for (Prescription prescription : prescriptions) {
+//			fillPrescription = new FillPrescription();
+//			if (doCreate) {
+//				fillPrescription.setRemainingPrescriptionDays(Constants.ZERO);
+//				if (!Objects.isNull(prescription.getPrescribedDays())) {
+//					fillPrescription.setRemainingPrescriptionDays(prescription.getPrescribedDays());
+//				}
+//			} else {
+//				FillPrescription existingFillPrescription = existingFillPrescriptions.stream()
+//						.filter(existingFillPrescriptionEntity -> (existingFillPrescriptionEntity
+//								.getPrescriptionId() == prescription.getId()))
+//						.findFirst().orElseThrow(() -> new DataNotAcceptableException(29010));
+//				fillPrescription.setRemainingPrescriptionDays(prescription.getPrescribedDays());
+//				fillPrescription.setId(existingFillPrescription.getId());
+//			}
+//			fillPrescription.setTenantId(prescription.getTenantId());
+//			fillPrescription.setPatientTrackId(prescription.getPatientTrackId());
+//			fillPrescription.setPatientVisitId(prescription.getPatientVisitId());
+//			fillPrescription.setPrescribedDays(prescription.getPrescribedDays());
+//			fillPrescription.setPrescriptionFilledDays(Constants.ZERO);
+//			fillPrescription.setPrescriptionId(prescription.getId());
+//			fillPrescriptions.add(fillPrescription);
+//		}
+//		return fillPrescriptions;
+//	}
 
 	/**
 	 * To update the screening status in the patient visit entity
@@ -352,11 +327,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 * @param prescriptionRequestDTO
 	 */
 	public void updatePrescriptionPatientVisit(PrescriptionRequestDTO prescriptionRequestDTO) {
-		PatientVisit patientVisit = patientVisitService.getPatientVisit(prescriptionRequestDTO.getPatientVisitId(), prescriptionRequestDTO.getTenantId());
+		PatientVisit patientVisit = patientVisitService.getPatientVisit(prescriptionRequestDTO.getPatientVisitId(),
+				prescriptionRequestDTO.getTenantId());
 		patientVisit.setPrescription(true);
 		patientVisitService.updatePatientVisit(patientVisit);
-		// patientVisitRepository.updatePatientVisit(true, prescriptionRequestDTO.getPatientVisitId(),
-		// 		prescriptionRequestDTO.getTenantId());
+		// patientVisitRepository.updatePatientVisit(true,
+		// prescriptionRequestDTO.getPatientVisitId(),
+		// prescriptionRequestDTO.getTenantId());
 	}
 
 	/**
@@ -365,21 +342,21 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 * @param fillPrescriptions
 	 * @return list of added FillPrescriptionHistory
 	 */
-	public List<FillPrescriptionHistory> addFillPrescriptionHistoryData(List<FillPrescription> fillPrescriptions) {
-		SpiceLogger.logInfo("constructing fill prescription history data");
-		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull()).setFullTypeMatchingRequired(true);
-		List<FillPrescriptionHistory> fillPrescriptionHistories = fillPrescriptions.stream()
-				.map(fillPrescription -> modelMapper.map(fillPrescription, FillPrescriptionHistory.class))
-				.collect(Collectors.toList());
-		fillPrescriptionHistories.stream().forEach(fillPrescriptionHistory -> {
-			// 1. While doing model mapping, as the id fields are matched, id of
-			// prescription entity will be added for id of prescription history entity,
-			// setting null to the id field
-			fillPrescriptionHistory.setFillPrescriptionId(fillPrescriptionHistory.getId());
-			fillPrescriptionHistory.setId(null);
-		});
-		return fillPrescriptionHistoryRepository.saveAll(fillPrescriptionHistories);
-	}
+//	public List<FillPrescriptionHistory> addFillPrescriptionHistoryData(List<FillPrescription> fillPrescriptions) {
+//		SpiceLogger.logInfo("constructing fill prescription history data");
+//		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull()).setFullTypeMatchingRequired(true);
+//		List<FillPrescriptionHistory> fillPrescriptionHistories = fillPrescriptions.stream()
+//				.map(fillPrescription -> modelMapper.map(fillPrescription, FillPrescriptionHistory.class))
+//				.collect(Collectors.toList());
+//		fillPrescriptionHistories.stream().forEach(fillPrescriptionHistory -> {
+//			// 1. While doing model mapping, as the id fields are matched, id of
+//			// prescription entity will be added for id of prescription history entity,
+//			// setting null to the id field
+//			fillPrescriptionHistory.setFillPrescriptionId(fillPrescriptionHistory.getId());
+//			fillPrescriptionHistory.setId(null);
+//		});
+//		return fillPrescriptionHistoryRepository.saveAll(fillPrescriptionHistories);
+//	}
 
 	/**
 	 * {@inheritDoc}
@@ -428,8 +405,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 		if (prescriptionListRequestDTO.isLatestRequired()
 				&& !Objects.isNull(prescriptionListRequestDTO.getPatientVisitId())) {
-			List<PatientVisit> patientVisits = 
-					patientVisitService.getPatientVisitDates(prescriptionListRequestDTO.getPatientTrackId(), null, null, Constants.BOOLEAN_TRUE);
+			List<PatientVisit> patientVisits = patientVisitService.getPatientVisitDates(
+					prescriptionListRequestDTO.getPatientTrackId(), null, null, Constants.BOOLEAN_TRUE);
 			patientVisitDates = patientVisits.stream().map(patientVisit -> patientVisit.getVisitDate())
 					.collect(Collectors.toList());
 			prescriptionListRequestDTO.setPatientVisitId(patientVisits.get(patientVisits.size() - 1).getId());
@@ -448,9 +425,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 */
 
 	public boolean removePrescription(RequestDTO prescriptionListRequestDTO) {
-//		if (Objects.isNull(prescriptionListRequestDTO.getPatientVisitId())) {
-//			throw new SpiceValidation(29013);
-//		}
+		if (Objects.isNull(prescriptionListRequestDTO.getPatientVisitId())) {
+			throw new SpiceValidation(29013);
+		}
+		if (Objects.isNull(prescriptionListRequestDTO.getPatientTrackId())) {
+			throw new SpiceValidation(29011);
+		}
 		Prescription prescriptionToBeDeleted = prescriptionRepository.findById(prescriptionListRequestDTO.getId())
 				.orElseThrow(() -> new DataNotAcceptableException(29010));
 
@@ -460,16 +440,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		prescriptionToBeDeleted.setTenantId(prescriptionListRequestDTO.getTenantId());
 		prescriptionRepository.save(prescriptionToBeDeleted);
 		// patientTrackId should be included in the request
-		updateMedicationPrescribed(prescriptionListRequestDTO.getPatientTrackId(), Constants.BOOLEAN_FALSE);
+		updateMedicationPrescribed(prescriptionListRequestDTO.getPatientTrackId(), Constants.BOOLEAN_FALSE,
+				Constants.BOOLEAN_TRUE);
 		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeFillPrescription(RequestDTO prescriptionListRequestDTO) {
-		fillPrescriptionRepository.removeFillPrescriptions(true, prescriptionListRequestDTO.getId(),
-				prescriptionListRequestDTO.getTenantId());
 	}
 
 	/**
@@ -479,38 +452,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		if (Objects.isNull(searchRequestDTO.getPatientTrackId())) {
 			throw new DataNotAcceptableException(10010);
 		}
-		List<FillPrescription> fillPrescriptions = fillPrescriptionRepository
-				.findByPatientTrackIdAndRemainingPrescriptionDaysGreaterThan(searchRequestDTO.getPatientTrackId(),
-						Constants.ZERO);
 
-		Set<Long> prescriptionIds = fillPrescriptions.stream()
-				.map(fillPrescription -> fillPrescription.getPrescriptionId()).collect(Collectors.toSet());
-		List<Prescription> prescriptions = prescriptionRepository.findByIds(prescriptionIds);
+//		List<FillPrescriptionResponseDTO> fillPrescriptionResponseDTOs = new ArrayList<>();
 
-		List<FillPrescriptionResponseDTO> fillPrescriptionResponseDTOs = new ArrayList<>();
-
-		for (FillPrescription fillPrescription : fillPrescriptions) {
-			Prescription prescription = prescriptions.stream()
-					.filter(prescriptionEntity -> (prescriptionEntity.getId() == fillPrescription.getPrescriptionId()))
-					.findFirst().orElseThrow(() -> new DataNotAcceptableException(29010));
-
-			FillPrescriptionResponseDTO fillPrescriptionResponseDTO = new FillPrescriptionResponseDTO();
-			fillPrescriptionResponseDTO.setId(fillPrescription.getId());
-			fillPrescriptionResponseDTO.setDosageFormName(prescription.getDosageFormName());
-			fillPrescriptionResponseDTO.setDosageFrequencyName(prescription.getDosageFrequencyName());
-			fillPrescriptionResponseDTO.setDosageUnitName(prescription.getDosageUnitName());
-			fillPrescriptionResponseDTO.setDosageUnitValue(prescription.getDosageUnitValue());
-			fillPrescriptionResponseDTO.setMedicationName(prescription.getMedicationName());
-			fillPrescriptionResponseDTO.setClassificationName(prescription.getClassificationName());
-			fillPrescriptionResponseDTO.setInstructionNote(prescription.getInstructionNote());
-			fillPrescriptionResponseDTO.setEndDate(prescription.getEndDate());
-			fillPrescriptionResponseDTO.setCreatedAt(prescription.getCreatedAt());
-			fillPrescriptionResponseDTO.setBrandName(prescription.getBrandName());
-			fillPrescriptionResponseDTO.setPrescription(prescription.getId());
-			fillPrescriptionResponseDTO.setTenantId(fillPrescription.getTenantId());
-			fillPrescriptionResponseDTO.setRemainingPrescriptionDays(fillPrescription.getRemainingPrescriptionDays());
-			fillPrescriptionResponseDTOs.add(fillPrescriptionResponseDTO);
-		}
+		List<Prescription> prescriptions = prescriptionRepository
+				.getRefillPrescriptions(searchRequestDTO.getPatientTrackId(), Constants.ZERO, Constants.BOOLEAN_FALSE);
+		System.out.println("prescriptions: " + prescriptions);
+		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull()).setFullTypeMatchingRequired(true);
+		List<FillPrescriptionResponseDTO> fillPrescriptionResponseDTOs = modelMapper.map(prescriptions,
+				new TypeToken<List<FillPrescriptionResponseDTO>>() {
+				}.getType());
 
 		return fillPrescriptionResponseDTOs;
 	}
@@ -518,158 +469,91 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<FillPrescription> updateFillPrescription(FillPrescriptionRequestDTO fillPrescriptionRequestDTO) {
+	public List<Prescription> updateFillPrescription(FillPrescriptionRequestDTO fillPrescriptionRequestDTO) {
 		if (Objects.isNull(fillPrescriptionRequestDTO.getPatientTrackId())
 				|| Objects.isNull(fillPrescriptionRequestDTO.getPatientVisitId())) {
 			throw new DataNotAcceptableException(29007);
 		}
 
-		List<FillPrescription> fillPrescriptions = fillPrescriptionRequestDTO.getFillPrescriptions();
+		List<Prescription> prescriptions = fillPrescriptionRequestDTO.getPrescriptions();
 
-		List<Long> fillPrescriptionIds = fillPrescriptions.stream().map(fillPrescription -> fillPrescription.getId())
+		List<Long> prescriptionIds = prescriptions.stream().map(prescription -> prescription.getId())
 				.collect(Collectors.toList());
 
-		List<FillPrescription> existingFillPrescriptions = fillPrescriptionRepository
-				.findByIdsAndIsDeleted(fillPrescriptionIds, Constants.BOOLEAN_FALSE);
-
-		List<FillPrescription> fillPrescriptionsToUpdate = new ArrayList<>();
-
-		for (FillPrescription fillPrescription : fillPrescriptions) {
-			FillPrescription existingFillPrescription = existingFillPrescriptions.stream()
-					.filter(existing -> existing.getId() == fillPrescription.getId()).findFirst()
-					.orElseThrow(() -> new DataNotFoundException(29014));
-
-			if (existingFillPrescription.getRemainingPrescriptionDays() < fillPrescription
-					.getPrescriptionFilledDays()) {
-				throw new DataNotAcceptableException(29015);
-			}
-			int remainingPrescriptionDays = existingFillPrescription.getRemainingPrescriptionDays()
-					- fillPrescription.getPrescriptionFilledDays();
-
-			existingFillPrescription.setPrescriptionId(fillPrescription.getPrescriptionId());
-			existingFillPrescription.setPrescriptionFilledDays(fillPrescription.getPrescriptionFilledDays());
-			existingFillPrescription.setRemainingPrescriptionDays(remainingPrescriptionDays);
-			existingFillPrescription.setPatientVisitId(fillPrescriptionRequestDTO.getPatientVisitId());
-			existingFillPrescription.setTenantId(fillPrescriptionRequestDTO.getTenantId());
-			existingFillPrescription.setPatientTrackId(fillPrescriptionRequestDTO.getPatientTrackId());
-			fillPrescriptionsToUpdate.add(existingFillPrescription);
-		}
-
-		fillPrescriptions = fillPrescriptionRepository.saveAll(fillPrescriptionsToUpdate);
-		addFillPrescriptionHistory(fillPrescriptions);
-		updatePrescriptionDetails(fillPrescriptionRequestDTO);
-
-//		List<FillPrescription> existingFillPrescriptions = fillPrescriptionRepository
-//				.findByIdsAndIsDeleted(fillPrescriptionIds, Constants.BOOLEAN_FALSE);
-
-//		if (fillPrescriptionRepository.findByPatientTrackIdAndRemainingPrescriptionDaysGreaterThan(
-//				fillPrescriptionRequestDTO.getPatientTrackId(), Constants.ZERO).isEmpty()) {
-//			patientTrackerService.updateForFillPrescription(fillPrescriptionRequestDTO.getPatientTrackId(),
-//					Constants.BOOLEAN_FALSE);
-//		}
-
-		updateMedicationPrescribed(fillPrescriptionRequestDTO.getPatientTrackId(), Constants.BOOLEAN_FALSE);
-
-		return fillPrescriptions;
-	}
-
-	public void updateMedicationPrescribed(Long patientTrackId, boolean isMedicationPrescribed) {
-		if (!isMedicationPrescribed) {
-			if (fillPrescriptionRepository
-					.findByPatientTrackIdAndRemainingPrescriptionDaysGreaterThan(patientTrackId, Constants.ZERO)
-					.isEmpty()) {
-				patientTrackerService.updateForFillPrescription(patientTrackId, Constants.BOOLEAN_FALSE);
-			}
-		} else {
-			patientTrackerService.updateForFillPrescription(patientTrackId, Constants.BOOLEAN_TRUE);
-		}
-	}
-
-	/**
-	 * To add fill prescription history
-	 * 
-	 * @param fillPrescriptions
-	 * @return list of added fill prescription history
-	 */
-	public List<FillPrescriptionHistory> addFillPrescriptionHistory(List<FillPrescription> fillPrescriptions) {
-
-		List<FillPrescriptionHistory> fillPrescriptionHistories = new ArrayList<>();
-
-		for (FillPrescription fillPrescription : fillPrescriptions) {
-			FillPrescriptionHistory fillPrescriptionHistory = new FillPrescriptionHistory();
-			fillPrescriptionHistory.setPrescriptionId(fillPrescription.getPrescriptionId());
-			fillPrescriptionHistory.setFillPrescriptionId(fillPrescription.getId());
-			fillPrescriptionHistory
-					.setRemainingPrescriptionDays(!Objects.isNull(fillPrescription.getRemainingPrescriptionDays())
-							? fillPrescription.getRemainingPrescriptionDays()
-							: 0);
-			fillPrescriptionHistory.setTenantId(fillPrescription.getTenantId());
-			fillPrescriptionHistory
-					.setPrescriptionFilledDays(!Objects.isNull(fillPrescription.getPrescriptionFilledDays())
-							? fillPrescription.getPrescriptionFilledDays()
-							: 0);
-			fillPrescriptionHistory.setPatientVisitId(fillPrescription.getPatientVisitId());
-			fillPrescriptionHistory.setPrescribedDays(fillPrescription.getPrescribedDays());
-			fillPrescriptionHistory.setPatientTrackId(fillPrescription.getPatientTrackId());
-			fillPrescriptionHistories.add(fillPrescriptionHistory);
-		}
-
-		return fillPrescriptionHistoryRepository.saveAll(fillPrescriptionHistories);
-
-	}
-
-	/**
-	 * To update prescription details
-	 * 
-	 * @param fillPrescriptionRequestDTO
-	 * @return list of updated prescriptions
-	 */
-	public List<Prescription> updatePrescriptionDetails(FillPrescriptionRequestDTO fillPrescriptionRequestDTO) {
-
-		List<FillPrescription> fillPrescriptions = fillPrescriptionRequestDTO.getFillPrescriptions();
-
-		List<FillPrescription> instuctionUpdatedFillPrescriptions = fillPrescriptions.stream()
-				.filter(fillPrescription -> (fillPrescription.getIsInstructionUpdated() == Constants.BOOLEAN_TRUE))
-				.collect(Collectors.toList());
-
-		List<Prescription> prescriptions = new ArrayList<>();
-		if (instuctionUpdatedFillPrescriptions.isEmpty()) {
-			return prescriptions;
-		}
-
-		Set<Long> prescriptionIds = instuctionUpdatedFillPrescriptions.stream()
-				.map(fillPrescription -> fillPrescription.getPrescriptionId()).collect(Collectors.toSet());
-		List<Prescription> existingPrescriptions = prescriptionRepository.findByIds(prescriptionIds);
+		List<Prescription> existingPrescriptions = prescriptionRepository.getActivePrescriptions(prescriptionIds,
+				Constants.BOOLEAN_FALSE);
 
 		List<Prescription> prescriptionsToUpdate = new ArrayList<>();
 
-		for (Prescription existingPrescription : existingPrescriptions) {
-			FillPrescription fillPrescription = instuctionUpdatedFillPrescriptions.stream()
-					.filter(fillPrescriptionEntity -> fillPrescriptionEntity.getPrescriptionId() == existingPrescription
-							.getId())
-					.findFirst().orElseThrow();
-			existingPrescription.setInstructionNote(fillPrescription.getInstructionNote());
+		for (Prescription prescription : prescriptions) {
+			Prescription existingPrescription = existingPrescriptions.stream()
+					.filter(existing -> existing.getId() == prescription.getId()).findFirst()
+					.orElseThrow(() -> new DataNotFoundException(29014));
+
+			if (existingPrescription.getRemainingPrescriptionDays() < prescription.getPrescriptionFilledDays()) {
+				throw new DataNotAcceptableException(29015);
+			}
+
+			int remainingPrescriptionDays = existingPrescription.getRemainingPrescriptionDays()
+					- prescription.getPrescriptionFilledDays();
+
+			existingPrescription.setPrescriptionFilledDays(prescription.getPrescriptionFilledDays());
+			existingPrescription.setRemainingPrescriptionDays(remainingPrescriptionDays);
+			existingPrescription.setPatientVisitId(fillPrescriptionRequestDTO.getPatientVisitId());
+			existingPrescription.setTenantId(fillPrescriptionRequestDTO.getTenantId());
+			existingPrescription.setPatientTrackId(fillPrescriptionRequestDTO.getPatientTrackId());
 			prescriptionsToUpdate.add(existingPrescription);
 		}
-		List<Prescription> updatedPrescriptions = prescriptionRepository.saveAll(prescriptionsToUpdate);
-		addPrescriptionHistoryData(updatedPrescriptions);
-		return updatedPrescriptions;
+
+		prescriptions = prescriptionRepository.saveAll(prescriptionsToUpdate);
+
+		addPrescriptionHistoryData(prescriptionsToUpdate, true);
+
+		updateMedicationPrescribed(fillPrescriptionRequestDTO.getPatientTrackId(), Constants.BOOLEAN_FALSE,
+				Constants.BOOLEAN_FALSE);
+
+		return prescriptions;
+	}
+
+	public void updateMedicationPrescribed(Long patientTrackId, boolean isMedicationPrescribed, boolean updateDate) {
+		Date nextMedicalReviewDate = null;
+		Date lastAssessmentDate = null;
+		if (updateDate) {
+			nextMedicalReviewDate = patientTreatmentPlanService.getNextFollowUpDate(patientTrackId,
+					Constants.MEDICAL_REVIEW_FREQUENCY);
+			lastAssessmentDate = new Date();
+		}
+		if (!isMedicationPrescribed) {
+			if (prescriptionRepository
+					.findByPatientTrackIdAndRemainingPrescriptionDaysGreaterThan(patientTrackId, Constants.ZERO)
+					.isEmpty()) {
+				patientTrackerService.updateForFillPrescription(patientTrackId, Constants.BOOLEAN_TRUE,
+						lastAssessmentDate, nextMedicalReviewDate);
+			}
+		} else {
+			patientTrackerService.updateForFillPrescription(patientTrackId, Constants.BOOLEAN_TRUE, lastAssessmentDate,
+					nextMedicalReviewDate);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<FillPrescriptionHistory> getRefillPrescriptionHistory(SearchRequestDTO searchRequestDTO) {
-		List<FillPrescriptionHistory> fillPrescriptionHistories = new ArrayList<>();
+	public List<PrescriptionHistory> getRefillPrescriptionHistory(SearchRequestDTO searchRequestDTO) {
+
+		List<PrescriptionHistory> prescriptionHistories = new ArrayList<>();
 
 		if (Objects.isNull(searchRequestDTO.getPatientTrackId())
 				|| Objects.isNull(searchRequestDTO.getLastRefillVisitId())) {
 			throw new DataNotAcceptableException(29007);
 		}
-		fillPrescriptionHistories = fillPrescriptionHistoryRepository.getFillPrescriptionHistory(
+//		fillPrescriptionHistories = prescriptionHistoryRepository.getFillPrescriptionHistory(
+//				searchRequestDTO.getPatientTrackId(), searchRequestDTO.getLastRefillVisitId(), Constants.ZERO);
+
+		prescriptionHistories = prescriptionHistoryRepository.getFillPrescriptionHistory(
 				searchRequestDTO.getPatientTrackId(), searchRequestDTO.getLastRefillVisitId(), Constants.ZERO);
 
-		return fillPrescriptionHistories;
+		return prescriptionHistories;
 	}
 
 	/**
@@ -688,6 +572,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		return url;
 	}
 
+	/**
+	 * To convert the multipart file to file object
+	 * 
+	 * @param file
+	 * @return File
+	 */
 	private File convertMultipartFileToFile(MultipartFile file) {
 		File convertedFile = new File(file.getOriginalFilename());
 		try (FileOutputStream fos = new FileOutputStream(convertedFile)) {

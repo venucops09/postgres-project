@@ -43,7 +43,6 @@ import com.mdtlabs.coreplatform.spiceservice.mentalhealth.repository.MentalHealt
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.repository.PatientTrackerRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 
-
 @Service
 public class PatientTrackerServiceImpl implements PatientTrackerService {
 	ModelMapper modelMapper = new ModelMapper();
@@ -147,13 +146,16 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 		}
 
 		String nationalId = patientRequestDTO.getSearchId();
-		String programId = patientRequestDTO.getSearchId().matches("[0-9]+") ? patientRequestDTO.getSearchId() : null;
+		String programId = patientRequestDTO.getSearchId().matches("[0-9]+")
+				? patientRequestDTO.getSearchId().toLowerCase()
+				: null;
+		if (Objects.isNull(programId)) {
+			nationalId = patientRequestDTO.getSearchId().toLowerCase();
+		}
 		Long tenantId = (!Objects.isNull(patientRequestDTO.getIsSearchUserOrgPatient())
 				&& patientRequestDTO.getIsSearchUserOrgPatient()) ? patientRequestDTO.getTenantId() : null;
 
 		Pageable pageable = getSortingForPatients(patientRequestDTO.getPatientSortDTO());
-
-		// Need to add operating unit condition
 
 		HashMap<String, String> filterMap = new HashMap<>();
 
@@ -162,13 +164,14 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 		}
 
 		Page<PatientTracker> patientTrackerList = patientTrackerRepository.searchPatientsWithPagination(tenantId,
-				filterMap.get("medicalReviewStartDate"), filterMap.get("medicalReviewEndDate"),
-				filterMap.get("assessmentStartDate"), filterMap.get("assessmentEndDate"),
-				Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
+				patientRequestDTO.getOperatingUnitId(), filterMap.get("medicalReviewStartDate"),
+				filterMap.get("medicalReviewEndDate"), filterMap.get("assessmentStartDate"),
+				filterMap.get("assessmentEndDate"), Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
 				Boolean.parseBoolean(filterMap.get("assessmentDate")),
-				patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient(),
-				patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel(),
-				patientRequestDTO.getPatientFilterDTO().getScreeningReferral(),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+				patientRequestDTO.getIsLabtestReferred(), patientRequestDTO.getIsMedicationPrescribed(),
 				filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
 				filterMap.get("patientStatusNotEnrolled"), nationalId, programId, pageable);
 		List<PatientTracker> patientList = patientTrackerList.stream().collect(Collectors.toList());
@@ -235,13 +238,13 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			}
 
 			if (sorts.isEmpty()) {
-				sorts.add(new Sort.Order(Sort.Direction.DESC, FieldConstants.MODIFIED_AT));
+				sorts.add(new Sort.Order(Sort.Direction.DESC, FieldConstants.UPDATED_AT));
 			}
 			pageable = Pagination.setPagination(patientSortDTO.getPageNumber(), patientSortDTO.getLimit(), sorts);
 			return pageable;
 		}
 
-		pageable = Pagination.setPagination(0, 0, FieldConstants.MODIFIED_AT, false);
+		pageable = Pagination.setPagination(0, 0, FieldConstants.UPDATED_AT, false);
 		return pageable;
 
 	}
@@ -385,13 +388,11 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		HashMap<String, String> filterMap = new HashMap<>();
 
-		if (!Objects.isNull(patientRequestDTO.getIsLabtestReferred())) {
-			filterMap.put("isLabtestReferred", patientRequestDTO.getIsLabtestReferred().toString());
-		}
-
 		if (!Objects.isNull(patientRequestDTO.getPatientFilterDTO())) {
 			filterMap = getFiltersForPatients(patientRequestDTO);
 		}
+
+		// TODO:: isGlobally condition
 
 		Page<PatientTracker> patientTrackerList = patientTrackerRepository.getPatientsWithAdvanceSearch(
 				patientRequestDTO.getFirstName(), patientRequestDTO.getLastName(), patientRequestDTO.getPhoneNumber(),
@@ -399,12 +400,12 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 				filterMap.get("assessmentStartDate"), filterMap.get("assessmentEndDate"),
 				Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
 				Boolean.parseBoolean(filterMap.get("assessmentDate")),
-				patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient(),
-				patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel(),
-				patientRequestDTO.getPatientFilterDTO().getScreeningReferral(),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
 				filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
-				filterMap.get("patientStatusNotEnrolled"), Boolean.parseBoolean(filterMap.get("isLabtestReferred")),
-				Constants.BOOLEAN_FALSE, pageable);
+				filterMap.get("patientStatusNotEnrolled"), patientRequestDTO.getIsLabtestReferred(),
+				patientRequestDTO.getIsMedicationPrescribed(), Constants.BOOLEAN_FALSE, pageable);
 
 		List<PatientTracker> patientList = patientTrackerList.stream().collect(Collectors.toList());
 		modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
@@ -475,35 +476,35 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	@Override
 	public void UpdatePatientTrackerForBpLog(long patientTrackerId, BpLog bpLog, Date nextBpAssessmentDate) {
 		PatientTracker patientTracker = patientTrackerRepository.findById(patientTrackerId).get();
-		if(!Objects.isNull(bpLog.getHeight())) {
+		if (!Objects.isNull(bpLog.getHeight())) {
 			patientTracker.setHeight(bpLog.getHeight());
 		}
-		if(!Objects.isNull(bpLog.getWeight())) {
+		if (!Objects.isNull(bpLog.getWeight())) {
 			patientTracker.setWeight(bpLog.getWeight());
 		}
-		if(!Objects.isNull(bpLog.getBmi())) {
-			patientTracker.setBmi(bpLog.getBmi());	
+		if (!Objects.isNull(bpLog.getBmi())) {
+			patientTracker.setBmi(bpLog.getBmi());
 		}
-		if(!Objects.isNull(bpLog.getAvgSystolic())) {
+		if (!Objects.isNull(bpLog.getAvgSystolic())) {
 			patientTracker.setAvgSystolic(bpLog.getAvgSystolic());
 		}
-		if(!Objects.isNull(bpLog.getAvgDiastolic())) {
+		if (!Objects.isNull(bpLog.getAvgDiastolic())) {
 			patientTracker.setAvgDiastolic(bpLog.getAvgDiastolic());
 		}
-		if(!Objects.isNull(bpLog.getAvgPulse())) {
+		if (!Objects.isNull(bpLog.getAvgPulse())) {
 			patientTracker.setAvgPulse(bpLog.getAvgPulse());
 		}
-		if(!Objects.isNull(bpLog.getCvdRiskLevel())) {
+		if (!Objects.isNull(bpLog.getCvdRiskLevel())) {
 			patientTracker.setCvdRiskLevel(bpLog.getCvdRiskLevel());
 		}
-		if(!Objects.isNull(bpLog.getCvdRiskScore())) {
+		if (!Objects.isNull(bpLog.getCvdRiskScore())) {
 			patientTracker.setCvdRiskScore(bpLog.getCvdRiskScore());
 		}
-		if(!Objects.isNull(nextBpAssessmentDate)) {
+		if (!Objects.isNull(nextBpAssessmentDate)) {
 			patientTracker.setNextBpAssessmentDate(nextBpAssessmentDate);
 		}
 		patientTracker.setLastAssessmentDate(new Date());
-		if(!Objects.isNull(bpLog.getRiskLevel()) && !bpLog.getRiskLevel().isBlank()) {	
+		if (!Objects.isNull(bpLog.getRiskLevel()) && !bpLog.getRiskLevel().isBlank()) {
 			patientTracker.setRiskLevel(bpLog.getRiskLevel());
 		}
 		patientTracker.setTenantId(bpLog.getTenantId());
@@ -512,9 +513,11 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	}
 
 	@Override
-	public void UpdatePatientTrackerForGlucoseLog(long patientTrackerId, GlucoseLog glucoseLog, Date nextBgAssessmentDate) {
+	public void UpdatePatientTrackerForGlucoseLog(long patientTrackerId, GlucoseLog glucoseLog,
+			Date nextBgAssessmentDate) {
 		PatientTracker patientTracker = patientTrackerRepository.findById(patientTrackerId).get();
-		if (!Objects.isNull(glucoseLog.getGlucoseValue()) && !Objects.isNull(glucoseLog.getGlucoseType()) && !Objects.isNull(glucoseLog.getGlucoseUnit())) {
+		if (!Objects.isNull(glucoseLog.getGlucoseValue()) && !Objects.isNull(glucoseLog.getGlucoseType())
+				&& !Objects.isNull(glucoseLog.getGlucoseUnit())) {
 			patientTracker.setGlucoseType(glucoseLog.getGlucoseType());
 			patientTracker.setGlucoseUnit(glucoseLog.getGlucoseUnit());
 			patientTracker.setGlucoseValue(glucoseLog.getGlucoseValue());
@@ -525,7 +528,8 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 		patientTrackerRepository.save(patientTracker);
 
 		// patientTrackerRepository.updatePatientTrackerForGlucoseLog(glucoseLog.getGlucoseValue(),
-		// 		glucoseLog.getGlucoseUnit(), glucoseLog.getGlucoseType(), nextBgAssessmentDate,patientTrackerId);
+		// glucoseLog.getGlucoseUnit(), glucoseLog.getGlucoseType(),
+		// nextBgAssessmentDate,patientTrackerId);
 	}
 
 	/**
@@ -557,11 +561,23 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	/**
 	 * Update fill prescription details in patienttracker
 	 *
-	 * @param id PatientTrackId
+	 * @param id                     PatientTrackId
 	 * @param isMedicationPrescribed isMedicationPrescribed field
 	 * @author Niraimathi S
 	 */
-	public void updateForFillPrescription(Long id, boolean isMedicationPrescribed) {
-		 patientTrackerRepository.updateForFillPrescription(id, isMedicationPrescribed);
+	public void updateForFillPrescription(Long id, boolean isMedicationPrescribed, Date lastAssessmentDate,
+			Date nextMedicalReviewDate) {
+
+		PatientTracker patientTracker = patientTrackerRepository.findById(id)
+				.orElseThrow(() -> new DataNotFoundException(4004));
+		patientTracker.setMedicationPrescribed(isMedicationPrescribed);
+		if (!Objects.isNull(lastAssessmentDate)) {
+			patientTracker.setLastAssessmentDate(lastAssessmentDate);
+		}
+		if (!Objects.isNull(nextMedicalReviewDate)) {
+			patientTracker.setNextMedicalReviewDate(nextMedicalReviewDate);
+		}
+//		patientTrackerRepository.updateForFillPrescription(id, isMedicationPrescribed);
+		patientTrackerRepository.save(patientTracker);
 	}
 }

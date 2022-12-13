@@ -13,12 +13,12 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice
       username : postgres
-      password : postgres
+      password : root
    flyway:
       locations: classpath:db/migration
       url: jdbc:postgresql://mypostgres:5432/spice
       user : postgres
-      password : postgres
+      password : root
       baseline-on-migrate: true
       out-of-order: true
    servlet:

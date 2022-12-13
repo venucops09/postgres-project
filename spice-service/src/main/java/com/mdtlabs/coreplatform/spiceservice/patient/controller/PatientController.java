@@ -1,6 +1,7 @@
 package com.mdtlabs.coreplatform.spiceservice.patient.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.model.dto.spice.EnrollmentRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.EnrollmentResponseDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.GetRequestDTO;
@@ -149,7 +151,9 @@ public class PatientController {
 	@PostMapping("/advance-search/country")
 	public SuccessResponse<List<MyPatientListDTO>> getCountryWisePatientsWithAdvanceSearch(
 			@RequestBody PatientRequestDTO patientRequestDTO) {
-		// TODO: Add is globally condition
+		if (!Objects.isNull(patientRequestDTO.getOperatingUnitId())) {
+			patientRequestDTO.setIsGlobally(Constants.BOOLEAN_TRUE);
+		}
 		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS,
 				patientTrackerService.patientAdvanceSearch(patientRequestDTO), HttpStatus.OK);
 	}

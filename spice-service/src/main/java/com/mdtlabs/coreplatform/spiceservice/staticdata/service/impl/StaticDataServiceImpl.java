@@ -263,23 +263,22 @@ public class StaticDataServiceImpl implements StaticDataService {
 	 * @param countryId country ID of the user.
 	 * @return Collection on mental health meta data.
 	 */
-	public Map<String, List<ModelQuestions>> getMentalHealthStaticData(Long countryId) {
+	public List<Map<String, String>> getMentalHealthStaticData(Long countryId) {
 		List<ModelQuestions> modelQuestions = modelQuestionsRepository.findByCountryIdAndIsDeleted(countryId, false);
 		if (Objects.isNull(modelQuestions) || modelQuestions.isEmpty()) {
 			modelQuestions = modelQuestionsRepository.findByIsDefaultAndIsDeleted(true, false);
 		}
 
 		Map<String, List<ModelQuestions>> questions = new HashMap<>();
+		List<Map<String, String>> response = new ArrayList<>();
 
-		for (ModelQuestions question : modelQuestions) {
-			if (questions.keySet().contains(question.getType())) {
-				questions.get(question.getType()).add(question);
-			} else {
-				questions.put(question.getType(), new ArrayList<ModelQuestions>());
-				questions.get(question.getType()).add(question);
-			}
-		}
-		return questions;
+		modelQuestions.stream()
+				.map(question -> response
+						.add(Map.of(Constants.TYPE, question.getType(), Constants.QUESTIONS, question.toString())))
+				.collect(Collectors.toList());
+
+		System.out.println(" mental health response" + response);
+		return response;
 	}
 
 	/**

@@ -81,7 +81,7 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 			KeyFactory kf = KeyFactory.getInstance(Constants.RSA);
 			this.publicRsaKey = (RSAPublicKey) kf.generatePublic(spec);
 		} catch (Exception e) {
-			Logger.logError(ErrorConstants.EXCEPTION_TOKEN_UTILS, e); 
+			Logger.logError(ErrorConstants.EXCEPTION_TOKEN_UTILS, e);
 		}
 
 	}
@@ -103,10 +103,10 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 					response.getWriter().write(json);
 					responseHeaderUser(response, user);
 				} else {
-					response.getWriter().write(ErrorConstants.INVALID_USER_ERROR); 
+					response.getWriter().write(ErrorConstants.INVALID_USER_ERROR);
 				}
 			} catch (IOException e) {
-				Logger.logError(ErrorConstants.LOGIN_ERROR+ e);
+				Logger.logError(ErrorConstants.LOGIN_ERROR + e);
 			}
 
 		}
@@ -182,7 +182,7 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 		claimsSet.claim(Constants.USER_ID_PARAM, user.getId());
 		claimsSet.claim(Constants.APPLICATION_TYPE, Constants.WEB);
 		claimsSet.expirationTime(
-				Date.from(ZonedDateTime.now().plusHours(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant()));
+				Date.from(ZonedDateTime.now().plusMinutes(Constants.REFRESH_TOKEN_EXPIRY_HOURS).toInstant()));
 		claimsSet.notBeforeTime(new Date());
 		claimsSet.jwtID(UUID.randomUUID().toString());
 		JWEHeader header = new JWEHeader(JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM);
@@ -226,7 +226,7 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 			assert currentDate != null;
 			assert createdDate != null;
 			long expiryTimeInMinutes = DateUtil.getDiffInMinutes(currentDate, createdDate);
-			if (expiryTimeInMinutes > Constants.EXPIRY_MINUTES) {
+			if (expiryTimeInMinutes > Constants.AUTH_TOKEN_EXPIRY_MINUTES) {
 				tokenList.add(authToken);
 			}
 		}));

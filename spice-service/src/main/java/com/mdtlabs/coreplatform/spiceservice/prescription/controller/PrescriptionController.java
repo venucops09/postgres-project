@@ -25,9 +25,8 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionHistoryRespon
 import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescription;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescriptionHistory;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
+import com.mdtlabs.coreplatform.common.model.entity.spice.PrescriptionHistory;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.prescription.service.PrescriptionService;
@@ -59,6 +58,7 @@ public class PrescriptionController {
 	 * @return List of updated prescriptions
 	 */
 	@PostMapping("/prescription/update")
+//	@TokenParse
 	public SuccessResponse<List<Prescription>> addPrescription(
 			@RequestParam("prescriptionRequest") String prescriptionRequest,
 			@RequestParam("signatureFile") MultipartFile signatureFile) {
@@ -91,6 +91,7 @@ public class PrescriptionController {
 	 * @return list of prescriptions
 	 */
 	@GetMapping("/prescription/list")
+//	@TokenParse
 	public SuccessResponse<List<PrescriptionDTO>> listPrescription(@RequestBody RequestDTO prescriptionListRequestDTO) {
 		List<PrescriptionDTO> prescriptionList = prescriptionService.getPrescriptions(prescriptionListRequestDTO);
 		if (!prescriptionList.isEmpty()) {
@@ -108,6 +109,7 @@ public class PrescriptionController {
 	 * @return list of prescription history
 	 */
 	@GetMapping(path = "/prescription-history/list")
+//	@TokenParse
 	public SuccessResponse<List<PrescriptionHistoryResponse>> listPrescriptionHistoryData(
 			@RequestBody RequestDTO prescriptionListRequestDTO) {
 		PrescriptionHistoryResponse prescriptionList = prescriptionService
@@ -128,6 +130,7 @@ public class PrescriptionController {
 	 * @return
 	 */
 	@PutMapping(path = "/prescription/remove")
+//	@TokenParse
 	public SuccessResponse<String> removePrescription(@RequestBody RequestDTO prescriptionListRequestDTO) {
 		prescriptionService.removePrescription(prescriptionListRequestDTO);
 		return new SuccessResponse<String>(SuccessCode.PRESCRIPTION_DELETE, HttpStatus.OK);
@@ -140,9 +143,12 @@ public class PrescriptionController {
 	 * @return List of fill-prescription data's
 	 */
 	@GetMapping(path = "/fill-prescription/list")
+//	@TokenParse
 	public SuccessResponse<List<FillPrescriptionResponseDTO>> listFillPrescription(
 			@RequestBody SearchRequestDTO searchRequestDTO) {
 		List<FillPrescriptionResponseDTO> prescriptionList = prescriptionService.getFillPrescriptions(searchRequestDTO);
+		System.out.println("prescriptionList: " + prescriptionList);
+		System.out.println("presciption empty: " + prescriptionList.isEmpty());
 		if (!prescriptionList.isEmpty()) {
 			return new SuccessResponse<List<FillPrescriptionResponseDTO>>(SuccessCode.FILL_PRESCRIPTION_GET,
 					prescriptionList, prescriptionList.size(), HttpStatus.OK);
@@ -160,7 +166,8 @@ public class PrescriptionController {
 	 * @return List of updated fill-prescriptions
 	 */
 	@PostMapping(path = "/fill-prescription/update")
-	public SuccessResponse<List<FillPrescription>> updateFillPrescription(
+//	@TokenParse
+	public SuccessResponse<List<Prescription>> updateFillPrescription(
 			@RequestBody FillPrescriptionRequestDTO fillPrescriptionRequestDTO) {
 		prescriptionService.updateFillPrescription(fillPrescriptionRequestDTO);
 //		if (!prescriptionList.isEmpty()) {
@@ -168,7 +175,7 @@ public class PrescriptionController {
 //					prescriptionList.size(), HttpStatus.OK);
 //		}
 
-		return new SuccessResponse<List<FillPrescription>>(SuccessCode.FILL_PRESCRIPTION_UPDATE, HttpStatus.OK);
+		return new SuccessResponse<List<Prescription>>(SuccessCode.FILL_PRESCRIPTION_UPDATE, HttpStatus.OK);
 	}
 
 	/**
@@ -178,16 +185,16 @@ public class PrescriptionController {
 	 * @return List of latest fill prescription history
 	 */
 	@GetMapping(path = "/prescription/refill-history")
-	public SuccessResponse<List<FillPrescriptionHistory>> getReFillPrescriptionHistory(
+//	@TokenParse
+	public SuccessResponse<List<PrescriptionHistory>> getReFillPrescriptionHistory(
 			@RequestBody SearchRequestDTO searchRequestDTO) {
-		List<FillPrescriptionHistory> prescriptionList = prescriptionService
-				.getRefillPrescriptionHistory(searchRequestDTO);
+		List<PrescriptionHistory> prescriptionList = prescriptionService.getRefillPrescriptionHistory(searchRequestDTO);
 		if (!prescriptionList.isEmpty()) {
-			return new SuccessResponse<List<FillPrescriptionHistory>>(SuccessCode.REFILL_PRESCRIPTION_GET,
-					prescriptionList, prescriptionList.size(), HttpStatus.OK);
+			return new SuccessResponse<List<PrescriptionHistory>>(SuccessCode.REFILL_PRESCRIPTION_GET, prescriptionList,
+					prescriptionList.size(), HttpStatus.OK);
 		}
 
-		return new SuccessResponse<List<FillPrescriptionHistory>>(SuccessCode.REFILL_PRESCRIPTION_GET, noDataList, 0,
+		return new SuccessResponse<List<PrescriptionHistory>>(SuccessCode.REFILL_PRESCRIPTION_GET, noDataList, 0,
 				HttpStatus.OK);
 	}
 

@@ -542,6 +542,8 @@ CREATE TABLE patient_tracker (
   is_pregnant BOOLEAN,
   is_labtest_referred BOOLEAN,
   is_medication_prescribed BOOLEAN,
+  is_htn_diagnosis BOOLEAN,
+  is_diabetes_diagnosis BOOLEAN,
   next_bg_assesment_date TIMESTAMP,
   next_bp_assesment_date TIMESTAMP,
   screening_id BIGINT, FOREIGN KEY (screening_id) REFERENCES screening_log(id),
@@ -1229,13 +1231,16 @@ create table prescription(
 	discontinued_reason VARCHAR,
 	end_date TIMESTAMP WITH TIME ZONE,
 	instruction_note VARCHAR,
+	remaining_prescription_days int,
+	prescription_filled_days bigint NOT NULL,
 	signature VARCHAR,
-	created_by BIGINT NOT NULL,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+	reason VARCHAR,
+	is_active  BOOLEAN DEFAULT true,
+	is_deleted BOOLEAN DEFAULT false,
+    created_by bigint NOT NULL,
+	updated_by bigint,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 create table prescription_history(
@@ -1257,48 +1262,17 @@ create table prescription_history(
 	prescribed_days int,
 	end_date TIMESTAMP WITH TIME ZONE,
 	instruction_note VARCHAR,
+	remaining_prescription_days int,
+	prescription_filled_days bigint NOT NULL,
+	last_refill_date TIMESTAMP WITH TIME ZONE,
 	signature VARCHAR,
-	created_by BIGINT NOT NULL,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
-);
-
-create table fill_prescription(
-	id SERIAL PRIMARY KEY,
-	tenant_id bigint,
-	patient_visit_id bigint,
-	patient_track_id bigint,FOREIGN KEY(patient_track_id) REFERENCES patient_tracker(id),
-	prescription_id bigint,FOREIGN KEY(prescription_id) REFERENCES prescription(id),
-	prescribed_days int,
-	remaining_prescription_days int,
-	prescription_filled_days int DEFAULT 0,
-	created_by BIGINT NOT NULL,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
-);
-
-create table fill_prescription_history(
-	id SERIAL PRIMARY KEY,
-	tenant_id bigint,
-	patient_visit_id bigint,
-	patient_track_id bigint,FOREIGN KEY(patient_track_id) REFERENCES patient_tracker(id),
-	prescription_id bigint,FOREIGN KEY(prescription_id) REFERENCES prescription(id),
-	fill_prescription_id bigint, FOREIGN KEY(fill_prescription_id) REFERENCES fill_prescription(id),
-	prescribed_days int,
-	remaining_prescription_days int,
-	prescription_filled_days int DEFAULT 0,
-	created_by BIGINT NOT NULL,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+	reason VARCHAR,
+	is_active  BOOLEAN DEFAULT true,
+	is_deleted BOOLEAN DEFAULT false,
+    created_by bigint NOT NULL,
+	updated_by bigint,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE customized_module(

@@ -3,7 +3,6 @@ package com.mdtlabs.coreplatform.spiceservice.patientTracker.service;
 import java.util.Date;
 import java.util.List;
 
-
 import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.ConfirmDiagnosisDTO;
@@ -13,7 +12,6 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.SearchPatientListDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
-
 
 /**
  * This is an interface to perform any actions in PatientTracker related
@@ -44,11 +42,13 @@ public interface PatientTrackerService {
 
 	public void UpdatePatientTrackerForBpLog(long patientTrackerId, BpLog bpLog, Date nextBpAssessmentDate);
 
-	public void UpdatePatientTrackerForGlucoseLog(long patientTrackerId, GlucoseLog glucoseLog, Date nextBgAssessmentDate);
+	public void UpdatePatientTrackerForGlucoseLog(long patientTrackerId, GlucoseLog glucoseLog,
+			Date nextBgAssessmentDate);
 
 	public PatientTracker getPatientTrackerByNationalId(String nationalId);
 
-	// public void setPHQ4Score(PatientTracker patientTracker, MentalHealthDTO mentalHealth);
+	// public void setPHQ4Score(PatientTracker patientTracker, MentalHealthDTO
+	// mentalHealth);
 
 	public PatientTracker findByNationalIdIgnoreCase(String searchNationalId);
 
@@ -83,21 +83,23 @@ public interface PatientTrackerService {
 	/**
 	 * Updates isLabTestReferred based on labtests referred to a patient.
 	 *
-	 * @param patientTrackId PatientTrackId
-	 * @param tenantId tenantId
+	 * @param patientTrackId    PatientTrackId
+	 * @param tenantId          tenantId
 	 * @param isLabTestReferred isLabTestReferred field
 	 * @author Niraimathi S
 	 */
-    void updatePatientTrackerLabtestReferral(long patientTrackId, Long tenantId, boolean isLabTestReferred);
+	void updatePatientTrackerLabtestReferral(long patientTrackId, Long tenantId, boolean isLabTestReferred);
 
 	/*
 	 * Update confirm diagnosis details to the patient.
 	 * 
 	 * @param confirmDiagnosis
+	 * 
 	 * @return ConfirmDiagnosisDTO
 	 */
 	public ConfirmDiagnosisDTO updateConfirmDiagnosis(ConfirmDiagnosisDTO confirmDiagnosis);
 
-	public void updateForFillPrescription(Long id, boolean isMedciationPrescribed);
+	public void updateForFillPrescription(Long id, boolean isMedciationPrescribed, Date lastAssessmentDate,
+			Date nextMedicalReviewDate);
 
 }

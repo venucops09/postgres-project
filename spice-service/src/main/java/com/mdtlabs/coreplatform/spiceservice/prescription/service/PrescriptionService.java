@@ -2,8 +2,7 @@ package com.mdtlabs.coreplatform.spiceservice.prescription.service;
 
 import java.util.List;
 
-
-import javax.validation.*;
+import javax.validation.Valid;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.FillPrescriptionRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.FillPrescriptionResponseDTO;
@@ -12,9 +11,8 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionHistoryRespon
 import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriptionRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescription;
-import com.mdtlabs.coreplatform.common.model.entity.spice.FillPrescriptionHistory;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
+import com.mdtlabs.coreplatform.common.model.entity.spice.PrescriptionHistory;
 
 public interface PrescriptionService {
 	/**
@@ -51,13 +49,6 @@ public interface PrescriptionService {
 	public boolean removePrescription(RequestDTO prescriptionListRequestDTO);
 
 	/**
-	 * To remove the fill prescription
-	 * 
-	 * @param prescriptionListRequestDTO
-	 */
-	public void removeFillPrescription(RequestDTO prescriptionListRequestDTO);
-
-	/**
 	 * To get fill prescriptions
 	 * 
 	 * @param searchRequestDTO
@@ -71,7 +62,7 @@ public interface PrescriptionService {
 	 * @param fillPrescriptionRequestDTO
 	 * @return list of fill prescription
 	 */
-	public List<FillPrescription> updateFillPrescription(FillPrescriptionRequestDTO fillPrescriptionRequestDTO);
+	public List<Prescription> updateFillPrescription(FillPrescriptionRequestDTO fillPrescriptionRequestDTO);
 
 	/**
 	 * To get the fill prescription histories
@@ -79,6 +70,6 @@ public interface PrescriptionService {
 	 * @param searchRequestDTO
 	 * @return list of fill prescription history
 	 */
-	public List<FillPrescriptionHistory> getRefillPrescriptionHistory(SearchRequestDTO searchRequestDTO);
+	public List<PrescriptionHistory> getRefillPrescriptionHistory(SearchRequestDTO searchRequestDTO);
 
 }

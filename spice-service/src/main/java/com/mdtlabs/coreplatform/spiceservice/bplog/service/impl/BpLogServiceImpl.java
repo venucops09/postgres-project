@@ -33,8 +33,8 @@ import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrack
 import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.PatientTreatmentPlanService;
 
 /**
- * This class implements the BpLogService interface and contains actual
- * business logic to perform operations on BpLog entity.
+ * This class implements the BpLogService interface and contains actual business
+ * logic to perform operations on BpLog entity.
  * 
  * @author Karthick Murugesan
  *
@@ -42,113 +42,108 @@ import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.Patien
 @Service
 public class BpLogServiceImpl implements BpLogService {
 
-    @Autowired
-    private BpLogRepository bpLogRepository;
+	@Autowired
+	private BpLogRepository bpLogRepository;
 
-    @Autowired
-    private PatientTrackerRepository patientTrackerRepository;
+	@Autowired
+	private PatientSymptomService patientSymptomService;
 
-    @Autowired
-    private PatientSymptomService patientSymptomService;
+	@Autowired
+	private PatientTrackerService patientTrackerService;
 
-    @Autowired
-    private PatientTrackerService patientTrackerService;
+	@Autowired
+	private PatientTreatmentPlanService patientTreatmentPlanService;
 
-    @Autowired
-    private PatientTreatmentPlanService patientTreatmentPlanService;
+	/**
+	 * {@inheritDoc}
+	 */
+	public BpLog addBpLog(BpLog bpLog, boolean isPatientTrackerUpdate) {
+		if (Objects.isNull(bpLog)) {
+			throw new BadRequestException(1000);
+		} else {
+			if (Objects.isNull(bpLog.getId())) {
+				updateBpLogLatestStatus(bpLog);
+			}
+			bpLog.setLatest(true);
+			// User tenantid set as a assessment tenant id
+			long patientTrackerId = bpLog.getPatientTrackId();
+			// TODO: BP taken on field
+			BpLog bpLogResponce = bpLogRepository.save(bpLog);
+			if (isPatientTrackerUpdate) {
+				PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService
+						.getPatientTreatmentPlan(bpLog.getPatientTrackId());
+				Date nextBpAssessmentDate = null;
+				if (!Objects.isNull(patientTreatmentPlan)) {
+					nextBpAssessmentDate = patientTreatmentPlanService.getTreatmentPlanFollowupDate(
+							patientTreatmentPlan.getBpCheckFrequency(), Constants.DEFAULT);
+				}
+				patientTrackerService.UpdatePatientTrackerForBpLog(patientTrackerId, bpLog, nextBpAssessmentDate);
+			}
+			return bpLogResponce;
+		}
+	}
 
-    private ModelMapper mapper = new ModelMapper();
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateBpLogLatestStatus(BpLog bpLog) {
+		bpLogRepository.updateBpLogLatestStatus(bpLog.getPatientTrackId(), false);
+	}
 
-     
+	/**
+	 * {@inheritDoc}
+	 */
+	public BpLog getBpLogByPatientTrackId(long patientTrackId) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		Date yesterday = cal.getTime();
+		BpLog bpLog = bpLogRepository.findByPatientTrackIdAndIsCreatedToday(patientTrackId, yesterday);
+		return bpLog;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public BpLog addBpLog(BpLog bpLog, boolean isPatientTrackerUpdate) {
-        if (Objects.isNull(bpLog)) {
-            throw new BadRequestException(1000);
-        } else {
-            if (Objects.isNull(bpLog.getId())) {
-                updateBpLogLatestStatus(bpLog);
-            }
-            bpLog.setLatest(true);
-            // User tenantid set as a assessment tenant id
-            long patientTrackerId = bpLog.getPatientTrackId();
-            //TODO: BP taken on field
-            BpLog bpLogResponce = bpLogRepository.save(bpLog);
-            if (isPatientTrackerUpdate) {
-                PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService.getPatientTreatmentPlan(bpLog.getPatientTrackId());
-                Date nextBpAssessmentDate = null;
-                if (!Objects.isNull(patientTreatmentPlan)) {
-                    nextBpAssessmentDate = patientTreatmentPlanService.getTreatmentPlanFollowupDate(patientTreatmentPlan.getBpCheckFrequency(), Constants.DEFAULT);
-                }
-                patientTrackerService.UpdatePatientTrackerForBpLog(patientTrackerId, bpLog, nextBpAssessmentDate);
-            }
-            return bpLogResponce;
-        }
-    }
+	public BpLog getBpLogByPatientTrackIdAndIsLatest(long patientTrackId, boolean isLatest) {
+		return bpLogRepository.findBypatientTrackIdAndIsDeletedAndIsLatest(patientTrackId, Constants.BOOLEAN_FALSE,
+				isLatest);
 
-    /**
-     * {@inheritDoc}
-     */
-    public void updateBpLogLatestStatus(BpLog bpLog) {
-        bpLogRepository.updateBpLogLatestStatus(bpLog.getPatientTrackId(), false);
-    }
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public BpLog getBpLogByPatientTrackId(long patientTrackId) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
-        Date yesterday = cal.getTime();
-        BpLog bpLog = bpLogRepository.findByPatientTrackIdAndIsCreatedToday(patientTrackId, yesterday);
-        return bpLog;
-    }
+	public PatientBpLogsDTO getPatientBPLogsWithSymptoms(RequestDTO requestData) {
+		PatientBpLogsDTO bpLogsDTO = new PatientBpLogsDTO();
+		if (Objects.isNull(requestData.getPatientTrackId())) {
+			throw new DataNotFoundException(4004);
+		}
+		Pageable pageable = Pagination.setPagination(requestData.getPageNumber(), requestData.getLimit());
+		Page<BpLog> bplogs = bpLogRepository.getBpLogs(requestData.getPatientTrackId(), pageable);
 
-    public BpLog getBpLogByPatientTrackIdAndIsLatest(long patientTrackId, boolean isLatest) {
-        return bpLogRepository.findBypatientTrackIdAndIsDeletedAndIsLatest(patientTrackId, Constants.BOOLEAN_FALSE, isLatest);
+		if (!bplogs.isEmpty() && requestData.isLatestRequired()) {
+			bpLogsDTO.setLatestBpLog(bplogs.toList().get(0));
+			List<PatientSymptom> patientSymptoms = patientSymptomService
+					.getSymptomsByPatientTracker(requestData.getPatientTrackId());
+			List<String> names = patientSymptoms.stream()
+					.map(symptom -> !Objects.isNull(symptom.getOtherSymptom()) ? symptom.getOtherSymptom()
+							: symptom.getName())
+					.collect(Collectors.toList());
+			bpLogsDTO.setSymptomList(names);
+		}
+		if (!Objects.isNull(requestData.getSort())) {
+			if (requestData.getSort().keySet().contains(FieldConstants.CREATED_AT)) {
+				// Sort by patient bplog data to ascending order
+				List<BpLog> bplogList = bplogs.stream()
+						.sorted((bplog1, bplog2) -> bplog1.getCreatedAt().compareTo(bplog2.getCreatedAt()))
+						.collect(Collectors.toList());
+				bpLogsDTO.setBpLogList(bplogList);
+			}
+			System.out.println("in sorted block");
+		} else {
+			System.out.println("in else block");
+			bpLogsDTO.setBpLogList(bplogs.toList());
+		}
+		// Map<String, Integer> bpThreshold = Map.of(Constants.SYSTOLIC,
+		// Constants.BP_THRESHOLD_SYSTOLIC, Constants.DIASTOLIC,
+		// Constants.BP_THRESHOLD_DIASTOLIC);
+		bpLogsDTO.setBpThreshold(Map.of(Constants.SYSTOLIC, Constants.BP_THRESHOLD_SYSTOLIC, Constants.DIASTOLIC,
+				Constants.BP_THRESHOLD_DIASTOLIC));
+		return bpLogsDTO;
+	}
 
-    }
-
-    public PatientBpLogsDTO getPatientBPLogsWithSymptoms(RequestDTO requestData) {
-        PatientBpLogsDTO bpLogsDTO = new PatientBpLogsDTO();
-        if (Objects.isNull(requestData.getPatientTrackId())) {
-            throw new DataNotFoundException(4004);
-        }
-        Pageable pageable = Pagination.setPagination(requestData.getPageNumber(), requestData.getLimit());
-        Page<BpLog> bplogs = bpLogRepository.getBpLogs(requestData.getPatientTrackId(), pageable);
-
-        if (!bplogs.isEmpty() && requestData.isLatestRequired()) {
-            bpLogsDTO.setLatestBpLog(bplogs.toList().get(0));
-            List<PatientSymptom> patientSymptoms = patientSymptomService
-                    .getSymptomsByPatientTracker(requestData.getPatientTrackId());
-            List<String> names = patientSymptoms.stream().map(
-                    symptom -> !Objects.isNull(symptom.getOtherSymptom()) ? symptom.getOtherSymptom()
-                            : symptom.getName())
-                    .collect(Collectors.toList());
-            bpLogsDTO.setSymptomList(names);
-        }
-        if (!Objects.isNull(requestData.getSort())) {
-            if (requestData.getSort().keySet().contains(FieldConstants.CREATED_AT)) {
-                // Sort by patient bplog data to ascending order
-                List<BpLog> bplogList = bplogs.stream().sorted(
-                        (bplog1, bplog2) -> bplog1.getCreatedAt().compareTo(bplog2.getCreatedAt()))
-                        .collect(Collectors.toList());
-                bpLogsDTO.setBpLogList(bplogList);
-            }
-            System.out.println("in sorted block");
-        } else {
-            System.out.println("in else block");
-            bpLogsDTO.setBpLogList(bplogs.toList());
-        }
-        // Map<String, Integer> bpThreshold = Map.of(Constants.SYSTOLIC,
-        // Constants.BP_THRESHOLD_SYSTOLIC, Constants.DIASTOLIC,
-        // Constants.BP_THRESHOLD_DIASTOLIC);
-        bpLogsDTO.setBpThreshold(Map.of(Constants.SYSTOLIC, Constants.BP_THRESHOLD_SYSTOLIC, Constants.DIASTOLIC,
-                Constants.BP_THRESHOLD_DIASTOLIC));
-        return bpLogsDTO;
-    }
-
-  
 }

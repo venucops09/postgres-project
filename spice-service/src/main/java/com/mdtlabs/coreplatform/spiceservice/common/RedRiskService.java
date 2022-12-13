@@ -113,10 +113,10 @@ public class RedRiskService {
         return RiskAlgorithm.getRiskLevelForNewPatient(patientTracker, redRiskDTO);
     }
 
-    public static void createRedRiskNotification(RedRiskNotification redRiskNotification) {
+	public static RedRiskNotification createRedRiskNotification(RedRiskNotification redRiskNotification) {
       // Create red risk notification. patient tracker ID: ${notificationData.patient_track_id}
-      redRiskNotificationRepository.save(redRiskNotification);
-
+      return redRiskNotificationRepository.save(redRiskNotification);
+      
     }
 
     public static void updateRedRiskNoticationStatus(Long patientTrackId) {
