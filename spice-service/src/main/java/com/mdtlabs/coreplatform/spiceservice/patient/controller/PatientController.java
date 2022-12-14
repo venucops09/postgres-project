@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -49,6 +51,8 @@ public class PatientController {
 
 	@Autowired
 	private PatientTrackerService patientTrackerService;
+	
+	private ModelMapper modelMapper = new ModelMapper();
 
 	/**
 	 * This method is used to add a patient.
@@ -87,10 +91,12 @@ public class PatientController {
 	 * @author Niraimathi S
 	 */
 	@RequestMapping(value = "/pregnancy-details/create", method = RequestMethod.POST)
-	public SuccessResponse<PatientPregnancyDetails> createPregnancyDetails(
+	public SuccessResponse<PregnancyRequestDTO> createPregnancyDetails(
 			@RequestBody PregnancyRequestDTO requestData) {
-		return new SuccessResponse<>(SuccessCode.PATIENT_PREGNANCY_SAVE,
-				patientService.createPregnancyDetails(requestData), HttpStatus.CREATED);
+		PatientPregnancyDetails pregnancyDetails = patientService.createPregnancyDetails(requestData);
+		requestData.setId(pregnancyDetails.getId());
+		return new SuccessResponse<PregnancyRequestDTO>(SuccessCode.PATIENT_PREGNANCY_SAVE,
+				requestData, HttpStatus.CREATED);
 	}
 
 	/**
@@ -101,9 +107,13 @@ public class PatientController {
 	 * @author Niraimathi S
 	 */
 	@RequestMapping(value = "/pregnancy-details", method = RequestMethod.GET)
-	public SuccessResponse<PatientPregnancyDetails> getPregnancyDetails(@RequestBody GetRequestDTO requestData) {
-		return new SuccessResponse<PatientPregnancyDetails>(SuccessCode.GET_PATIENT_PREGNANCY,
-				patientService.getPregnancyDetails(requestData), HttpStatus.OK);
+	public SuccessResponse<PregnancyRequestDTO> getPregnancyDetails(@RequestBody GetRequestDTO requestData) {
+		PatientPregnancyDetails pregnancyDetails = patientService.getPregnancyDetails(requestData);
+		PregnancyRequestDTO response = modelMapper.map(pregnancyDetails,
+                new TypeToken<PregnancyRequestDTO>() {
+                }.getType());
+		return new SuccessResponse<PregnancyRequestDTO>(SuccessCode.GET_PATIENT_PREGNANCY,
+				response, HttpStatus.OK);
 	}
 
 	/**

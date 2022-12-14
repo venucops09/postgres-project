@@ -59,5 +59,4 @@ public interface PatientService {
 	 * @author Niraimathi S
 	 */
 	public PatientPregnancyDetails updatePregnancyDetails(PregnancyRequestDTO requestData);
-
 }

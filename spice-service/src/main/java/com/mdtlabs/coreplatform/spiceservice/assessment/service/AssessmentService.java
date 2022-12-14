@@ -1,6 +1,7 @@
 package com.mdtlabs.coreplatform.spiceservice.assessment.service;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentResponseDTO;
 
 /**
  * This is an interface to perform any actions in assessment related entities
@@ -16,7 +17,7 @@ public interface AssessmentService {
      * @param assessmentDTO Object with patient assessment data.
      * @return assessmentDTO
      */
-    public AssessmentDTO createAssessment(AssessmentDTO assessmentDTO);
+    public AssessmentResponseDTO createAssessment(AssessmentDTO assessmentDTO);
 
     
 }

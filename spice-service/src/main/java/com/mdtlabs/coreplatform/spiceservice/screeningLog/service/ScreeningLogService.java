@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.spiceservice.screeningLog.service;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ScreeningLogDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.ScreeningResponseDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
@@ -51,7 +52,7 @@ public interface ScreeningLogService {
 //    public ScreeningLog getByIdAndIsLatestTrue(long patientTrackId, boolean isLatest);
     public ScreeningLog getByIdAndIsLatest(long patientTrackId);
     
-    public ScreeningLog getScreeningDetails(RequestDTO screeningRequestDto);
+    public ScreeningResponseDTO getScreeningDetails(RequestDTO screeningRequestDto);
 
     
 

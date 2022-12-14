@@ -1448,3 +1448,37 @@ CREATE TABLE country_customization(
     is_active BOOLEAN DEFAULT true
 );
 
+CREATE TABLE assessment_log (
+  id SERIAL PRIMARY KEY,
+  bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
+  glucose_log_id BIGINT, FOREIGN KEY (glucose_log_id) REFERENCES glucose_log(id),
+  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  created_by BIGINT NOT NULL,
+  updated_by BIGINT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+
+CREATE TABLE patient_symptom (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  other_symptom VARCHAR,
+  type VARCHAR,
+  patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
+  symptom_id BIGINT, FOREIGN KEY (symptom_id) REFERENCES symptom(id),
+  assessment_log_id BIGINT,  FOREIGN KEY (assessment_log_id) REFERENCES assessment_log(id),
+  bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
+  glucose_log_id BIGINT, FOREIGN KEY (glucose_log_id) REFERENCES glucose_log(id),
+  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  created_by BIGINT NOT NULL,
+  updated_by BIGINT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
+
+

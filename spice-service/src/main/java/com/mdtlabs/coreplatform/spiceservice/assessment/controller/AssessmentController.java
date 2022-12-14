@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.AssessmentResponseDTO;
 import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentService;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
@@ -40,8 +41,8 @@ public class AssessmentController {
      * @author Karthick Murugesan
      */
     @RequestMapping(method = RequestMethod.POST)
-    public SuccessResponse<AssessmentDTO> createAssessment(@Valid @RequestBody AssessmentDTO assessmentDTO) {
-        return new SuccessResponse<AssessmentDTO>(
+    public SuccessResponse<AssessmentResponseDTO> createAssessment(@Valid @RequestBody AssessmentDTO assessmentDTO) {
+        return new SuccessResponse<AssessmentResponseDTO>(
                 SuccessCode.ASSESSMENT_SAVE,
                 assessmentService.createAssessment(assessmentDTO),
                 HttpStatus.CREATED
