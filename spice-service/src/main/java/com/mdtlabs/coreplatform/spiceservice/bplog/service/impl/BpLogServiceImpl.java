@@ -65,9 +65,11 @@ public class BpLogServiceImpl implements BpLogService {
 				updateBpLogLatestStatus(bpLog);
 			}
 			bpLog.setLatest(true);
+			if (Objects.isNull(bpLog.getBpTakenOn())) {
+				bpLog.setBpTakenOn(new Date());
+			}
 			// User tenantid set as a assessment tenant id
 			long patientTrackerId = bpLog.getPatientTrackId();
-			// TODO: BP taken on field
 			BpLog bpLogResponce = bpLogRepository.save(bpLog);
 			if (isPatientTrackerUpdate) {
 				PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService
@@ -133,9 +135,7 @@ public class BpLogServiceImpl implements BpLogService {
 						.collect(Collectors.toList());
 				bpLogsDTO.setBpLogList(bplogList);
 			}
-			System.out.println("in sorted block");
 		} else {
-			System.out.println("in else block");
 			bpLogsDTO.setBpLogList(bplogs.toList());
 		}
 		// Map<String, Integer> bpThreshold = Map.of(Constants.SYSTOLIC,

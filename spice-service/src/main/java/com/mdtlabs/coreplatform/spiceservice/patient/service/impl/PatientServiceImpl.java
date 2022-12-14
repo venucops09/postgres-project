@@ -342,8 +342,6 @@ public class PatientServiceImpl implements PatientService {
 			patientTracker.setProvisionalDiagnosis(requestData.getProvisionalDiagnosis());
 
 		}
-
-		System.out.println("Provisional Diagnosis=====" + patientTracker.getProvisionalDiagnosis());
 		return patientTracker;
 	}
 

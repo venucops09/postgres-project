@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,6 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
 import com.mdtlabs.coreplatform.common.util.CommonUtil;
 import com.mdtlabs.coreplatform.common.util.Pagination;
-import com.mdtlabs.coreplatform.spiceservice.mentalhealth.repository.MentalHealthRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.repository.PatientTrackerRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 
@@ -49,9 +49,6 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 	@Autowired
 	private PatientTrackerRepository patientTrackerRepository;
-
-	@Autowired
-	private MentalHealthRepository mentalHealthRepository;
 
 	/**
 	 * {@inheritDoc}
@@ -90,7 +87,9 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<MyPatientListDTO> listMyPatients(PatientRequestDTO patientRequestDTO) {
+	public Map<String, Object> listMyPatients(PatientRequestDTO patientRequestDTO) {
+
+		Map<String, Object> responseMap = new HashMap<>();
 
 		List<MyPatientListDTO> patientListDTO = new ArrayList<>();
 
@@ -102,14 +101,32 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			filterMap = getFiltersForPatients(patientRequestDTO);
 		}
 
+		Integer totalCount = null;
+
+		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
+			totalCount = patientTrackerRepository.getPatientsListCount(filterMap.get("medicalReviewStartDate"),
+					filterMap.get("medicalReviewEndDate"), filterMap.get("assessmentStartDate"),
+					filterMap.get("assessmentEndDate"), Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
+					Boolean.parseBoolean(filterMap.get("assessmentDate")),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+					filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
+					filterMap.get("patientStatusNotEnrolled"));
+			System.out.println("totalCount: " + totalCount);
+
+		}
+
 		Page<PatientTracker> patientTrackerList = patientTrackerRepository.getPatientsListWithPagination(
 				filterMap.get("medicalReviewStartDate"), filterMap.get("medicalReviewEndDate"),
 				filterMap.get("assessmentStartDate"), filterMap.get("assessmentEndDate"),
 				Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
 				Boolean.parseBoolean(filterMap.get("assessmentDate")),
-				patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient(),
-				patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel(),
-				patientRequestDTO.getPatientFilterDTO().getScreeningReferral(),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
 				filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
 				filterMap.get("patientStatusNotEnrolled"), pageable);
 		List<PatientTracker> patientList = patientTrackerList.stream().collect(Collectors.toList());
@@ -127,14 +144,18 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			}
 			patientListDTO.add(patientDTO);
 		}
-		return patientListDTO;
+		responseMap.put("patientList", patientListDTO);
+		responseMap.put("totalCount", totalCount);
+		return responseMap;
 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<SearchPatientListDTO> searchPatients(PatientRequestDTO patientRequestDTO) {
+	public Map<String, Object> searchPatients(PatientRequestDTO patientRequestDTO) {
+
+		Map<String, Object> responseMap = new HashMap<>();
 
 		List<SearchPatientListDTO> patientListDTO = new ArrayList<>();
 		if (Objects.isNull(patientRequestDTO.getSearchId()) || StringUtils.isEmpty(patientRequestDTO.getSearchId())) {
@@ -142,7 +163,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 		}
 
 		if (CommonUtil.validatePatientSearchData(Arrays.asList(patientRequestDTO.getSearchId()))) {
-			return new ArrayList<>();
+			return responseMap;
 		}
 
 		String nationalId = patientRequestDTO.getSearchId();
@@ -161,6 +182,26 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		if (!Objects.isNull(patientRequestDTO.getPatientFilterDTO())) {
 			filterMap = getFiltersForPatients(patientRequestDTO);
+		}
+
+		Integer totalCount = null;
+
+		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
+			totalCount = patientTrackerRepository.getSearchPatientsCount(tenantId,
+					patientRequestDTO.getOperatingUnitId(), filterMap.get("medicalReviewStartDate"),
+					filterMap.get("medicalReviewEndDate"), filterMap.get("assessmentStartDate"),
+					filterMap.get("assessmentEndDate"), Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
+					Boolean.parseBoolean(filterMap.get("assessmentDate")),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+					patientRequestDTO.getIsLabtestReferred(), patientRequestDTO.getIsMedicationPrescribed(),
+					filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
+					filterMap.get("patientStatusNotEnrolled"), nationalId, programId);
+			System.out.println("totalCount: " + totalCount);
+
 		}
 
 		Page<PatientTracker> patientTrackerList = patientTrackerRepository.searchPatientsWithPagination(tenantId,
@@ -189,7 +230,9 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			}
 			patientListDTO.add(patientDTO);
 		}
-		return patientListDTO;
+		responseMap.put("patientList", patientListDTO);
+		responseMap.put("totalCount", totalCount);
+		return responseMap;
 
 	}
 
@@ -364,7 +407,9 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<MyPatientListDTO> patientAdvanceSearch(PatientRequestDTO patientRequestDTO) {
+	public Map<String, Object> patientAdvanceSearch(PatientRequestDTO patientRequestDTO) {
+
+		Map<String, Object> responseMap = new HashMap<>();
 
 		List<MyPatientListDTO> patientListDTO = new ArrayList<>();
 
@@ -381,7 +426,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 				patientRequestDTO.getLastName(), patientRequestDTO.getPhoneNumber()));
 
 		if (isInvalidData) {
-			return new ArrayList<>();
+			return responseMap;
 		}
 
 		Pageable pageable = getSortingForPatients(patientRequestDTO.getPatientSortDTO());
@@ -390,6 +435,25 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		if (!Objects.isNull(patientRequestDTO.getPatientFilterDTO())) {
 			filterMap = getFiltersForPatients(patientRequestDTO);
+		}
+
+		Integer totalCount = null;
+
+		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
+			totalCount = patientTrackerRepository.getPatientsWithAdvanceSearchCount(patientRequestDTO.getFirstName(),
+					patientRequestDTO.getLastName(), patientRequestDTO.getPhoneNumber(),
+					filterMap.get("medicalReviewStartDate"), filterMap.get("medicalReviewEndDate"),
+					filterMap.get("assessmentStartDate"), filterMap.get("assessmentEndDate"),
+					Boolean.parseBoolean(filterMap.get("medicalReviewDate")),
+					Boolean.parseBoolean(filterMap.get("assessmentDate")),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
+					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+					filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
+					filterMap.get("patientStatusNotEnrolled"), patientRequestDTO.getIsLabtestReferred(),
+					patientRequestDTO.getIsMedicationPrescribed(), Constants.BOOLEAN_FALSE);
 		}
 
 		// TODO:: isGlobally condition
@@ -423,7 +487,10 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			patientListDTO.add(patientDTO);
 		}
 
-		return patientListDTO;
+		responseMap.put("patientList", patientListDTO);
+		responseMap.put("totalCount", totalCount);
+
+		return responseMap;
 
 	}
 
@@ -516,15 +583,20 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	public void UpdatePatientTrackerForGlucoseLog(long patientTrackerId, GlucoseLog glucoseLog,
 			Date nextBgAssessmentDate) {
 		PatientTracker patientTracker = patientTrackerRepository.findById(patientTrackerId).get();
-		if (!Objects.isNull(glucoseLog.getGlucoseValue()) && !Objects.isNull(glucoseLog.getGlucoseType())
-				&& !Objects.isNull(glucoseLog.getGlucoseUnit())) {
-			patientTracker.setGlucoseType(glucoseLog.getGlucoseType());
-			patientTracker.setGlucoseUnit(glucoseLog.getGlucoseUnit());
+		if (!Objects.isNull(glucoseLog.getGlucoseValue())) {
 			patientTracker.setGlucoseValue(glucoseLog.getGlucoseValue());
+		}
+		if (!Objects.isNull(glucoseLog.getGlucoseType())) {
+			patientTracker.setGlucoseType(glucoseLog.getGlucoseType());
+		}
+		if (!Objects.isNull(glucoseLog.getGlucoseUnit())) {
+			patientTracker.setGlucoseUnit(glucoseLog.getGlucoseUnit());
 		}
 		if (!Objects.isNull(nextBgAssessmentDate)) {
 			patientTracker.setNextBgAssessmentDate(nextBgAssessmentDate);
 		}
+		// Need to add risk level and is red risk patient
+
 		patientTrackerRepository.save(patientTracker);
 
 		// patientTrackerRepository.updatePatientTrackerForGlucoseLog(glucoseLog.getGlucoseValue(),

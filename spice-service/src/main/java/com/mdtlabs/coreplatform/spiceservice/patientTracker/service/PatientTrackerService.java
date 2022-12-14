@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.spiceservice.patientTracker.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -59,7 +60,7 @@ public interface PatientTrackerService {
 	 * @return List<MyPatientListDTO>
 	 * @author Jeyaharini T A
 	 */
-	public List<MyPatientListDTO> listMyPatients(PatientRequestDTO patientRequestDTO);
+	public Map<String, Object> listMyPatients(PatientRequestDTO patientRequestDTO);
 
 	/**
 	 * This method is used to search the patient with fields like national id,
@@ -69,7 +70,7 @@ public interface PatientTrackerService {
 	 * @return List<SearchPatientListDTO>
 	 * @author Jeyaharini T A
 	 */
-	public List<SearchPatientListDTO> searchPatients(PatientRequestDTO patientRequestDTO);
+	public Map<String, Object> searchPatients(PatientRequestDTO patientRequestDTO);
 
 	/**
 	 * This method is used to get the patients list with advance search.
@@ -78,7 +79,7 @@ public interface PatientTrackerService {
 	 * @return List<MyPatientListDTO>
 	 * @author Jeyaharini T A
 	 */
-	public List<MyPatientListDTO> patientAdvanceSearch(PatientRequestDTO patientRequestDTO);
+	public Map<String, Object> patientAdvanceSearch(PatientRequestDTO patientRequestDTO);
 
 	/**
 	 * Updates isLabTestReferred based on labtests referred to a patient.

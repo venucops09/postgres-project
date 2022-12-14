@@ -1,12 +1,13 @@
 package com.mdtlabs.coreplatform.spiceservice.patient.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +73,7 @@ public class PatientController {
 	 * @return Patient Entity
 	 * @author Niraimathi S
 	 */
-	@RequestMapping(value = "/details", method = RequestMethod.GET)
+	@RequestMapping(value = "/details", method = RequestMethod.POST)
 	public SuccessResponse<PatientTrackerDTO> getPatientDetails(@RequestBody PatientGetRequestDTO requestData) {
 		return new SuccessResponse<PatientTrackerDTO>(SuccessCode.GET_PATIENT,
 				patientService.getPatientDetails(requestData), HttpStatus.OK);
@@ -129,8 +130,19 @@ public class PatientController {
 	 */
 	@PostMapping("/list")
 	public SuccessResponse<List<MyPatientListDTO>> getMyPatientsList(@RequestBody PatientRequestDTO patientRequestDTO) {
-		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.GET_MY_PATIENTS_LIST,
-				patientTrackerService.listMyPatients(patientRequestDTO), HttpStatus.OK);
+
+		Map<String, Object> responseMap = patientTrackerService.listMyPatients(patientRequestDTO);
+
+		List<MyPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+				? (List<MyPatientListDTO>) (responseMap.get("patientList"))
+				: new ArrayList<>();
+
+		Integer totalCount = responseMap.containsKey("totalCount")
+				? Integer.parseInt(responseMap.get("totalCount").toString())
+				: null;
+
+		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.GET_MY_PATIENTS_LIST, patientListDTO, totalCount,
+				HttpStatus.OK);
 	}
 
 	/**
@@ -141,11 +153,21 @@ public class PatientController {
 	 * @return List of patient tracker entity
 	 * @author Jeyaharini T A
 	 */
-	@GetMapping("/search")
+	@PostMapping("/search")
 	public SuccessResponse<List<SearchPatientListDTO>> searchPatients(
 			@RequestBody PatientRequestDTO patientRequestDTO) {
-		return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS,
-				patientTrackerService.searchPatients(patientRequestDTO), HttpStatus.OK);
+		Map<String, Object> responseMap = patientTrackerService.searchPatients(patientRequestDTO);
+
+		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+				? (List<SearchPatientListDTO>) responseMap.get("patientList")
+				: new ArrayList<>();
+
+		Integer totalCount = responseMap.containsKey("totalCount")
+				? Integer.parseInt(responseMap.get("totalCount").toString())
+				: null;
+
+		return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
+				HttpStatus.OK);
 	}
 
 	@PostMapping("/advance-search/country")
@@ -154,14 +176,32 @@ public class PatientController {
 		if (!Objects.isNull(patientRequestDTO.getOperatingUnitId())) {
 			patientRequestDTO.setIsGlobally(Constants.BOOLEAN_TRUE);
 		}
-		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS,
-				patientTrackerService.patientAdvanceSearch(patientRequestDTO), HttpStatus.OK);
+		Map<String, Object> responseMap = patientTrackerService.patientAdvanceSearch(patientRequestDTO);
+		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+				? (List<SearchPatientListDTO>) responseMap.get("patientList")
+				: new ArrayList<>();
+
+		Integer totalCount = responseMap.containsKey("totalCount")
+				? Integer.parseInt(responseMap.get("totalCount").toString())
+				: null;
+
+		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
+				HttpStatus.OK);
 	}
 
 	@PostMapping("/advance-search/site")
 	public SuccessResponse<List<MyPatientListDTO>> getPatientsWithAdvanceSearch(
 			@RequestBody PatientRequestDTO patientRequestDTO) {
-		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS,
-				patientTrackerService.patientAdvanceSearch(patientRequestDTO), HttpStatus.OK);
+		Map<String, Object> responseMap = patientTrackerService.patientAdvanceSearch(patientRequestDTO);
+		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+				? (List<SearchPatientListDTO>) responseMap.get("patientList")
+				: new ArrayList<>();
+
+		Integer totalCount = responseMap.containsKey("totalCount")
+				? Integer.parseInt(responseMap.get("totalCount").toString())
+				: null;
+
+		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
+				HttpStatus.OK);
 	}
 }

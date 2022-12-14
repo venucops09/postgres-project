@@ -14,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.common.reflect.TypeToken;
 import com.mdtlabs.coreplatform.common.Constants;
@@ -29,7 +28,6 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.PatientLabTestResultDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.PatientLabTestResultRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.PatientLabTestResultResponseDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
-import com.mdtlabs.coreplatform.common.model.dto.spice.PatientLabTestRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.BaseEntity;
 import com.mdtlabs.coreplatform.common.model.entity.spice.LabTest;
 import com.mdtlabs.coreplatform.common.model.entity.spice.LabTestResult;
@@ -43,7 +41,6 @@ import com.mdtlabs.coreplatform.spiceservice.patientlabtest.repository.PatientLa
 import com.mdtlabs.coreplatform.spiceservice.patientlabtest.service.PatientLabTestService;
 import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitService;
 
-
 /**
  * This class implements the PatientLabTestService class and contains business
  * logic for the operations of PatientLabTest Entity.
@@ -52,9 +49,6 @@ import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitSe
  */
 @Service
 public class PatientLabTestServiceImpl implements PatientLabTestService {
-// <<<<<<< Updated upstream
-
-//	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Autowired
 	private PatientLabTestRepository patientLabTestRepository;
@@ -111,7 +105,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 
 		List<PatientLabTest> patientLabTests = constructPatientLabTestData(requestData);
 		patientLabTests = patientLabTestRepository.saveAll(patientLabTests);
-		PatientVisit patientVisit = patientVisitService.getPatientVisit(requestData.getPatientVisitId(), requestData.getTenantId());
+		PatientVisit patientVisit = patientVisitService.getPatientVisit(requestData.getPatientVisitId(),
+				requestData.getTenantId());
 		patientVisit.setInvestigation(true);
 		patientVisitService.updatePatientVisit(patientVisit);
 		updatePatientTrackerLabtestReferral(requestData.getPatientTrackId(), requestData.getTenantId(),
@@ -176,7 +171,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 					.findAllByPatientVisitIdAndIsDeleted(patientLabTest.getPatientVisitId(), Constants.BOOLEAN_FALSE);
 
 			if (0 == patientLabTests.size()) {
-				PatientVisit patientVisit = patientVisitService.getPatientVisit(requestData.getPatientVisitId(), requestData.getTenantId());
+				PatientVisit patientVisit = patientVisitService.getPatientVisit(requestData.getPatientVisitId(),
+						requestData.getTenantId());
 				patientVisit.setInvestigation(false);
 				patientVisitService.updatePatientVisit(patientVisit);
 
@@ -711,7 +707,6 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //                 Constants.BOOLEAN_FALSE);
 //         return patientLabTestResults;
 //     }
-
 
 //     /**
 //      * This method is used to construct PatientLabTestResult Data.

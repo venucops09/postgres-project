@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mdtlabs.spice</groupId>
+	<groupId>com.mdtlabs.coreplatform.spiceservice.spiceadminservice</groupId>
 	<artifactId>spice-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -15,14 +15,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.1</version>
+		<version>2.7.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<springfox-version>3.0.0</springfox-version>
 		<commons-codec-version>1.2</commons-codec-version>
 		<modelmapper-version>3.1.0</modelmapper-version>
@@ -146,12 +146,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.mdtlabs.spice</groupId>
+			<groupId>com.mdtlabs.coreplatform</groupId>
 			<artifactId>common-service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mdtlabs.spice</groupId>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webmvc-core</artifactId>
+			<version>1.5.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mdtlabs.coreplatform.spiceadminservice</groupId>
 			<artifactId>admin-service</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
@@ -180,7 +185,7 @@
 		<!---<dependency> <groupId>com.mdtlabs.telecounselor</groupId> <artifactId>user-service</artifactId> 
 			<version>0.0.1-SNAPSHOT</version> </dependency> -->
 
- 
+
 	</dependencies>
 
 	<dependencyManagement>

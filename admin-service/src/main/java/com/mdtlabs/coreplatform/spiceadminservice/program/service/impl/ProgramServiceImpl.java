@@ -21,7 +21,6 @@ import com.mdtlabs.coreplatform.common.util.Pagination;
 import com.mdtlabs.coreplatform.spiceadminservice.program.repository.ProgramRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.program.service.ProgramService;
 
-
 /**
  * This class implements the Program interface and contains actual business
  * logic to perform operations on Program entity.
@@ -35,8 +34,7 @@ public class ProgramServiceImpl implements ProgramService {
 	@Autowired
 	private ProgramRepository programRepository;
 
-    private ModelMapper mapper = new ModelMapper();
-
+	private ModelMapper mapper = new ModelMapper();
 
 	/**
 	 * {@inheritDoc}
@@ -46,7 +44,8 @@ public class ProgramServiceImpl implements ProgramService {
 			throw new BadRequestException(12006);
 		} else {
 			// name should be unique in country findByNameAndIsDeleted
-			Program existingProgram = programRepository.findByNameAndTenantIdAndIsDeleted(program.getName(), program.getTenantId(), false);
+			Program existingProgram = programRepository.findByNameAndTenantIdAndIsDeleted(program.getName(),
+					program.getTenantId(), false);
 			if (!Objects.isNull(existingProgram)) {
 				throw new DataConflictException(13002);
 			}
@@ -83,7 +82,7 @@ public class ProgramServiceImpl implements ProgramService {
 		if (Objects.isNull(program)) {
 			throw new BadRequestException(12001);
 		} else {
-			if (!Objects.isNull(program.getName())) {  // check name from request data
+			if (!Objects.isNull(program.getName())) { // check name from request data
 				throw new DataNotAcceptableException(13004);
 			}
 
@@ -111,11 +110,11 @@ public class ProgramServiceImpl implements ProgramService {
 
 		String formattedSearchTerm = requestObject.getSearchTerm();
 		if (Objects.isNull(requestObject.getSearchTerm()) && 0 < requestObject.getSearchTerm().length()) {
-			formattedSearchTerm = requestObject.getSearchTerm().replaceAll("[^a-zA-Z0-9 ]*", "");	
+			formattedSearchTerm = requestObject.getSearchTerm().replaceAll("[^a-zA-Z0-9 ]*", "");
 		}
 
-		Page<Program> programs = programRepository.getAllProgram(formattedSearchTerm,
-				requestObject.getCountryId(), pageable);
+		Page<Program> programs = programRepository.getAllProgram(formattedSearchTerm, requestObject.getCountryId(),
+				pageable);
 		return programs.stream().collect(Collectors.toList());
 
 	}

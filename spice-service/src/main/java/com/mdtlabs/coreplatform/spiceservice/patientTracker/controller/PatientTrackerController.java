@@ -1,6 +1,8 @@
 package com.mdtlabs.coreplatform.spiceservice.patientTracker.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,48 +26,47 @@ import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrack
 import io.swagger.annotations.Api;
 
 /**
- * This class is a controller class to perform operation on PatientTracker entity.
+ * This class is a controller class to perform operation on PatientTracker
+ * entity.
  *
  * @author Karthick Murugesan
  */
 @RestController
 @RequestMapping(value = "/patienttracker")
 @Validated
-@Api(basePath = "/patientTracker", value = "master_data", description = "Patient tracker related APIs",
-        produces = "application/json")
+@Api(basePath = "/patientTracker", value = "master_data", description = "Patient tracker related APIs", produces = "application/json")
 public class PatientTrackerController {
 
-    @Autowired
-    PatientTrackerService patientTrackerService;
+	@Autowired
+	PatientTrackerService patientTrackerService;
 
-    /**
-     * This method is used to add a new patient tracker.
-     *
-     * @param patientTracker
-     * @return PatientTracker Entity.
-     * @author Victor Jefferson
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public SuccessResponse<PatientTracker> addPatientTracker(@RequestBody PatientTracker patientTracker) {
+	/**
+	 * This method is used to add a new patient tracker.
+	 *
+	 * @param patientTracker
+	 * @return PatientTracker Entity.
+	 * @author Victor Jefferson
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	public SuccessResponse<PatientTracker> addPatientTracker(@RequestBody PatientTracker patientTracker) {
 		patientTrackerService.addOrUpdatePatientTracker(patientTracker);
 		return new SuccessResponse<PatientTracker>(SuccessCode.PATIENT_TRACKER_SAVE, HttpStatus.CREATED);
-    }
+	}
 
-
-    /**
-     * This method is used to retrieve single patient tracker using
-     * patientTrackerId.
-     *
-     * @param patientTrackerId
-     * @return PatientTracker Entity
-     * @author Victor Jefferson
-     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public SuccessResponse<PatientTracker> getPatientTrackerById(
-            @PathVariable(value = FieldConstants.ID) long patientTrackerId) {
-        return new SuccessResponse<PatientTracker>(SuccessCode.GET_PATIENT_TRACKER,
-                patientTrackerService.getPatientTrackerById(patientTrackerId), HttpStatus.OK);
-    }
+	/**
+	 * This method is used to retrieve single patient tracker using
+	 * patientTrackerId.
+	 *
+	 * @param patientTrackerId
+	 * @return PatientTracker Entity
+	 * @author Victor Jefferson
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public SuccessResponse<PatientTracker> getPatientTrackerById(
+			@PathVariable(value = FieldConstants.ID) long patientTrackerId) {
+		return new SuccessResponse<PatientTracker>(SuccessCode.GET_PATIENT_TRACKER,
+				patientTrackerService.getPatientTrackerById(patientTrackerId), HttpStatus.OK);
+	}
 
 	/**
 	 * This method is used to retrieve patient details with filters like firstname,
@@ -78,8 +79,19 @@ public class PatientTrackerController {
 	@GetMapping("/search")
 	public SuccessResponse<List<SearchPatientListDTO>> searchPatients(
 			@RequestBody PatientRequestDTO patientRequestDTO) {
-		return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS,
-				patientTrackerService.searchPatients(patientRequestDTO), HttpStatus.OK);
+
+		Map<String, Object> responseMap = patientTrackerService.searchPatients(patientRequestDTO);
+
+		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+				? (List<SearchPatientListDTO>) responseMap.get("patientList")
+				: new ArrayList<>();
+
+		Integer totalCount = responseMap.containsKey("totalCount")
+				? Integer.parseInt(responseMap.get("totalCount").toString())
+				: null;
+
+		return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
+				HttpStatus.OK);
 	}
 
 	/**

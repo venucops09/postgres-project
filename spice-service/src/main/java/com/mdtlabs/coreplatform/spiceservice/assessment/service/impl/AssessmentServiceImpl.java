@@ -31,6 +31,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RedRiskNotification;
 import com.mdtlabs.coreplatform.spiceservice.assessment.repository.PatientAssessmentRepository;
 import com.mdtlabs.coreplatform.spiceservice.NotificationApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentService;
+import com.mdtlabs.coreplatform.spiceservice.bplog.repository.BpLogRepository;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.common.RedRiskService;
 import com.mdtlabs.coreplatform.spiceservice.common.RiskAlgorithm;
@@ -79,6 +80,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
 	@Autowired
 	private PatientAssessmentRepository assessmentLogRepository;
+
+	@Autowired
+	private BpLogRepository bpLogRepository;
 
 	@Autowired
 	private NotificationApiInterface apiInterface;
@@ -145,12 +149,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 				patientTracker.setPhq4SecondScore(mentalHealth.getPhq4SecondScore());
 				mentalHealthService.createMentalHealth(mentalHealth);
 			}
-			// TODO : Mental health create
 			if (patientTracker.getPatientStatus().equals(Constants.SCREENED)) {
 				patientTracker.setPatientStatus(Constants.NONE);
 			}
 			patientTracker.setLastAssessmentDate(new Date());
-			// patientTrackerService.setPHQ4Score(patientTracker, assessmentDTO.getPhq4());
 			if (!Objects.isNull(assessmentDTO.getProvisionalDiagnosis())
 					&& !assessmentDTO.getProvisionalDiagnosis().isEmpty()) {
 				patientTracker.setProvisionalDiagnosis(assessmentDTO.getProvisionalDiagnosis());
@@ -251,9 +253,11 @@ public class AssessmentServiceImpl implements AssessmentService {
 		BpLog bpLog = assessmentDTO.getBpLog();
 		bpLog.setCvdRiskScore(assessmentDTO.getCvdRiskScore());
 		bpLog.setCvdRiskLevel(assessmentDTO.getCvdRiskLevel());
+		bpLog.setRegularSmoker(assessmentDTO.getIsRegularSmoker());
 		bpLog.setType(Constants.ASSESSMENT);
 		bpLog.setPatientTrackId(assessmentDTO.getPatientTrackId());
-		// bpLog.setTenantId(assessmentDTO);
+		// Need to get tenantId from header
+		bpLog.setTenantId(assessmentDTO.getTenantId());
 		bpLog.setRiskLevel(riskLevel);
 		return bpLog;
 	}
@@ -268,8 +272,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 		GlucoseLog glucoseLog = assessmentDTO.getGlucoseLog();
 		glucoseLog.setPatientTrackId(assessmentDTO.getPatientTrackId());
 		glucoseLog.setType(Constants.ASSESSMENT);
-		// glucoseLog.setPatientTrackerId(assessmentDTO.getPatientTrackId());
-		// tenantid add
+		// Need to get tenantId from header
+		glucoseLog.setTenantId(assessmentDTO.getTenantId());
 		return glucoseLog;
 	}
 
@@ -353,6 +357,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 			patientMedicalCompliances.add(patientMedicalCompliance);
 		}
 		patientMedicalComplianceService.addPatientMedicalCompliance(patientMedicalCompliances);
-
 	}
+
+
 }

@@ -1,8 +1,5 @@
 package com.mdtlabs.coreplatform.spiceservice.patientTracker.repository;
 
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,7 +34,41 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			+ "  AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
 			+ "  AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)";
 
+	public static final String GET_MY_PATIENTS_LIST_COUNT = "SELECT count(id) FROM patient_tracker"
+			+ "  WHERE (CAST(:nextMedicalReviewStartDate AS Date) IS null OR next_medical_review_date >= CAST(:nextMedicalReviewStartDate AS Date))"
+			+ "  AND (CAST(:nextMedicalReviewEndDate AS Date) IS null OR next_medical_review_date <= CAST(:nextMedicalReviewEndDate AS Date))"
+			+ "  AND (CAST(:lastAssessmentStartDate AS Date) IS null OR next_bp_assesment_date >= CAST(:lastAssessmentStartDate AS Date))"
+			+ "  AND (CAST(:lastAssessmentEndDate AS Date) IS null OR next_bp_assesment_date <= CAST(:lastAssessmentEndDate AS Date))"
+			+ "  AND (CASE WHEN (:nextMedicalReviewDate = true) THEN (next_medical_review_date IS NOT null) ELSE true END) "
+			+ "  AND (CASE WHEN (:lastAssessmentDate = true) THEN (next_bp_assesment_date IS NOT null) ELSE true END) "
+			+ "  AND (:isRedRiskPatient IS null OR is_red_risk_patient = :isRedRiskPatient)"
+			+ "  AND (:cvdRiskLevel IS null OR cvd_risk_level = :cvdRiskLevel)"
+			+ "  AND ((:screeningReferral IS null OR screening_referral = :screeningReferral)"
+			+ "  OR (:patientStatusNotScreened IS null OR patient_status != :patientStatusNotScreened) )"
+			+ "  AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
+			+ "  AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)";
+
 	public static final String SEARCH_PATIENTS = "SELECT * FROM patient_tracker"
+			+ " WHERE (:tenantId IS null OR tenant_id = :tenantId) "
+			+ " AND (:operatingUnitId IS null OR operating_unit_id = :operatingUnitId)"
+			+ " AND (CAST(:nextMedicalReviewStartDate AS Date) IS null OR next_medical_review_date >= CAST(:nextMedicalReviewStartDate AS Date))"
+			+ " AND (CAST(:nextMedicalReviewEndDate AS Date) IS null OR next_medical_review_date <= CAST(:nextMedicalReviewEndDate AS Date))"
+			+ " AND (CAST(:lastAssessmentStartDate AS Date) IS null OR next_bp_assesment_date >= CAST(:lastAssessmentStartDate AS Date))"
+			+ " AND (CAST(:lastAssessmentEndDate AS Date) IS null OR next_bp_assesment_date <= CAST(:lastAssessmentEndDate AS Date))"
+			+ " AND (CASE WHEN (:nextMedicalReviewDate = true) THEN (next_medical_review_date IS NOT null) ELSE true END) "
+			+ " AND (CASE WHEN (:lastAssessmentDate = true) THEN (next_bp_assesment_date IS NOT null) ELSE true END) "
+			+ " AND (:isRedRiskPatient IS null OR is_red_risk_patient = :isRedRiskPatient)"
+			+ " AND (:cvdRiskLevel IS null OR cvd_risk_level = :cvdRiskLevel)"
+			+ " AND ((:screeningReferral IS null OR screening_referral = :screeningReferral)"
+			+ " AND (:isLabTestReferred IS null OR is_labtest_referred = :isLabTestReferred)"
+			+ " AND (:isMedicationPrescribed IS null OR is_medication_prescribed = :isMedicationPrescribed)"
+			+ " OR (:patientStatusNotScreened IS null OR patient_status != :patientStatusNotScreened) )"
+			+ " AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
+			+ " AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)  AND is_deleted = false"
+			+ " AND ( CASE WHEN (:programId IS null) THEN (lower(national_id) = lower(:nationalId))"
+			+ " ELSE (program_id = CAST(:programId AS BIGINT) OR national_id = :nationalId) END)";
+
+	public static final String SEARCH_PATIENTS_COUNT = "SELECT count(id) FROM patient_tracker"
 			+ " WHERE (:tenantId IS null OR tenant_id = :tenantId) "
 			+ " AND (:operatingUnitId IS null OR operating_unit_id = :operatingUnitId)"
 			+ " AND (CAST(:nextMedicalReviewStartDate AS Date) IS null OR next_medical_review_date >= CAST(:nextMedicalReviewStartDate AS Date))"
@@ -77,6 +108,26 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			+ " AND (:isMedicationPrescribed IS null OR is_medication_prescribed = :isMedicationPrescribed)"
 			+ " AND is_deleted = :isDeleted ";
 
+	public static final String ADVANCE_SEARCH_PATIENTS_COUNT = "SELECT count(id) FROM patient_tracker"
+			+ " WHERE (:firstName IS null OR lower(first_name) LIKE CONCAT(lower(:firstName), '%'))"
+			+ " AND (:lastName IS null OR lower(last_name) LIKE CONCAT(lower(:lastName), '%'))"
+			+ " AND (:phoneNumber IS null OR phone_number = :phoneNumber)"
+			+ " AND (CAST(:nextMedicalReviewStartDate AS Date) IS null OR next_medical_review_date >= CAST(:nextMedicalReviewStartDate AS Date))"
+			+ " AND (CAST(:nextMedicalReviewEndDate AS Date) IS null OR next_medical_review_date <= CAST(:nextMedicalReviewEndDate AS Date))"
+			+ " AND (CAST(:lastAssessmentStartDate AS Date) IS null OR next_bp_assesment_date >= CAST(:lastAssessmentStartDate AS Date))"
+			+ " AND (CAST(:lastAssessmentEndDate AS Date) IS null OR next_bp_assesment_date <= CAST(:lastAssessmentEndDate AS Date))"
+			+ " AND (CASE WHEN (:nextMedicalReviewDate = true) THEN (next_medical_review_date IS NOT null) ELSE true END) "
+			+ " AND (CASE WHEN (:lastAssessmentDate = true) THEN (next_bp_assesment_date IS NOT null) ELSE true END) "
+			+ " AND (:isRedRiskPatient IS null OR is_red_risk_patient = :isRedRiskPatient)"
+			+ " AND (:cvdRiskLevel IS null OR cvd_risk_level = :cvdRiskLevel)"
+			+ " AND ((:screeningReferral IS null OR screening_referral = :screeningReferral)"
+			+ " OR (:patientStatusNotScreened IS null OR patient_status != :patientStatusNotScreened) )"
+			+ " AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
+			+ " AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)"
+			+ " AND (:isLabtestReferred IS null OR is_labtest_referred = :isLabtestReferred)"
+			+ " AND (:isMedicationPrescribed IS null OR is_medication_prescribed = :isMedicationPrescribed)"
+			+ " AND is_deleted = :isDeleted ";
+
 	public static final String UPDATE_LATEST_REFERRAL = "UPDATE PatientTracker as tracker set "
 			+ "tracker.isLabtestReferred = :isLabTestReferred, tracker.tenantId = :tenantId where tracker.id = :id ";
 
@@ -85,8 +136,8 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 
 	public PatientTracker findByNationalId(String nationalId);
 
-	@Query(value = GET_MY_PATIENTS_LIST, nativeQuery = true)
-	public List<PatientTracker> getPatientsList(@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
+	@Query(value = GET_MY_PATIENTS_LIST_COUNT, nativeQuery = true)
+	public int getPatientsListCount(@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
 			@Param("nextMedicalReviewEndDate") String medicalReviewEndDate,
 			@Param("lastAssessmentStartDate") String assessmentStartDate,
 			@Param("lastAssessmentEndDate") String assessmentEndDate,
@@ -106,29 +157,6 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			@Param("lastAssessmentEndDate") String assessmentEndDate,
 			@Param("nextMedicalReviewDate") boolean nextMedicalReviewDate,
 			@Param("lastAssessmentDate") boolean lastAssessmentDate,
-			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
-			@Param("screeningReferral") Boolean screeningReferral,
-			@Param("patientStatusNotScreened") String patientStatusNotScreened,
-			@Param("patientStatusEnrolled") String patientStatusEnrolled,
-			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled, Pageable pageable);
-
-	@Query(value = GET_MY_PATIENTS_LIST, nativeQuery = true)
-	public List<PatientTracker> getPatientsList(@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
-			@Param("nextMedicalReviewEndDate") String medicalReviewEndDate,
-			@Param("lastAssessmentStartDate") String assessmentStartDate,
-			@Param("lastAssessmentEndDate") String assessmentEndDate,
-			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
-			@Param("screeningReferral") Boolean screeningReferral,
-			@Param("patientStatusNotScreened") String patientStatusNotScreened,
-			@Param("patientStatusEnrolled") String patientStatusEnrolled,
-			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled);
-
-	@Query(value = GET_MY_PATIENTS_LIST, nativeQuery = true)
-	public Page<PatientTracker> getPatientsListWithPagination(
-			@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
-			@Param("nextMedicalReviewEndDate") String medicalReviewEndDate,
-			@Param("lastAssessmentStartDate") String assessmentStartDate,
-			@Param("lastAssessmentEndDate") String assessmentEndDate,
 			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
 			@Param("screeningReferral") Boolean screeningReferral,
 			@Param("patientStatusNotScreened") String patientStatusNotScreened,
@@ -155,6 +183,23 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled, @Param("nationalId") String nationalId,
 			@Param("programId") String programId, Pageable pageable);
 
+	@Query(value = SEARCH_PATIENTS_COUNT, nativeQuery = true)
+	public int getSearchPatientsCount(@Param("tenantId") Long tenantId, @Param("operatingUnitId") Long operatingUnitId,
+			@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
+			@Param("nextMedicalReviewEndDate") String medicalReviewEndDate,
+			@Param("lastAssessmentStartDate") String assessmentStartDate,
+			@Param("lastAssessmentEndDate") String assessmentEndDate,
+			@Param("nextMedicalReviewDate") boolean nextMedicalReviewDate,
+			@Param("lastAssessmentDate") boolean lastAssessmentDate,
+			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
+			@Param("screeningReferral") Boolean screeningReferral,
+			@Param("isLabTestReferred") Boolean isLabTestReferred,
+			@Param("isMedicationPrescribed") Boolean isMedicationPrescribed,
+			@Param("patientStatusNotScreened") String patientStatusNotScreened,
+			@Param("patientStatusEnrolled") String patientStatusEnrolled,
+			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled, @Param("nationalId") String nationalId,
+			@Param("programId") String programId);
+
 	@Query(value = ADVANCE_SEARCH_PATIENTS, nativeQuery = true)
 	public Page<PatientTracker> getPatientsWithAdvanceSearch(@Param("firstName") String firstName,
 			@Param("lastName") String lastName, @Param("phoneNumber") String phoneNumber,
@@ -172,6 +217,23 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			@Param("isLabtestReferred") Boolean isLabtestReferred,
 			@Param("isMedicationPrescribed") Boolean isMedicationPrescribed, @Param("isDeleted") boolean isDeleted,
 			Pageable pageable);
+
+	@Query(value = ADVANCE_SEARCH_PATIENTS_COUNT, nativeQuery = true)
+	public int getPatientsWithAdvanceSearchCount(@Param("firstName") String firstName,
+			@Param("lastName") String lastName, @Param("phoneNumber") String phoneNumber,
+			@Param("nextMedicalReviewStartDate") String medicalReviewStartDate,
+			@Param("nextMedicalReviewEndDate") String medicalReviewEndDate,
+			@Param("lastAssessmentStartDate") String assessmentStartDate,
+			@Param("lastAssessmentEndDate") String assessmentEndDate,
+			@Param("nextMedicalReviewDate") boolean nextMedicalReviewDate,
+			@Param("lastAssessmentDate") boolean lastAssessmentDate,
+			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
+			@Param("screeningReferral") Boolean screeningReferral,
+			@Param("patientStatusNotScreened") String patientStatusNotScreened,
+			@Param("patientStatusEnrolled") String patientStatusEnrolled,
+			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled,
+			@Param("isLabtestReferred") Boolean isLabtestReferred,
+			@Param("isMedicationPrescribed") Boolean isMedicationPrescribed, @Param("isDeleted") boolean isDeleted);
 //
 //	@Query(value = SEARCH_PATIENTS, nativeQuery = true)
 //	public Page<PatientTracker> searchPatientsWithPagination(

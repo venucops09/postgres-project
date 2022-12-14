@@ -11,34 +11,34 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
  *
  */
 public interface GlucoseLogService {
-    
-    /**
-     * This method adds a new Glucose log.
-     *
-     * @param glucoseLog
-     * @return GlucoseLog Entity
-     * @author Victor Jefferson
-     */
-    public GlucoseLog addGlucoseLog(GlucoseLog glucoseLog, boolean isPatientTrackerUpdate);
 
-    /**
-     * This method fetches a single glucose log.
-     *
-     * @param glucoseLogId
-     * @return GlucoseLog Entity
-     */
-    public GlucoseLog getGlucoseLogById(long glucoseLogId);
+	/**
+	 * This method adds a new Glucose log.
+	 *
+	 * @param glucoseLog
+	 * @return GlucoseLog Entity
+	 * @author Victor Jefferson
+	 */
+	public GlucoseLog addGlucoseLog(GlucoseLog glucoseLog, boolean isPatientTrackerUpdate);
 
-    /**
-     * This method fetches a single glucose log by patient track id.
-     *
-     * @param patientTrackId
-     * @return GlucoseLog Entity
-     */
-    public GlucoseLog getGlucoseLogByPatientTrackId(long patientTrackId);
+	/**
+	 * This method fetches a single glucose log.
+	 *
+	 * @param glucoseLogId
+	 * @return GlucoseLog Entity
+	 */
+	public GlucoseLog getGlucoseLogById(long glucoseLogId);
 
-    public GlucoseLog getGlucoseLogByPatientTrackIdAndIsLatest(long patientTrackId, boolean isLatest);
+	/**
+	 * This method fetches a single glucose log by patient track id.
+	 *
+	 * @param patientTrackId
+	 * @return GlucoseLog Entity
+	 */
+	public GlucoseLog getGlucoseLogByPatientTrackId(long patientTrackId);
 
-    public PatientGlucoseLogDTO getPatientGlucoseLogsWithSymptoms(RequestDTO requestData);
+	public GlucoseLog getGlucoseLogByPatientTrackIdAndIsLatest(long patientTrackId, boolean isLatest);
+
+	public PatientGlucoseLogDTO getPatientGlucoseLogsWithSymptoms(RequestDTO requestData);
 
 }
