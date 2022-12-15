@@ -83,4 +83,7 @@ public interface ApiInterface {
 
 	@PostMapping("program/get-by-site-ids")
 	public List<Program> getPrograms(@RequestHeader("Authorization") String token, @RequestBody List<Long> siteIds);
+
+	@PostMapping(value = "/site/")
+	public Site getSiteById(@RequestHeader("Authorization") String token, @RequestBody Long siteId);
 }

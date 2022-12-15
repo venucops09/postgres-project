@@ -1,9 +1,11 @@
 package com.mdtlabs.coreplatform.userservice.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.OrganizationService;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
+import com.mdtlabs.coreplatform.common.model.dto.spice.OrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
 
 /**
@@ -112,9 +115,40 @@ public class OrganizationController {
 		return new SuccessResponse<>(SuccessCode.GET_ORGANIZATION, organizationService.getOrganizationByName(name), HttpStatus.OK);
 	}
 	
+	/**
+	 * 
+	 * Gets List of tenantIds of a user.
+	 * @param id - user Id
+	 * @return List<Long> - list of tenant IDs.
+	 */
 	@GetMapping("/get-user-tenants/{id}")
 	public List<Long> getUserTenants(@PathVariable long id) {
 		return organizationService.getUserTenants(id);
 	}
 
+	/**
+	 * Creates an organization with users.
+	 * 
+	 * @param organizationDTO - Object with Organization details and List of users.
+	 * @return Organization - Organization Entity.
+	 * @author Niraimathi S
+	 */
+	@PostMapping("/create")
+	public ResponseEntity<Organization> createOrganization(@RequestBody OrganizationDTO organizationDTO) {
+		Organization newOrganization = organizationService.createOrganization(organizationDTO);
+//		return new SuccessResponse<>((null == newOrganization) ? SuccessCode.ORGANIZATION_SAVE_ERROR : SuccessCode.ORGANIZATION_SAVE, newOrganization, HttpStatus.OK);
+		return ResponseEntity.ok().body(newOrganization);
+	}
+	
+	/**
+	 * Gets child organization IDs of an organization.
+	 * 
+	 * @param tenantId organization tenantId
+	 * @param formName organization form name
+	 * @return Map<String, List<Long>> - collection of child organization IDs.
+	 */
+	@PostMapping("/get-child-organizations/{tenantId}")
+	public Map<String, List<Long>> getChildOrganizations(@PathVariable("tenantId") Long tenantId,@RequestBody String formName) {
+		return organizationService.getChildOrganizations(tenantId, formName);
+	}
 }

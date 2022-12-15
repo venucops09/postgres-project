@@ -3,6 +3,8 @@ package com.mdtlabs.coreplatform.spiceadminservice.data.service;
 import java.util.List;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryListDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryOrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
@@ -23,7 +25,7 @@ public interface DataService {
 	 * @return Country Entity
 	 * @author Karthick M
 	 */
-	Country createCountry(CountryDTO countryDTO);
+	Country createCountry(CountryOrganizationDTO countryDTO);
 
 	/**
 	 * This method is used to update a country details like name.
@@ -95,7 +97,7 @@ public interface DataService {
 	 * @return Country entity
 	 * @author Karthick M
 	 */
-	Country getCountryById(long countryId);
+	CountryOrganizationDTO getCountryById(long countryId);
 
 	/**
 	 * Used to soft delete subcounty details using subcounty id.
@@ -125,5 +127,27 @@ public interface DataService {
 	 */
 	Subcounty getSubCountyById(long id);
 
+    /**
+     * Gets country list with child organization counts
+     * 
+     * @param requestDTO request data
+     * @return List of countryListDTO
+     */
 	List<Subcounty> getAllSubCountyByCountryId(Long countryId);
+
+    /**
+     * To get add subcounty list based on country id.
+     * 
+     * @param countryId country Id
+     * @return List of Subcounty
+     */
+	List<CountryListDTO> getCountryList(RequestDTO requestDTO);
+	
+	/**
+	 * Gets country by Id without users.
+	 * 
+	 * @param countryId country Id
+	 * @return Country entity
+	 */
+	Country findCountryById(Long countryId);
 }

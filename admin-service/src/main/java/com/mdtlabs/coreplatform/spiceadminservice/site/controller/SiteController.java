@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,6 +68,18 @@ public class SiteController {
 	@GetMapping(value = "/get-by-ou-id/{operatingUnitId}")
 	public List<Site> getSitesByOperatingUnitId(@PathVariable(value = "operatingUnitId") Long operatingUnitId) {
 		return siteService.getSitesByOperatingUnitId(operatingUnitId);
+	}
+	
+	
+	/**
+	 * Gets a site using id and isDeleted fields
+	 * 
+	 * @param siteId site id
+	 * @return Site entity
+	 */
+	@PostMapping(value = "/site/{id}")
+	public Site getSiteById(@PathVariable("id") Long siteId) {
+		return siteService.getSiteById(siteId);
 	}
 
 

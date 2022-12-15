@@ -8,11 +8,13 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -244,4 +246,26 @@ public class UserController {
 		userService.clearApiPermissions();
 		return new SuccessResponse<>(SuccessCode.API_PERMISSION_CLEARED, Constants.API_ROLES_MAP_CLEARED, HttpStatus.OK);
 	}
+	
+	/**
+	 * To get Users based on organization Id.
+	 * 
+	 * @param tenantIds
+	 * @return
+	 */
+	@PostMapping("/get-by-tenants")
+	public List<User> getUsersByTenantIds(@RequestBody List<Long> tenantIds) {
+		return userService.getUsersByTenantIds(tenantIds);
+	}
+	
+	/**
+	 * To check if the session is expired 
+	 * 
+	 * @return session status
+	 */
+	@PostMapping("/validate")
+	public ResponseEntity<String> validateSession() {
+		return ResponseEntity.ok().body(Constants.SESSSION_ALIVE);
+	}
+
 }

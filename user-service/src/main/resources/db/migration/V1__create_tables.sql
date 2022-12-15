@@ -301,7 +301,7 @@ CREATE TABLE site (
   sub_county_id BIGINT, FOREIGN KEY (sub_county_id) REFERENCES sub_county(id),
   account_id BIGINT, FOREIGN KEY (account_id) REFERENCES account(id),
   operating_unit_id BIGINT, FOREIGN KEY (operating_unit_id) REFERENCES operating_unit(id),
-  culture_id BIGINT, FOREIGN KEY (account_id) REFERENCES account(id),
+  culture_id BIGINT, FOREIGN KEY (culture_id) REFERENCES culture(id),
   tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
   created_by BIGINT NOT NULL,
   updated_by BIGINT NOT NULL,
@@ -396,7 +396,7 @@ CREATE TABLE patient (
   landmark VARCHAR,
   occupation VARCHAR,
   level_of_education VARCHAR,
-  insurance_status BOOLEAN,
+  insurance_status VARCHAR,
   insurance_type VARCHAR,
   other_insurance VARCHAR,
   insurance_id VARCHAR,
@@ -477,6 +477,7 @@ CREATE TABLE screening_log (
   preferred_name VARCHAR,
   is_family_diabetes_history BOOLEAN,
   is_before_gestational_diabetes BOOLEAN,
+  screening_date_time TIMESTAMP WITH TIME ZONE DEFAULT,
   operating_unit_id BIGINT, FOREIGN KEY (operating_unit_id) REFERENCES operating_unit(id),
   account_id BIGINT, FOREIGN KEY (account_id) REFERENCES account(id),
   country_id BIGINT, FOREIGN KEY (country_id) REFERENCES country(id),
@@ -1481,4 +1482,22 @@ CREATE TABLE patient_symptom (
   is_deleted BOOLEAN DEFAULT false
 );
 
+
+CREATE TABLE public.email_template (
+    id serial4 NOT NULL,
+    "type" varchar NULL,
+    vm_content varchar NULL,
+    body varchar NULL,
+    title varchar NULL,
+    app_url varchar NULL,
+    CONSTRAINT email_template_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.email_template_value (
+    id serial4 NOT NULL,
+    "name" varchar NULL,
+    email_template_id int8 NULL,
+    CONSTRAINT email_template_value_pkey PRIMARY KEY (id),
+    CONSTRAINT email_template_value_email_template_id_fkey FOREIGN KEY (email_template_id) REFERENCES public.email_template(id)
+);
 

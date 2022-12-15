@@ -28,4 +28,12 @@ public interface SiteRepository extends JpaRepository<Site, Long> {
 	 * @return List of site entities
 	 */
 	public List<Site> findByOperatingUnitIdAndIsDeletedFalse(Long operatingUnitId);
+
+	/**
+	 * Gets a site using id and isDeleted fields
+	 * 
+	 * @param siteId site id
+	 * @return Site entity
+	 */
+	public Site findByIdAndIsDeletedFalse(Long siteId);
 }

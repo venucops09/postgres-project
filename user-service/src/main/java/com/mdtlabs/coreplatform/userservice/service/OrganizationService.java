@@ -1,7 +1,9 @@
 package com.mdtlabs.coreplatform.userservice.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.mdtlabs.coreplatform.common.model.dto.spice.OrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
 
 
@@ -74,7 +76,30 @@ public interface OrganizationService {
 	 */
 	Organization getOrganizationByName(String name);
 	
+	/**
+	 * Gets user tenant Ids using user Id.
+	 * 
+	 * @param userId - user ID
+	 * @return List<Long> - List of user tenantIds.
+	 */
 	List<Long> getUserTenants(long userId);
+
+	/**
+	 * Creates an organization with users.
+	 * 
+	 * @param organization - organization details with users
+	 * @return Organization - organization entity.
+	 */
+	Organization createOrganization(OrganizationDTO organization);
+
+	/**
+	 * Gets child organization IDs of an organization.
+	 * 
+	 * @param tenantId organization tenantId
+	 * @param formName organization form name
+	 * @return Map<String, List<Long>> - collection of child organization IDs.
+	 */
+	Map<String, List<Long>> getChildOrganizations(long tenantId, String formName);
 
 
 }

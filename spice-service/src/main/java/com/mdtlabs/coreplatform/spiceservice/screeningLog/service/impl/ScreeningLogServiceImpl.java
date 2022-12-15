@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.UnitConstants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
 import com.mdtlabs.coreplatform.common.exception.SpiceValidation;
@@ -17,12 +18,14 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.GlucoseLogDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ScreeningLogDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ScreeningResponseDTO;
+import com.mdtlabs.coreplatform.common.model.entity.Site;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.MentalHealth;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
 import com.mdtlabs.coreplatform.common.model.entity.spice.ScreeningLog;
 import com.mdtlabs.coreplatform.common.util.UnitConversion;
+import com.mdtlabs.coreplatform.spiceservice.ApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.customizedmodules.service.CustomizedModulesService;
 import com.mdtlabs.coreplatform.spiceservice.glucoseLog.service.GlucoseLogService;
@@ -59,6 +62,9 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
 	private MentalHealthService mentalHealthService;
 
     private ModelMapper modelMapper = new ModelMapper();
+
+    @Autowired
+    private ApiInterface apiInterface;
 
     /**
      * {@inheritDoc}
@@ -176,6 +182,7 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
         // screeningLog.setCvdRiskScoreDisplay(screeningLogDTO.getCvdRiskScoreDisplay());
         screeningLog.setDeviceInfoId(screeningLogDTO.getDeviceInfoId());
         screeningLog.setCategory(screeningLogDTO.getCategory());
+        screeningLog.setScreeningDateTime(screeningLogDTO.getScreeningDateTime());
         // screeningLog.setUpdatedFromEnrollment(screeningLogDTO.isUpdatedFromEnrollment());
         if (!Objects.isNull(screeningLogDTO.getPhq4())) {
             screeningLog.setPhq4score(screeningLogDTO.getPhq4().getPhq4Score());
@@ -223,8 +230,12 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
                 || 2 > screeningLog.getBpLog().getBpLogDetails().size()) {
             throw new BadRequestException(8001);
         }
+		String authToken = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
+		Site site = apiInterface.getSiteById(authToken, screeningLog.getSiteId());
+		if (Objects.isNull(site)) {
+			throw new DataNotAcceptableException(9006);
+		}
         //TODO: device id verification
-        //TODO: validate site 
         //TODO: Update site details to data object for using in screening creation
 
     }
@@ -342,5 +353,4 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
 
         return screeningResponse;
     }
-
 }

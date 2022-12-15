@@ -34,7 +34,9 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	public static final String GET_USER_BY_ID = "select user from User as user where user.id =:userId and user.isActive =:status";
 	public static final String GET_USER_BY_USERNAME = "select user from User as user where user.username =:username and user.isActive =:status";
 	public static final String GET_USERS_BY_USERNAME_NOT_BY_ID = "select user from User as user where user.isActive =:status and user.username =:username and user.id !=:userId";
-
+	public static final String GET_USERS_BY_TENANT_IDS = "select user from User user join user.organizations as org where org.id in (:tenantIds)";
+//														"select program from Program program join program.sites as site where site.id in (:siteIds)";
+	
 	/**
 	 * This method is used to get user with respect to id
 	 * 
@@ -78,4 +80,27 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 	 */
 	@Query(value = GET_ALL_USERS)
 	List<User> getUsers(@Param(FieldConstants.STATUS) Boolean status);
+
+	/**
+	 * 
+	 * @param existingUsersIds
+	 * @return
+	 */
+	public List<User> findByIsActiveTrueAndIdIn(List<Long> existingUsersIds);
+
+	/**
+	 * 
+	 * @param newUserEmails
+	 * @return
+	 */
+	public List<User> findByUsernameIn(List<String> newUserEmails);
+
+	/**
+	 * 
+	 * @param tenantIds
+	 * @return
+	 */
+	@Query(value = GET_USERS_BY_TENANT_IDS)
+	public List<User> findUsersByTenantIds(@Param("tenantIds") List<Long> tenantIds);
+
 }

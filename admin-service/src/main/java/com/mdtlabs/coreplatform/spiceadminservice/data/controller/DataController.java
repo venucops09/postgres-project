@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.logger.SpiceLogger;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryListDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryOrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SubCountyDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
@@ -137,7 +139,7 @@ public class DataController {
      * @author karthick M
      */
     @RequestMapping(method = RequestMethod.POST, value = "/country")
-    public SuccessResponse<Country> createCountry(@Valid @RequestBody CountryDTO countryDTO) {
+    public SuccessResponse<Country> createCountry(@Valid @RequestBody CountryOrganizationDTO countryDTO) {
         dataService.createCountry(countryDTO);
         return new SuccessResponse<>(SuccessCode.COUNTRY_SAVE,
                 HttpStatus.CREATED);
@@ -180,9 +182,9 @@ public class DataController {
      * @author Karthick M
      */
     @RequestMapping(method = RequestMethod.GET, value = "/country/{id}")
-    public SuccessResponse<Country> getCountryById(@PathVariable(value = "id") long countryId) {
+    public SuccessResponse<CountryOrganizationDTO> getCountryById(@PathVariable(value = "id") long countryId) {
         SpiceLogger.logInfo("Getting a Country details by on ID");
-        return new SuccessResponse<Country>(SuccessCode.GET_COUNTRY, dataService.getCountryById(countryId),
+        return new SuccessResponse<CountryOrganizationDTO>(SuccessCode.GET_COUNTRY, dataService.getCountryById(countryId),
                 HttpStatus.OK);
     }
 
@@ -233,15 +235,38 @@ public class DataController {
                 HttpStatus.OK);
     }
     
+    /**
+     * Gets country list with child organization counts
+     * 
+     * @param requestDTO request data
+     * @return List of countryListDTO
+     */
+    @GetMapping(value = "/country/list")
+    public SuccessResponse<List<CountryListDTO>> getCountryList(@RequestBody RequestDTO requestDTO) {
+    	return new SuccessResponse<List<CountryListDTO>>(SuccessCode.GET_COUNTRY, dataService.getCountryList(requestDTO), HttpStatus.OK);
+    }
+    
+    /**
+     * To get add subcounty list based on country id.
+     * 
+     * @param countryId country Id
+     * @return List of Subcounty
+     */
 	@GetMapping(value = "/subcounty-list/{id}")
 	public List<Subcounty> getAllSubCountyByCountryId(@PathVariable(value = "id") long countryId) {
 		return dataService.getAllSubCountyByCountryId(countryId);
 		
 	}
 	
+	/**
+	 * Gets country by Id without users.
+	 * 
+	 * @param countryId country Id
+	 * @return Country entity
+	 */
 	@GetMapping(value = "/get-country/{id}")
 	public Country getCountry(@PathVariable(value = "id") long countryId) {
-		return dataService.getCountryById(countryId);
+		return dataService.findCountryById(countryId);
 	}
 
 }

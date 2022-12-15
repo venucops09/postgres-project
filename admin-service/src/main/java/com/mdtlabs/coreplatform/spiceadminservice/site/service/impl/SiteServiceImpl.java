@@ -89,4 +89,11 @@ public class SiteServiceImpl implements SiteService {
 		return siteRepository.findByOperatingUnitIdAndIsDeletedFalse(operatingUnitId);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Site getSiteById(Long siteId) {
+		return siteRepository.findByIdAndIsDeletedFalse(siteId);
+	}
+
 }

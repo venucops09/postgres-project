@@ -1,6 +1,7 @@
 package com.mdtlabs.coreplatform.userservice.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 
@@ -73,5 +74,13 @@ public interface RoleService {
 	 * @return Role - role entity
 	 */
 	Role getRoleByName(String name);
+
+	/**
+	 * To get list of roles based on list of role names
+	 * 
+	 * @param roles - list of role names
+	 * @return Set<Role> - List of Role entity
+	 */
+	Set<Role> getRolesByName(List<String> roles);
 
 }

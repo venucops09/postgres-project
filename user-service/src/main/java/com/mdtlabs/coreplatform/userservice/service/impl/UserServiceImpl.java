@@ -5,6 +5,7 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,12 +41,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.userservice.repository.UserRepository;
+import com.mdtlabs.coreplatform.userservice.service.RoleService;
 import com.mdtlabs.coreplatform.userservice.service.UserService;
 import com.mdtlabs.coreplatform.AuthenticationFilter;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.ErrorConstants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
+import com.mdtlabs.coreplatform.common.exception.BadRequestException;
+import com.mdtlabs.coreplatform.common.exception.DataConflictException;
+import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
+import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
 import com.mdtlabs.coreplatform.common.exception.Validation;
 
 import io.jsonwebtoken.Claims;
@@ -87,12 +93,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private GenericRepository<UserToken> genericRepository;
-	
+
 	@Autowired
 	private AuthenticationFilter authenticationFilter;
+
+	@Autowired
+	private RoleService roleService;
 
 	private ModelMapper modelMapper = new ModelMapper();
 
@@ -174,7 +183,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				deletedUser = userRepository.save(user);
 				return Boolean.TRUE;
 			}
-			return (deletedUser ==null)? Boolean.FALSE: Boolean.TRUE;
+			return (deletedUser == null) ? Boolean.FALSE : Boolean.TRUE;
 		}
 		throw new Validation(1011);
 	}
@@ -327,15 +336,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	/**
 	 * This method is used to construct mail for forget password trigger
 	 * 
-	 * @param user - user entity
-	 * @param jweToken - jwe token
-	 * @param data - mail content
-	 * @param emailDto - email dto
+	 * @param user                  - user entity
+	 * @param jweToken              - jwe token
+	 * @param data                  - mail content
+	 * @param emailDto              - email dto
 	 * @param emailTemplateResponse - email template response
 	 */
 	private void constructMail(User user, String jwtToken, Map<String, String> data, EmailDTO emailDto,
 			ResponseEntity<Map> emailTemplateResponse) {
-		EmailTemplate emailTemplate= modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY),
+		EmailTemplate emailTemplate = modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY),
 				EmailTemplate.class);
 		for (EmailTemplateValue emailTemplateValue : emailTemplate.getEmailTemplateValues()) {
 			if (Constants.APP_URL_EMAIL.equals(emailTemplateValue.getName())) {
@@ -351,8 +360,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		emailDto.setSubject(Constants.FORGOT_NOTIFICATION_SUBJECT);
 		emailDto.setTo(user.getUsername());
 		emailDto.setFrom(mailUser);
-		new Notification(Constants.FORGOT_NOTIFICATION_SUBJECT, Constants.FORGOT_PASSWORD,
-				user.getUsername());
+		new Notification(Constants.FORGOT_NOTIFICATION_SUBJECT, Constants.FORGOT_PASSWORD, user.getUsername());
 	}
 
 	/**
@@ -366,7 +374,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 */
 	private void constructEmail(User user, String jwtToken, Map<String, String> data, EmailDTO emailDto,
 			ResponseEntity<Map> emailTemplateResponse) {
-		EmailTemplate emailTemplate = modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY), EmailTemplate.class);
+		EmailTemplate emailTemplate = modelMapper.map(emailTemplateResponse.getBody().get(FieldConstants.ENTITY),
+				EmailTemplate.class);
 		for (EmailTemplateValue emailTemplateValue : emailTemplate.getEmailTemplateValues()) {
 			if (Constants.APP_URL_EMAIL.equalsIgnoreCase(emailTemplateValue.getName())) {
 				data.put(Constants.APP_URL_EMAIL, appUrl + jwtToken);
@@ -610,7 +619,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 * @param password - password of user
 	 * @throws NoSuchAlgorithmException
 	 */
-	private void checkUsernameSameAsPassword(String username, String password) throws NoSuchAlgorithmException { 
+	private void checkUsernameSameAsPassword(String username, String password) throws NoSuchAlgorithmException {
 		String salt = Constants.SALT_KEY;
 		MessageDigest md = MessageDigest.getInstance(Constants.HASHING_CODE);
 		md.update(salt.getBytes(StandardCharsets.UTF_8));
@@ -624,9 +633,88 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new Validation(1014);
 		}
 	}
-	
+
 	@Override
 	public void clearApiPermissions() {
 		authenticationFilter.apiPermissionMap.clear();
 	}
+
+	/**
+	 * This method is used for validating user list.
+	 * 
+	 * @param parentOrganizationId parent organization id
+	 * @param requestUsers         List of users to validate
+	 * @return List<user> - List of user entities
+	 */
+	public List<User> validateUser(Long parentOrganizationId, List<User> requestUsers) {
+		if (Objects.isNull(requestUsers) || 0 == requestUsers.size()) {
+			throw new DataNotAcceptableException(10000);
+		}
+
+		List<User> validatedUsers = new ArrayList<>();
+		List<Long> existingUsersIds = new ArrayList<>();
+		List<String> newUserEmails = new ArrayList<>();
+
+		for (User user : requestUsers) {
+			if (Objects.isNull(user.getId()) || 0 == user.getId()) {
+				newUserEmails.add(user.getUsername());
+			} else {
+				existingUsersIds.add(user.getId());
+			}
+		}
+
+		if (!Objects.isNull(parentOrganizationId) && !existingUsersIds.isEmpty()) {
+			validatedUsers = userRepository.findByIsActiveTrueAndIdIn(existingUsersIds);
+			if (validatedUsers.size() != existingUsersIds.size()) {
+				throw new DataNotFoundException(1102);
+			}
+		} else if (Objects.isNull(parentOrganizationId) && !existingUsersIds.isEmpty()) {
+			throw new DataConflictException(1103);
+		}
+
+		if (!Objects.isNull(newUserEmails) && !newUserEmails.isEmpty()) {
+			validatedUsers = userRepository.findByUsernameIn(newUserEmails);
+			if (!Objects.isNull(validatedUsers) && !validatedUsers.isEmpty()) {
+				throw new DataConflictException(1103);
+			}
+			validatedUsers = null;
+		}
+		return validatedUsers;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<User> addOrganizationUsers(List<User> users, List<String> roles, boolean isSiteUser) {
+		if (Objects.isNull(users) || users.isEmpty()) {
+			throw new BadRequestException(10000);
+		}
+
+		if (isSiteUser) {
+			users.forEach(user -> user.setForgetPasswordCount(Constants.ZERO));
+		} else {
+			Set<Role> userRoles = roleService.getRolesByName(roles);
+			if (userRoles.isEmpty()) {
+				throw new DataNotFoundException(2002);
+			}
+			users.forEach(user -> {
+				user.setRoles(userRoles);
+				user.setForgetPasswordCount(Constants.ZERO);
+			});
+		}
+		users = userRepository.saveAll(users);
+		if (!Objects.isNull(users) && !users.isEmpty()) {
+			users.forEach(user -> forgotPassword(user.getUsername(), Boolean.TRUE));
+		}
+		return users;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<User> getUsersByTenantIds(List<Long> tenantIds) {
+		List<User> users = userRepository.findUsersByTenantIds(tenantIds);
+		return users;
+	}
+
 }

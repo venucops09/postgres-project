@@ -1,6 +1,7 @@
 package com.mdtlabs.coreplatform.userservice.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -70,5 +71,13 @@ public class RoleServiceImpl implements RoleService {
 	public Role getRoleByName(String name) {
 		return roleRepository.getRoleByName(name);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<Role> getRolesByName(List<String> roleNames) {
+		return roleRepository.findByIsDeletedFalseAndIsActiveTrueAndNameIn(roleNames);
+	}
+
 
 }

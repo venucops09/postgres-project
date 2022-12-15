@@ -79,4 +79,11 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	@Query(value = GET_ROLE_BY_NAME)
 	public Role getRoleByName(@Param(FieldConstants.NAME) String name);
 
+	/**
+	 * To get list of roles using list of role name.
+	 * @param roleNames - list of role names
+	 * @return Set<Role> - Set of Role Entities
+	 */
+	public Set<Role> findByIsDeletedFalseAndIsActiveTrueAndNameIn(List<String> roleNames);
+
 }

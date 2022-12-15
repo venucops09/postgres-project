@@ -1,32 +1,48 @@
 package com.mdtlabs.coreplatform.spiceadminservice.data.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.google.common.reflect.TypeToken;
+import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataConflictException;
 import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryListDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.CountryOrganizationDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.OrganizationDTO;
+import com.mdtlabs.coreplatform.common.model.dto.spice.UserOrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
+import com.mdtlabs.coreplatform.common.model.entity.Organization;
 import com.mdtlabs.coreplatform.common.model.entity.Subcounty;
+import com.mdtlabs.coreplatform.common.model.entity.User;
+import com.mdtlabs.coreplatform.common.util.Pagination;
+import com.mdtlabs.coreplatform.spiceadminservice.UserApiInterface;
 import com.mdtlabs.coreplatform.spiceadminservice.data.repository.CountryRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.data.repository.CountyRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.data.repository.SubCountyRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.data.service.DataService;
+import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 
 /**
  * This class is responsible for performing operations on Country, county and
@@ -45,29 +61,47 @@ public class DataServiceImpl implements DataService {
 
 	@Autowired
 	SubCountyRepository subCountyRepository;
-	
+
+	@Autowired
+	UserApiInterface userApiInterface;
+
 	ModelMapper modelMapper = new ModelMapper();
+
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Country createCountry(CountryDTO countryDTO) {
+	public Country createCountry(CountryOrganizationDTO countryDTO) {
 		if (Objects.isNull(countryDTO)) {
 			throw new BadRequestException(12006);
 		} else {
+			String token = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
 			List<Country> existingCountryByCodeOrName = countryRepository
 					.findByCountryCodeOrName(countryDTO.getCountryCode(), countryDTO.getName());
 			if (!existingCountryByCodeOrName.isEmpty()) {
 				throw new DataConflictException(19001);
 			}
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-			Country country = modelMapper.map(countryDTO, new TypeToken<Country>(){}.getType());
-//			List<User> users = countryDTO.getUsers().stream().map(user -> {
-//				user.setRoles(user.getRoles().add(new Role(Constants.ROLE_REGION_ADMIN)));
-//				return user;
-//			}).collect(Collectors.toList());
+			Country country = modelMapper.map(countryDTO, new TypeToken<Country>() {
+			}.getType());
 			Country countryResponse = countryRepository.save(country);
+
+			Organization organization = new Organization();
+			System.out.println("token in create country " + token);
+			organization.setFormName(Constants.COUNTRY);
+			organization.setName(countryResponse.getName());
+			organization.setFormDataId(countryResponse.getId());
+			OrganizationDTO organizationDTO = new OrganizationDTO();
+			organizationDTO.setOrganization(organization);
+			organizationDTO.setRoles(List.of(Constants.ROLE_REGION_ADMIN));
+			organizationDTO.setSiteOrganization(Constants.BOOLEAN_FALSE);
+			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+			organizationDTO.setUsers(modelMapper.map(countryDTO.getUsers(), new TypeToken<Country>() {
+			}.getType()));
+			ResponseEntity<Organization> response = userApiInterface.createOrganization(token, organizationDTO);
+			countryResponse.setTenantId(response.getBody().getId());
+			countryResponse = countryRepository.save(countryResponse);
 			return countryResponse;
 		}
 	}
@@ -156,12 +190,21 @@ public class DataServiceImpl implements DataService {
 	 * {@inheritDoc}}
 	 */
 	@Override
-	public Country getCountryById(long countryId) {
+	public CountryOrganizationDTO getCountryById(long countryId) {
+		String token = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
 		Country country = countryRepository.findByIdAndIsDeleted(countryId, false);
 		if (Objects.isNull(country)) {
 			throw new DataNotFoundException(19004);
 		}
-		return country;
+		CountryOrganizationDTO countryOrganizationDTO = new CountryOrganizationDTO();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		countryOrganizationDTO = modelMapper.map(country, new TypeToken<CountryOrganizationDTO>() {
+		}.getType());
+		List<User> users = userApiInterface.getUsersByTenantIds(token, List.of(country.getTenantId()));
+		countryOrganizationDTO.setUsers(modelMapper.map(users, new TypeToken<List<UserOrganizationDTO>>() {
+		}.getType()));
+		System.out.println("countryOrganizationDTO   " + countryOrganizationDTO);
+		return countryOrganizationDTO;
 	}
 
 	/**
@@ -228,9 +271,59 @@ public class DataServiceImpl implements DataService {
 		return subCountyRepository.getAllSubCounty(countryId, countyId);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Subcounty> getAllSubCountyByCountryId(Long countryId) {
 		return subCountyRepository.findByCountryId(countryId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<CountryListDTO> getCountryList(RequestDTO requestDTO) {
+		String searchTerm = requestDTO.getSearchTerm();
+		Pageable pageable = Pagination.setPagination(requestDTO.getPageNumber(), requestDTO.getLimit());
+
+		if (!Objects.isNull(searchTerm) && 0 > searchTerm.length()) {
+			System.out.println("inside regex replace block");
+			searchTerm = searchTerm.replaceAll("[^a-zA-Z0-9]*", "");
+		}
+		List<Country> countries = countryRepository.searchCountries(searchTerm, pageable).stream()
+				.collect(Collectors.toList());
+
+		System.out.println("countries -------"+ countries);
+		List<CountryListDTO> countryListDTOs = new ArrayList<>();
+		String token = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
+		if (!countries.isEmpty()) {
+			for (Country country : countries) {
+				CountryListDTO countryListDTO = new CountryListDTO();
+				countryListDTO.setId(country.getId());
+				countryListDTO.setName(country.getName());
+				Map<String, List<Long>> childOrgList = userApiInterface.getChildOrganizations(token,country.getTenantId(), Constants.COUNTRY);
+				System.out.println("childorgs list " + childOrgList);
+				
+				countryListDTO.setAccountsCount(childOrgList.get("accountIds").size());
+				countryListDTO.setOUCount(childOrgList.get("operatingUnitIds").size());
+				countryListDTO.setSiteCount(childOrgList.get("siteIds").size());
+				countryListDTOs.add(countryListDTO);
+			}
+		}
+		
+		System.out.println("country list after processing ---- " + countryListDTOs);
+		return countryListDTOs;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */	
+	public Country findCountryById(Long countryId) {
+		Country country = countryRepository.findByIdAndIsDeleted(countryId, false);
+		if (Objects.isNull(country)) {
+			throw new DataNotFoundException(19004);
+		}
+		return country;
 	}
 
 }

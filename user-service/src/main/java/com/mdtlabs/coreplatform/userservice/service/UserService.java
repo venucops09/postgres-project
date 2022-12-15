@@ -6,7 +6,6 @@ import java.util.Map;
 import com.mdtlabs.coreplatform.common.model.entity.User;
 import com.mdtlabs.coreplatform.common.model.entity.UserToken;
 
-
 /**
  * <p>
  * This an interface class for user module you can implemented this class in any
@@ -143,11 +142,27 @@ public interface UserService {
 	 * @return Boolean - true or false of reset password limit exceed state
 	 */
 	boolean resetPasswordLimitExceed(String username);
-	
+
 	/**
 	 * This method is used to clear the api role permission map
 	 * 
 	 */
 	void clearApiPermissions();
+
+	/**
+	 * 
+	 * @param users
+	 * @param roles
+	 * @param isSiteUser
+	 * @return
+	 */
+	List<User> addOrganizationUsers(List<User> users, List<String> roles, boolean isSiteUser);
+
+	/**
+	 * 
+	 * @param tenantIds
+	 * @return
+	 */
+	List<User> getUsersByTenantIds(List<Long> tenantIds);
 
 }

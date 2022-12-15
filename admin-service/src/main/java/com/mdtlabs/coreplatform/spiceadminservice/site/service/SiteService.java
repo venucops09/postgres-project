@@ -51,4 +51,12 @@ public interface SiteService {
 	 */
 	public List<Site> getSitesByOperatingUnitId(Long operatingUnitId);
 
+	/**
+	 * Gets a site using id and isDeleted fields
+	 * 
+	 * @param siteId site id
+	 * @return Site entity
+	 */
+	public Site getSiteById(Long siteId);
+
 }
