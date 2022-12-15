@@ -1,13 +1,21 @@
 package com.mdtlabs.coreplatform.spiceservice.patient.service.impl;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.sql.DataSource;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 
@@ -33,6 +41,9 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.PregnancyRequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.PrescriberDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RedRiskDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SmsDTO;
+import com.mdtlabs.coreplatform.common.model.entity.Country;
+import com.mdtlabs.coreplatform.common.model.entity.Site;
+import com.mdtlabs.coreplatform.common.model.entity.User;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Lifestyle;
@@ -46,6 +57,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PrescriptionHistory;
 import com.mdtlabs.coreplatform.common.model.entity.spice.ScreeningLog;
 import com.mdtlabs.coreplatform.common.util.CommonUtil;
 import com.mdtlabs.coreplatform.common.util.UnitConversion;
+import com.mdtlabs.coreplatform.spiceservice.ApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.NotificationApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.UserApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
@@ -102,110 +114,155 @@ public class PatientServiceImpl implements PatientService {
 	private NotificationApiInterface notificationApiInterface;
 	@Autowired
 	private UserApiInterface userApiInterface;
-	
+	@Autowired
+	private ApiInterface adminApiInterface;
+
 	private ModelMapper mapper = new ModelMapper();
+
+	@Autowired
+	DataSource dataSource;
+
+	@Value("${app.send-enrollment-notification}")
+	private boolean SEND_ENROLLMENT_NOTIFICATON;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public EnrollmentResponseDTO createPatient(EnrollmentRequestDTO data) {
-        // TODO: Site validation
+		// TODO: Site validation
 //        validateRequestData(data);
-        EnrollmentResponseDTO response = new EnrollmentResponseDTO();
+		EnrollmentResponseDTO response = new EnrollmentResponseDTO();
 
-        String searchNationalId = data.getBioData().getNationalId().replaceAll("[^a-zA-Z0-9]*", "");
-        PatientTracker existingPatientTracker = (!Objects.isNull(data.getPatientTrackerId()))
-                ? patientTrackerService.getPatientTrackerById(data.getPatientTrackerId())
-                : patientTrackerService.findByNationalIdIgnoreCase(searchNationalId);
+		String searchNationalId = data.getBioData().getNationalId().replaceAll("[^a-zA-Z0-9]*", "");
+		PatientTracker existingPatientTracker = (!Objects.isNull(data.getPatientTrackerId()))
+				? patientTrackerService.getPatientTrackerById(data.getPatientTrackerId())
+				: patientTrackerService.findByNationalIdIgnoreCase(searchNationalId);
 
-        if (!Objects.isNull(existingPatientTracker) && existingPatientTracker.getPatientStatus().equals("ENROLLED")) {
-            throw new DataConflictException(3005); // patient Already Enrolled
-        }
+		if (!Objects.isNull(existingPatientTracker) && existingPatientTracker.getPatientStatus().equals("ENROLLED")) {
+			throw new DataConflictException(3005); // patient Already Enrolled
+		}
 
-        Patient patient = constructPatientData(data.getBioData(), data);
-        Validator validator;
-//        validator.validate(patient, );
-        Patient enrolledPatient = patientRepository.save(patient);
-        PatientTracker patientTracker = null;
-        String riskLevel = null;
-        if (!Objects.isNull(existingPatientTracker)) {
-            patientTracker = constructPatientTracker(enrolledPatient, data,
-                    existingPatientTracker);
-        } else {
-            patientTracker = constructPatientTracker(enrolledPatient, data, new PatientTracker());
-            patientTracker = patientTrackerService.addOrUpdatePatientTracker(patientTracker);
-        }
+		Patient patient = constructPatientData(data.getBioData(), data);
 
-        if (!Objects.isNull(data.getPhq4())) {
-            MentalHealth mentalHealth = mapper.map(data.getPhq4(),
-            new TypeToken<MentalHealth>() {
-            }.getType());
-            mentalHealthService.setPHQ4Score(mentalHealth);
-            mentalHealth.setPatientTrackId(patientTracker.getId());
-            patientTracker.setPhq4RiskLevel(mentalHealth.getPhq4RiskLevel());
-            patientTracker.setPhq4Score(mentalHealth.getPhq4Score());
-            patientTracker.setPhq4FirstScore(mentalHealth.getPhq4FirstScore());
-            patientTracker.setPhq4SecondScore(mentalHealth.getPhq4SecondScore());
-            mentalHealth = mentalHealthService.createMentalHealth(mentalHealth);
-            response.setPhq4(new MentalHealthDTO(mentalHealth.getPhq4RiskLevel(), mentalHealth.getPhq4Score()));
-        }
+		Patient enrolledPatient = patientRepository.save(patient);
 
-        if (!Objects.isNull(patientTracker) && patientTracker.isInitialReview() == Constants.BOOLEAN_TRUE) {
-            RedRiskDTO redRiskDTO = new RedRiskDTO();
-            // TODO : convert glucose unit from MgDl to Mmol
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(dataSource).withFunctionName("update_virtual_id");
+
+		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", enrolledPatient.getId())
+				.addValue("in_tenant_id", enrolledPatient.getTenantId());
+		Long virtualId = jdbcCall.executeFunction(Long.class, in);
+		if (Objects.isNull(virtualId) || virtualId == -1) {
+			patient.setDeleted(Constants.BOOLEAN_TRUE);
+			patientRepository.save(patient);
+			return null;
+		}
+		PatientTracker patientTracker = null;
+		String riskLevel = null;
+		if (!Objects.isNull(existingPatientTracker)) {
+			patientTracker = constructPatientTracker(enrolledPatient, data, existingPatientTracker);
+		} else {
+			patientTracker = constructPatientTracker(enrolledPatient, data, new PatientTracker());
+			patientTracker = patientTrackerService.addOrUpdatePatientTracker(patientTracker);
+		}
+
+		if (!Objects.isNull(data.getPhq4())) {
+			MentalHealth mentalHealth = mapper.map(data.getPhq4(), new TypeToken<MentalHealth>() {
+			}.getType());
+			mentalHealthService.setPHQ4Score(mentalHealth);
+			mentalHealth.setPatientTrackId(patientTracker.getId());
+			patientTracker.setPhq4RiskLevel(mentalHealth.getPhq4RiskLevel());
+			patientTracker.setPhq4Score(mentalHealth.getPhq4Score());
+			patientTracker.setPhq4FirstScore(mentalHealth.getPhq4FirstScore());
+			patientTracker.setPhq4SecondScore(mentalHealth.getPhq4SecondScore());
+			mentalHealth = mentalHealthService.createMentalHealth(mentalHealth);
+			response.setPhq4(new MentalHealthDTO(mentalHealth.getPhq4RiskLevel(), mentalHealth.getPhq4Score()));
+		}
+
+		if (!Objects.isNull(patientTracker) && patientTracker.isInitialReview() == Constants.BOOLEAN_TRUE) {
+			RedRiskDTO redRiskDTO = new RedRiskDTO();
+			// TODO : convert glucose unit from MgDl to Mmol
 //            if (data.getGlucoseLog().getGlucoseUnit().equals(Constants.MG_DL)) {
 //                patientTracker.setGlucoseValue(UnitConversion.convertMgDlToMmol(data.getGlucoseLog().getGlucoseValue()));
 //            }
-            riskLevel = RedRiskService.getPatientRiskLevel(patientTracker, redRiskDTO);
-        }
+			riskLevel = RedRiskService.getPatientRiskLevel(patientTracker, redRiskDTO);
+		}
 
-        if (!Objects.isNull(riskLevel)) {
-            patientTracker.setRiskLevel(riskLevel);
-        }
-        BpLog bpLog = constructBpLogData(data);
-        bpLog = bpLogService.addBpLog(bpLog, Constants.BOOLEAN_FALSE);
-        GlucoseLog glucoseLog = null;
-        if (!Objects.isNull(data.getGlucoseLog())) {
-            glucoseLog = constructGlucoseLogData( data);
-            glucoseLog.setPatientTrackId(patientTracker.getId());
-            glucoseLog = glucoseLogService.addGlucoseLog(glucoseLog, Constants.BOOLEAN_FALSE);
-        }
+		if (!Objects.isNull(riskLevel)) {
+			patientTracker.setRiskLevel(riskLevel);
+		}
+		BpLog bpLog = constructBpLogData(data);
+		bpLog = bpLogService.addBpLog(bpLog, Constants.BOOLEAN_FALSE);
+		GlucoseLog glucoseLog = null;
+		if (!Objects.isNull(data.getGlucoseLog())) {
+			glucoseLog = constructGlucoseLogData(data);
+			glucoseLog.setPatientTrackId(patientTracker.getId());
+			glucoseLog = glucoseLogService.addGlucoseLog(glucoseLog, Constants.BOOLEAN_FALSE);
+		}
 
-        List<Map<String, String>> treatmentPlanDurations = patientTreatmentPlanService.createProvisionalTreatmentPlan(
-                patientTracker,
-                data.getCvdRiskLevel(), patient.getTenantId());
+		List<Map<String, String>> treatmentPlanDurations = patientTreatmentPlanService
+				.createProvisionalTreatmentPlan(patientTracker, data.getCvdRiskLevel(), patient.getTenantId());
 
-        if (!Objects.isNull(data.getCustomizedWorkflows()) && !data.getCustomizedWorkflows().isEmpty()) {
-            customizedModulesService.createCustomizedModules(data.getCustomizedWorkflows(), Constants.WORKFLOW_ENROLLMENT,
-                    patientTracker.getId());
-        }
-//      TODO: OutboundSMS
+		if (!Objects.isNull(data.getCustomizedWorkflows()) && !data.getCustomizedWorkflows().isEmpty()) {
+			customizedModulesService.createCustomizedModules(data.getCustomizedWorkflows(),
+					Constants.WORKFLOW_ENROLLMENT, patientTracker.getId());
+		}
 //        patientTrackerService.addOrUpdatePatientTracker(patientTracker);
-        PatientDetailDTO enrollmant = new PatientDetailDTO();
-        enrollmant.setFirstName(patient.getFirstName());
-        enrollmant.setMiddleName(patient.getMiddleName());
-        enrollmant.setId(patient.getId());
-        enrollmant.setGender(patient.getGender());
-        enrollmant.setAge(patient.getAge());
-        enrollmant.setLastName(patient.getLastName());
-        enrollmant.setNationalId(patient.getNationalId());
-        enrollmant.setEnrollmentDate(patient.getCreatedAt());
-        enrollmant.setProgramId(patient.getProgramId());
-        enrollmant.setVirutualId(112l);
-        enrollmant.setSiteName("siteName");
-        response.setEnrollment(enrollmant);
-        response.setBpLog(new BpLogDTO(bpLog.getAvgSystolic(), bpLog.getAvgDiastolic(), bpLog.getBmi(), bpLog.getCvdRiskLevel(), bpLog.getCvdRiskScore()));
-        response.setGlucoseLog(new GlucoseLogDTO(
-                    glucoseLog.getGlucoseType(),
-                    glucoseLog.getGlucoseValue(),
-                    glucoseLog.getGlucoseUnit()));
-        response.setTreatmentPlan(treatmentPlanDurations);
-        response.setConfirmDiagnosis(patientTracker.getConfirmDiagnosis());
-        response.setIsConfirmDiagnosis(patientTracker.getIsConfirmDiagnosis());
-        response.setProvisionalDiagnosis(patientTracker.getProvisionalDiagnosis());
-        return response;
-    }
-	
+
+		if (SEND_ENROLLMENT_NOTIFICATON) {
+			sendEnrollmentNotification(enrolledPatient);
+		}
+
+		PatientDetailDTO enrollmant = new PatientDetailDTO();
+		enrollmant.setFirstName(patient.getFirstName());
+		enrollmant.setMiddleName(patient.getMiddleName());
+		enrollmant.setId(patient.getId());
+		enrollmant.setGender(patient.getGender());
+		enrollmant.setAge(patient.getAge());
+		enrollmant.setLastName(patient.getLastName());
+		enrollmant.setNationalId(patient.getNationalId());
+		enrollmant.setEnrollmentDate(patient.getCreatedAt());
+		enrollmant.setProgramId(patient.getProgramId());
+		enrollmant.setVirutualId(virtualId);
+		Site site = adminApiInterface.getSiteById(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+				patient.getSiteId());
+		enrollmant.setSiteName(site.getName());
+		response.setEnrollment(enrollmant);
+		response.setBpLog(new BpLogDTO(bpLog.getAvgSystolic(), bpLog.getAvgDiastolic(), bpLog.getBmi(),
+				bpLog.getCvdRiskLevel(), bpLog.getCvdRiskScore()));
+		response.setGlucoseLog(new GlucoseLogDTO(glucoseLog.getGlucoseType(), glucoseLog.getGlucoseValue(),
+				glucoseLog.getGlucoseUnit()));
+		response.setTreatmentPlan(treatmentPlanDurations);
+		response.setConfirmDiagnosis(patientTracker.getConfirmDiagnosis());
+		response.setIsConfirmDiagnosis(patientTracker.getIsConfirmDiagnosis());
+		response.setProvisionalDiagnosis(patientTracker.getProvisionalDiagnosis());
+		return response;
+	}
+
+	/**
+	 * To send notification to the enrolled patient
+	 * 
+	 * @param enrolledPatient
+	 */
+	private void sendEnrollmentNotification(Patient enrolledPatient) {
+		SmsDTO smsDTO = new SmsDTO();
+		smsDTO.setFormDataId(enrolledPatient.getId());
+		String token = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
+		Country country = adminApiInterface.getCountryById(token, enrolledPatient.getCountryId());
+		Map<String, Object> map = notificationApiInterface
+				.getSMSTemplateValues(token, Constants.TEMPLATE_TYPE_ENROLL_PATIENT).getBody();
+		String body = map.get("body").toString();
+		List<String> keys = (List<String>) map.get("keys");
+		Map<String, String> values = new HashMap<>();
+		values.put("name", enrolledPatient.getFirstName() + " " + enrolledPatient.getLastName());
+		values.put("orgname", country.getName());
+		values.put("patientid", enrolledPatient.getId().toString());
+		body = CommonUtil.parseEmailTemplate(body, values);
+		smsDTO.setToPhoneNo(country.getCountryCode() + enrolledPatient.getPhoneNumber());
+		smsDTO.setTenantId(enrolledPatient.getTenantId());
+		smsDTO.setBody(body);
+		notificationApiInterface.saveOutBoundSMS(token, Arrays.asList(smsDTO));
+	}
+
 	/**
 	 * Validates enrollment request data.
 	 *
@@ -290,8 +347,8 @@ public class PatientServiceImpl implements PatientService {
 	private BpLog constructBpLogData(EnrollmentRequestDTO data) {
 		BpLog bpLog = data.getBplog();
 		if (!Objects.isNull(bpLog)) {
-			if (!Objects.isNull(bpLog.getBpLogId())) {
-				bpLog.setId(bpLog.getBpLogId());
+			if (!Objects.isNull(bpLog.getId())) {
+				bpLog.setId(bpLog.getId());
 				bpLog.setUpdatedFromEnrollment(Constants.BOOLEAN_TRUE);
 			}
 			bpLog.setCvdRiskLevel(data.getCvdRiskLevel());
@@ -436,61 +493,62 @@ public class PatientServiceImpl implements PatientService {
 	}
 
 	/**
-     * {@inheritDoc}
-     */
-    public PatientPregnancyDetails createPregnancyDetails(PregnancyRequestDTO requestData) {
-        isPatientTrackIdExist(requestData.getPatientTrackId());
-        requestData.setTemperature(convertTemperatureUnitForPregnancy(requestData, UnitConstants.METRIC));
-        PatientTracker patientTracker = patientTrackerService.getPatientTrackerById(requestData.getPatientTrackId());
-        PatientPregnancyDetails pregnancyDetails = constructPregnancyData(requestData);
-        pregnancyDetails.setPatientTrackId(patientTracker.getId());
-        pregnancyDetails = pregnancyDetailsRepository.save(pregnancyDetails);
-        updatePatientTrackForPregnancyDetails(patientTracker, requestData);
-        pregnancyDetails.setTemperature(convertTemperatureUnitForPregnancy(requestData, UnitConstants.IMPERIAL));
-        return pregnancyDetails;
-    }
+	 * {@inheritDoc}
+	 */
+	public PatientPregnancyDetails createPregnancyDetails(PregnancyRequestDTO requestData) {
+		isPatientTrackIdExist(requestData.getPatientTrackId());
+		requestData.setTemperature(convertTemperatureUnitForPregnancy(requestData, UnitConstants.METRIC));
+		PatientTracker patientTracker = patientTrackerService.getPatientTrackerById(requestData.getPatientTrackId());
+		PatientPregnancyDetails pregnancyDetails = constructPregnancyData(requestData);
+		pregnancyDetails.setPatientTrackId(patientTracker.getId());
+		pregnancyDetails = pregnancyDetailsRepository.save(pregnancyDetails);
+		updatePatientTrackForPregnancyDetails(patientTracker, requestData);
+		pregnancyDetails.setTemperature(convertTemperatureUnitForPregnancy(requestData, UnitConstants.IMPERIAL));
+		return pregnancyDetails;
+	}
 
-    /**
-     * Constructs PatientPregnancyDetails Object.
-     *
-     * @param requestData Request data with pregnancy details.
-     * @return Constructed pregnancy data.
-     * @author Niraimathi S
-     */
-    private PatientPregnancyDetails constructPregnancyData(PregnancyRequestDTO requestData) {
-        ModelMapper modelMapper = new ModelMapper();
-        PatientPregnancyDetails pregnancyDetails = modelMapper.map(requestData,
-                new TypeToken<PatientPregnancyDetails>() {
-                }.getType());
-        return pregnancyDetails;
-    }
+	/**
+	 * Constructs PatientPregnancyDetails Object.
+	 *
+	 * @param requestData Request data with pregnancy details.
+	 * @return Constructed pregnancy data.
+	 * @author Niraimathi S
+	 */
+	private PatientPregnancyDetails constructPregnancyData(PregnancyRequestDTO requestData) {
+		ModelMapper modelMapper = new ModelMapper();
+		PatientPregnancyDetails pregnancyDetails = modelMapper.map(requestData,
+				new TypeToken<PatientPregnancyDetails>() {
+				}.getType());
+		return pregnancyDetails;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public PatientPregnancyDetails getPregnancyDetails(GetRequestDTO requestData) {
-        isPatientTrackIdExist(requestData.getPatientTrackId());
-        PatientPregnancyDetails pregnancyDetails = null;
-        if (Objects.isNull(requestData.getPatientPregnancyId())) {
-            pregnancyDetails = pregnancyDetailsRepository
-                    .findByPatientTrackIdAndIsDeleted(requestData.getPatientTrackId(), Constants.BOOLEAN_FALSE);
+	/**
+	 * {@inheritDoc}
+	 */
+	public PatientPregnancyDetails getPregnancyDetails(GetRequestDTO requestData) {
+		isPatientTrackIdExist(requestData.getPatientTrackId());
+		PatientPregnancyDetails pregnancyDetails = null;
+		if (Objects.isNull(requestData.getPatientPregnancyId())) {
+			pregnancyDetails = pregnancyDetailsRepository
+					.findByPatientTrackIdAndIsDeleted(requestData.getPatientTrackId(), Constants.BOOLEAN_FALSE);
 //        TODO: find organizationUnit using data from params.
 
-        } else {
-            pregnancyDetails = pregnancyDetailsRepository.findByIdAndIsDeleted(requestData.getPatientPregnancyId(),
-                    Constants.BOOLEAN_FALSE);
-        }
-        if (Objects.isNull(pregnancyDetails)) {
-            throw new DataNotFoundException(12005);
-        }
+		} else {
+			pregnancyDetails = pregnancyDetailsRepository.findByIdAndIsDeleted(requestData.getPatientPregnancyId(),
+					Constants.BOOLEAN_FALSE);
+		}
+		if (Objects.isNull(pregnancyDetails)) {
+			throw new DataNotFoundException(12005);
+		}
 
 //        if (organizationUnit.unit_measurement === UnitConstants.IMPERIAL) {
-        if (true) {
-            pregnancyDetails.setTemperature(UnitConversion.convertTemperature(pregnancyDetails.getTemperature()
-                    , UnitConstants.IMPERIAL));
-        }
-        return pregnancyDetails;
-    }
+		if (true) {
+			pregnancyDetails.setTemperature(
+					UnitConversion.convertTemperature(pregnancyDetails.getTemperature(), UnitConstants.IMPERIAL));
+		}
+		return pregnancyDetails;
+	}
+
 	/**
 	 * Checks if PatientTrack id exists and throws exception if not.
 	 *

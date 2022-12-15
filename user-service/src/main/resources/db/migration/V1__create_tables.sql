@@ -595,7 +595,7 @@ CREATE TABLE bp_log (
   height FLOAT,
   weight FLOAT,
   bmi FLOAT,
-  temperature BIGINT,
+  temperature FLOAT,
   cvd_risk_level VARCHAR,
   cvd_risk_score INT,
   is_latest BOOLEAN,
@@ -1303,9 +1303,9 @@ LANGUAGE plpgsql AS
 $$
 	DECLARE out_virtualId bigint;
 	BEGIN
-        update patient set virtual_id = (CASE WHEN (SELECT seqStartsFrom FROM org where id = in_tenant_id) IS NOT NULL then ((SELECT seqStartsFrom FROM org where id = in_tenant_id) + 1) else 1 end) where id = in_id;
+        update patient set virtual_id = (CASE WHEN (SELECT sequence FROM organization where id = in_tenant_id) IS NOT NULL then ((SELECT sequence FROM organization where id = in_tenant_id) + 1) else 1 end) where id = in_id;
 	   SELECT virtual_id into out_virtualId FROM patient WHERE id = in_id;
-	   update org SET seqStartsFrom = out_virtualId WHERE id = in_tenant_id;
+	   update organization SET sequence = out_virtualId WHERE id = in_tenant_id;
 	RETURN out_virtualId;
 	
 	EXCEPTION WHEN OTHERS THEN
@@ -1389,18 +1389,6 @@ CREATE TABLE side_menu(
   is_deleted BOOLEAN DEFAULT false
 );
 
-CREATE TABLE culture (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR,
-  code VARCHAR,
-  created_by BIGINT default 1,
-  updated_by BIGINT default 1,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
-);
-
 create table model_questions (
     id SERIAL PRIMARY KEY, 
     questions VARCHAR,
@@ -1449,6 +1437,7 @@ CREATE TABLE country_customization(
     is_active BOOLEAN DEFAULT true
 );
 
+
 CREATE TABLE assessment_log (
   id SERIAL PRIMARY KEY,
   bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
@@ -1482,7 +1471,6 @@ CREATE TABLE patient_symptom (
   is_deleted BOOLEAN DEFAULT false
 );
 
-
 CREATE TABLE public.email_template (
     id serial4 NOT NULL,
     "type" varchar NULL,
@@ -1499,5 +1487,35 @@ CREATE TABLE public.email_template_value (
     email_template_id int8 NULL,
     CONSTRAINT email_template_value_pkey PRIMARY KEY (id),
     CONSTRAINT email_template_value_email_template_id_fkey FOREIGN KEY (email_template_id) REFERENCES public.email_template(id)
+);
+
+CREATE TABLE outbound_sms(
+	id SERIAL PRIMARY KEY, 
+	user_name VARCHAR,
+	form_data_id BIGINT,
+	retry_attempts INT DEFAULT 0,
+	phone_number VARCHAR,
+	body VARCHAR,
+	is_processed BOOLEAN DEFAULT false,
+	notification_id BIGINT,
+	tenant_id BIGINT,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sms_template(
+	id SERIAL PRIMARY KEY,
+	body VARCHAR,
+	type VARCHAR,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP 
+);
+
+CREATE TABLE sms_template_values(
+	id SERIAL PRIMARY KEY,
+	key VARCHAR,
+	template_id int, FOREIGN KEY (template_id) REFERENCES sms_template(id),
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

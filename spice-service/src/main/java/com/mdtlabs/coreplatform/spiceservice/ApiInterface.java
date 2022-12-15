@@ -36,20 +36,23 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
 public interface ApiInterface {
 
 	@GetMapping("/medication/other-medication/{countryId}")
-	public ResponseEntity<OtherMedicationDTO> getOtherMedication(@PathVariable long countryId);
+	public ResponseEntity<OtherMedicationDTO> getOtherMedication(@RequestHeader("Authorization") String token,
+			@PathVariable long countryId);
 
 	@PostMapping("/labtest/patient-labtest/get-by-name")
-	public ResponseEntity<LabTest> getLabTestByName(@RequestBody SearchRequestDTO searchRequestDTO);
+	public ResponseEntity<LabTest> getLabTestByName(@RequestHeader("Authorization") String token,
+			@RequestBody SearchRequestDTO searchRequestDTO);
 
 	@PostMapping("/labtest/patient-labtest/get-list-by-ids")
-	public ResponseEntity<List<LabTest>> getLabTestsByIds(@RequestBody Set<Long> labTestIds);
+	public ResponseEntity<List<LabTest>> getLabTestsByIds(@RequestHeader("Authorization") String token,
+			@RequestBody Set<Long> labTestIds);
 
 	@GetMapping("/labtest/labtest-result/{id}")
-	public ResponseEntity<Map> getLabTestResultsByLabTestId(@PathVariable long id);
+	public ResponseEntity<Map> getLabTestResultsByLabTestId(@RequestHeader("Authorization") String token,
+			@PathVariable long id);
 
 	@GetMapping("/data/get-country/{id}")
-	public Country getCountryListById(@RequestHeader("Authorization") String token,
-			@PathVariable(value = "id") long id);
+	public Country getCountryById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") long id);
 
 	@GetMapping(value = "/data/county-list/{id}")
 	public List<County> getAllCountyByCountryId(@RequestHeader("Authorization") String token,
@@ -84,6 +87,6 @@ public interface ApiInterface {
 	@PostMapping("program/get-by-site-ids")
 	public List<Program> getPrograms(@RequestHeader("Authorization") String token, @RequestBody List<Long> siteIds);
 
-	@PostMapping(value = "/site/")
+	@PostMapping(value = "/site/{id}")
 	public Site getSiteById(@RequestHeader("Authorization") String token, @RequestBody Long siteId);
 }

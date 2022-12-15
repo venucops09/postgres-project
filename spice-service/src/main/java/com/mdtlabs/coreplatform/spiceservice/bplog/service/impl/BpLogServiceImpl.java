@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.modelmapper.Condition;
-import org.modelmapper.Conditions;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
+import com.mdtlabs.coreplatform.common.UnitConstants;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
 import com.mdtlabs.coreplatform.common.model.dto.spice.PatientBpLogsDTO;
@@ -25,10 +23,10 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientSymptom;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTreatmentPlan;
 import com.mdtlabs.coreplatform.common.util.Pagination;
+import com.mdtlabs.coreplatform.common.util.UnitConversion;
 import com.mdtlabs.coreplatform.spiceservice.bplog.repository.BpLogRepository;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.patientSymptom.service.PatientSymptomService;
-import com.mdtlabs.coreplatform.spiceservice.patientTracker.repository.PatientTrackerRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.PatientTreatmentPlanService;
 
@@ -65,11 +63,14 @@ public class BpLogServiceImpl implements BpLogService {
 				updateBpLogLatestStatus(bpLog);
 			}
 			bpLog.setLatest(true);
+
+			if (bpLog.getUnitMeasurement().equals(UnitConstants.IMPERIAL)) {
+				bpLog = convertBpLogUnits(bpLog, UnitConstants.METRIC);
+			}
 			if (Objects.isNull(bpLog.getBpTakenOn())) {
 				bpLog.setBpTakenOn(new Date());
 			}
 			// User tenantid set as a assessment tenant id
-			long patientTrackerId = bpLog.getPatientTrackId();
 			BpLog bpLogResponce = bpLogRepository.save(bpLog);
 			if (isPatientTrackerUpdate) {
 				PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService
@@ -79,10 +80,27 @@ public class BpLogServiceImpl implements BpLogService {
 					nextBpAssessmentDate = patientTreatmentPlanService.getTreatmentPlanFollowupDate(
 							patientTreatmentPlan.getBpCheckFrequency(), Constants.DEFAULT);
 				}
-				patientTrackerService.UpdatePatientTrackerForBpLog(patientTrackerId, bpLog, nextBpAssessmentDate);
+				patientTrackerService.UpdatePatientTrackerForBpLog(bpLog.getPatientTrackId(), bpLog,
+						nextBpAssessmentDate);
 			}
 			return bpLogResponce;
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public BpLog convertBpLogUnits(BpLog bpLog, String unit) {
+		if (!Objects.isNull(bpLog.getHeight())) {
+			bpLog.setHeight(UnitConversion.convertHeight(bpLog.getHeight(), unit));
+		}
+		if (!Objects.isNull(bpLog.getWeight())) {
+			bpLog.setWeight(UnitConversion.convertWeight(bpLog.getWeight(), unit));
+		}
+		if (!Objects.isNull(bpLog.getTemperature())) {
+			bpLog.setTemperature(UnitConversion.convertTemperature(bpLog.getTemperature(), unit));
+		}
+		return bpLog;
 	}
 
 	/**

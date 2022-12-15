@@ -3,6 +3,7 @@ package com.mdtlabs.coreplatform.spiceservice.patientTracker.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,7 +87,7 @@ public class PatientTrackerController {
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
-		Integer totalCount = responseMap.containsKey("totalCount")
+		Integer totalCount = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 

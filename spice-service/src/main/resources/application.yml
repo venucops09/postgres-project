@@ -77,6 +77,7 @@ app:
    forget-password-count-limit: ${FORGET_PASSWORD_COUNT_LIMIT:5}
    public-key: public_key.der
    private-key: private_key.der
+   send-enrollment-notification: ${SEND_ENROLLMENT_NOTIFICATON:true}
    
 cloud:
   aws:

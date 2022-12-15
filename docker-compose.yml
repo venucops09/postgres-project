@@ -37,6 +37,23 @@ services:
       - ${PROJECT_PATH}/log:/log
     networks:
       - spice-app-db-network
+
+  notificationservice:
+    image: notification-service
+    build:
+      context: ${NOTIFICATION_PROJECT_PATH}/notification-service
+      dockerfile: ${NOTIFICATION_PROJECT_PATH}/notification-service/Dockerfile
+    ports:
+      - "8084:8084"
+    restart: always
+    depends_on:
+      - mypostgres
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - spice-app-db-network
       
   adminservice:
     image: admin-service

@@ -178,7 +178,7 @@ public class StaticDataServiceImpl implements StaticDataService {
 				(riskAlgorithmRepository.findByCountryId(countryId, Sort.by(Sort.Direction.ASC, "countryId"))).get(0)
 						.getRiskAlgorithm());
 		response.setReasons(reasonRepository.findAll(Sort.by(Sort.Direction.ASC, "displayOrder")));
-		response.setCountries(List.of(apiInterface.getCountryListById(token, countryId)));
+		response.setCountries(List.of(apiInterface.getCountryById(token, countryId)));
 		response.setCounties(apiInterface.getAllCountyByCountryId(token, countryId));
 		response.setSubcounties(apiInterface.getAllSubCountyByCountryId(token, countryId));
 		response.setMentalHealth(getMentalHealthStaticData(countryId));

@@ -20,7 +20,7 @@ spring:
       locations: classpath:db/migration
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       user : postgres
-      password : postgres
+      password : root
       baseline-on-migrate: true
       out-of-order: true
    jpa:

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.reflect.TypeToken;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
 import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
@@ -257,12 +258,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 		SearchRequestDTO requestEntity = new SearchRequestDTO();
 		requestEntity.setCountryId(countryId);
 		requestEntity.setSearchTerm(searchTerm);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//		HttpEntity<SearchRequestDTO> entity = new HttpEntity<SearchRequestDTO>(requestEntity, headers);
-//		return restTemplate.exchange("http://192.168.13.155/admin-service/labtest/patient-labtest/get-by-name",
-//				HttpMethod.POST, entity, LabTest.class).getBody();
-		ResponseEntity<LabTest> labTest = apiInterface.getLabTestByName(requestEntity);
+		ResponseEntity<LabTest> labTest = apiInterface
+				.getLabTestByName(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), requestEntity);
 		return labTest.getBody();
 	}
 
@@ -283,7 +280,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //				.getBody();
 //		return labTests;
 
-		ResponseEntity<List<LabTest>> list = apiInterface.getLabTestsByIds(labTestIds);
+		ResponseEntity<List<LabTest>> list = apiInterface
+				.getLabTestsByIds(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), labTestIds);
 		return list.getBody();
 	}
 
@@ -410,7 +408,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //
 //		return response.stream().map(BaseEntity::getId).collect(Collectors.toList());
 
-		ResponseEntity<Map> userResponse = apiInterface.getLabTestResultsByLabTestId(labTestId);
+		ResponseEntity<Map> userResponse = apiInterface.getLabTestResultsByLabTestId(
+				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), labTestId);
 		List<LabTestResult> response = modelMapper.map(userResponse.getBody().get("entity"),
 				new TypeToken<List<LabTestResult>>() {
 				}.getType());

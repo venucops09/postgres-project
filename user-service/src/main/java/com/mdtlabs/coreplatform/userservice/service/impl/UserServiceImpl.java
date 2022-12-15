@@ -355,7 +355,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				data.put(FieldConstants.FORGET_PASSWORD_TOKEN, jwtToken);
 			}
 		}
-		emailDto.setBody(parseEmailTemplate(emailTemplate.getBody(), data));
+		emailDto.setBody(CommonUtil.parseEmailTemplate(emailTemplate.getBody(), data));
 		emailDto.setFromName(mailUser);
 		emailDto.setSubject(Constants.FORGOT_NOTIFICATION_SUBJECT);
 		emailDto.setTo(user.getUsername());
@@ -382,7 +382,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				emailTemplateValue.setValue(appUrl + jwtToken);
 			}
 		}
-		emailDto.setBody(parseEmailTemplate(emailTemplate.getBody(), data));
+		emailDto.setBody(CommonUtil.parseEmailTemplate(emailTemplate.getBody(), data));
 		emailDto.setEmailTemplate(emailTemplate);
 		emailDto.setSubject(Constants.RESET_NOTIFICATION_SUBJECT);
 		emailDto.setTo(user.getUsername());
@@ -559,24 +559,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
 				grantedAuthorities);
-	}
-
-	/**
-	 * This method is used to parse email template
-	 * 
-	 * @param htmlTemplate - html template structure
-	 * @param data         - content of email
-	 * @return String - parsed html template
-	 */
-	public String parseEmailTemplate(String htmlTemplate, Map<String, String> data) {
-		if (data != null && !data.isEmpty()) {
-			String[] result = new String[Constants.ONE];
-			result[Constants.ZERO] = htmlTemplate;
-			data.forEach(
-					(key, value) -> result[Constants.ZERO] = result[Constants.ZERO].replace("${" + key + "}", value));
-			return result[Constants.ZERO];
-		}
-		return htmlTemplate;
 	}
 
 	/**

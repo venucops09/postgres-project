@@ -105,6 +105,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
 				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& (Objects.isNull(patientRequestDTO.getPatientSortDTO().getPageNumber()))
 						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
 			totalCount = patientTrackerRepository.getPatientsListCount(filterMap.get("medicalReviewStartDate"),
 					filterMap.get("medicalReviewEndDate"), filterMap.get("assessmentStartDate"),
@@ -113,10 +114,9 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
 					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
 					(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+					patientRequestDTO.getIsLabtestReferred(), patientRequestDTO.getIsMedicationPrescribed(),
 					filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
 					filterMap.get("patientStatusNotEnrolled"));
-			System.out.println("totalCount: " + totalCount);
-
 		}
 
 		Page<PatientTracker> patientTrackerList = patientTrackerRepository.getPatientsListWithPagination(
@@ -127,6 +127,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getIsRedRiskPatient() : null),
 				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getCvdRiskLevel() : null),
 				(!filterMap.isEmpty() ? patientRequestDTO.getPatientFilterDTO().getScreeningReferral() : null),
+				patientRequestDTO.getIsLabtestReferred(), patientRequestDTO.getIsMedicationPrescribed(),
 				filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
 				filterMap.get("patientStatusNotEnrolled"), pageable);
 		List<PatientTracker> patientList = patientTrackerList.stream().collect(Collectors.toList());
@@ -188,6 +189,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
 				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& (Objects.isNull(patientRequestDTO.getPatientSortDTO().getPageNumber()))
 						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
 			totalCount = patientTrackerRepository.getSearchPatientsCount(tenantId,
 					patientRequestDTO.getOperatingUnitId(), filterMap.get("medicalReviewStartDate"),
@@ -200,7 +202,6 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 					patientRequestDTO.getIsLabtestReferred(), patientRequestDTO.getIsMedicationPrescribed(),
 					filterMap.get("patientStatusNotScreened"), filterMap.get("patientStatusEnrolled"),
 					filterMap.get("patientStatusNotEnrolled"), nationalId, programId);
-			System.out.println("totalCount: " + totalCount);
 
 		}
 
@@ -441,6 +442,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 
 		if (Objects.isNull(patientRequestDTO.getPatientSortDTO())
 				|| (Objects.isNull(patientRequestDTO.getPatientSortDTO())
+						&& (Objects.isNull(patientRequestDTO.getPatientSortDTO().getPageNumber()))
 						&& patientRequestDTO.getPatientSortDTO().getPageNumber() == 0)) {
 			totalCount = patientTrackerRepository.getPatientsWithAdvanceSearchCount(patientRequestDTO.getFirstName(),
 					patientRequestDTO.getLastName(), patientRequestDTO.getPhoneNumber(),
@@ -571,11 +573,13 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 			patientTracker.setNextBpAssessmentDate(nextBpAssessmentDate);
 		}
 		patientTracker.setLastAssessmentDate(new Date());
+
 		if (!Objects.isNull(bpLog.getRiskLevel()) && !bpLog.getRiskLevel().isBlank()) {
 			patientTracker.setRiskLevel(bpLog.getRiskLevel());
 		}
 		patientTracker.setTenantId(bpLog.getTenantId());
 		patientTracker.setRedRiskPatient(bpLog.isRedRiskPatient());
+		patientTracker.setRegularSmoker(bpLog.isRegularSmoker());
 		patientTrackerRepository.save(patientTracker);
 	}
 

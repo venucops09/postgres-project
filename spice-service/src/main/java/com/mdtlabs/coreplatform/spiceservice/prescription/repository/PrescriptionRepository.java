@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,9 +20,9 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
 
-	public static final String GET_PRESCRIPTIONS = "SELECT * FROM Prescription WHERE id IN (:ids)";
+	public static final String GET_PRESCRIPTIONS = "FROM Prescription WHERE id IN (:ids)";
 
-	public static final String GET_ACTIVE_PRESCRIPTIONS = "SELECT * FROM Prescription WHERE id IN (:ids) AND is_deleted = :isDeleted";
+	public static final String GET_ACTIVE_PRESCRIPTIONS = "FROM Prescription WHERE id IN (:ids) AND isDeleted = :isDeleted";
 
 	public static final String GET_REFILL_PRESCRIPTIONS = "FROM Prescription pres WHERE pres.patientTrackId = :patientTrackId AND pres.remainingPrescriptionDays > :remainingPrescriptionDays AND isDeleted = :isDeleted";
 
@@ -36,7 +35,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 	 * @param isDeleted
 	 * @return List of Prescription
 	 */
-	@Query(value = GET_PRESCRIPTIONS, nativeQuery = true)
+	@Query(value = GET_PRESCRIPTIONS)
 	public List<Prescription> getPrescriptions(@Param("ids") Set<Long> ids);
 
 	/**
@@ -73,7 +72,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 	 * @param isDeleted
 	 * @return List of Prescription
 	 */
-	@Query(value = GET_ACTIVE_PRESCRIPTIONS, nativeQuery = true)
+	@Query(value = GET_ACTIVE_PRESCRIPTIONS)
 	List<Prescription> getActivePrescriptions(@Param("ids") List<Long> ids, @Param("isDeleted") Boolean isDeleted);
 
 	public List<Prescription> findByPatientTrackIdAndRemainingPrescriptionDaysGreaterThan(long patientTrackId,

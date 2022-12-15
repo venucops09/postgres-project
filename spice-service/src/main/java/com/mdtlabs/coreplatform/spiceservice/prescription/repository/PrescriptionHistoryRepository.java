@@ -28,11 +28,11 @@ public interface PrescriptionHistoryRepository extends JpaRepository<Prescriptio
 //			+ " WHERE (:prescriptionIds IS null OR prescription_id IN (:prescriptionIds) ) ) prescriptionhistories"
 //			+ " WHERE row_number = 1 ORDER BY prescription_id ASC";
 
-	public static final String GET_FILL_PRESCRIPTION_HISTORY = "SELECT * FROM prescription_history"
-			+ " WHERE patient_track_id = :patientTrackId AND patient_visit_id = :patientVisitId AND prescription_filled_days != :prescriptionFilledDays"
-			+ " AND last_refill_date IS NOT null ORDER BY created_at ASC ";
+	public static final String GET_FILL_PRESCRIPTION_HISTORY = "FROM PrescriptionHistory"
+			+ " WHERE patientTrackId = :patientTrackId AND patientVisitId = :patientVisitId AND prescriptionFilledDays != :prescriptionFilledDays"
+			+ " AND lastRefillDate IS NOT null ORDER BY createdAt ASC ";
 
-	@Query(value = GET_FILL_PRESCRIPTION_HISTORY, nativeQuery = true)
+	@Query(value = GET_FILL_PRESCRIPTION_HISTORY)
 	public List<PrescriptionHistory> getFillPrescriptionHistory(@Param("patientTrackId") Long patientTrackId,
 			@Param("patientVisitId") Long patientVisitId, @Param("prescriptionFilledDays") int prescriptionFilledDays);
 

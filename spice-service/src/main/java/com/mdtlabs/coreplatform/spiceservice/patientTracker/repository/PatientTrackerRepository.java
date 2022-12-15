@@ -30,6 +30,8 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			+ "  AND (:isRedRiskPatient IS null OR is_red_risk_patient = :isRedRiskPatient)"
 			+ "  AND (:cvdRiskLevel IS null OR cvd_risk_level = :cvdRiskLevel)"
 			+ "  AND ((:screeningReferral IS null OR screening_referral = :screeningReferral)"
+			+ "  AND (:isLabTestReferred IS null OR is_labtest_referred = :isLabTestReferred)"
+			+ "  AND (:isMedicationPrescribed IS null OR is_medication_prescribed = :isMedicationPrescribed)"
 			+ "  OR (:patientStatusNotScreened IS null OR patient_status != :patientStatusNotScreened) )"
 			+ "  AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
 			+ "  AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)";
@@ -44,6 +46,8 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			+ "  AND (:isRedRiskPatient IS null OR is_red_risk_patient = :isRedRiskPatient)"
 			+ "  AND (:cvdRiskLevel IS null OR cvd_risk_level = :cvdRiskLevel)"
 			+ "  AND ((:screeningReferral IS null OR screening_referral = :screeningReferral)"
+			+ "  AND (:isLabTestReferred IS null OR is_labtest_referred = :isLabTestReferred)"
+			+ "  AND (:isMedicationPrescribed IS null OR is_medication_prescribed = :isMedicationPrescribed)"
 			+ "  OR (:patientStatusNotScreened IS null OR patient_status != :patientStatusNotScreened) )"
 			+ "  AND (:patientStatusEnrolled IS null OR patient_status = :patientStatusEnrolled)"
 			+ "  AND (:patientStatusNotEnrolled IS null OR patient_status != :patientStatusNotEnrolled)";
@@ -145,6 +149,8 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			@Param("lastAssessmentDate") boolean lastAssessmentDate,
 			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
 			@Param("screeningReferral") Boolean screeningReferral,
+			@Param("isLabTestReferred") Boolean isLabTestReferred,
+			@Param("isMedicationPrescribed") Boolean isMedicationPrescribed,
 			@Param("patientStatusNotScreened") String patientStatusNotScreened,
 			@Param("patientStatusEnrolled") String patientStatusEnrolled,
 			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled);
@@ -159,6 +165,8 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 			@Param("lastAssessmentDate") boolean lastAssessmentDate,
 			@Param("isRedRiskPatient") Boolean isRedRiskPatient, @Param("cvdRiskLevel") String cvdRiskLevel,
 			@Param("screeningReferral") Boolean screeningReferral,
+			@Param("isLabTestReferred") Boolean isLabTestReferred,
+			@Param("isMedicationPrescribed") Boolean isMedicationPrescribed,
 			@Param("patientStatusNotScreened") String patientStatusNotScreened,
 			@Param("patientStatusEnrolled") String patientStatusEnrolled,
 			@Param("patientStatusNotEnrolled") String patientStatusNotEnrolled, Pageable pageable);

@@ -75,16 +75,7 @@ public class GlucoseLogServiceImpl implements GlucoseLogService {
 				glucoseLog.setBgTakenOn(new Date());
 			}
 			GlucoseLog glucoseLogResponse = glucoseLogRepository.save(glucoseLog);
-//			if (isReviewCreate || glucoseLog.isNewGlucoseLog()) {
-//				PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService
-//						.getPatientTreatmentPlan(glucoseLog.getPatientTrackId());
-//				if (!Objects.isNull(patientTreatmentPlan)) {
-//					Date nextBGAssessmentDate = patientTreatmentPlanService.getTreatmentPlanFollowupDate(
-//							patientTreatmentPlan.getBgCheckFrequency(), Constants.DEFAULT);
-//					// Note: There is no next bg assessment date for frequency name - pysician
-////			 approval pending status
-//				}
-//			}
+
 			if (isPatientTrackerUpdate) {
 				PatientTreatmentPlan patientTreatmentPlan = patientTreatmentPlanService
 						.getPatientTreatmentPlan(glucoseLog.getPatientTrackId());
@@ -94,12 +85,6 @@ public class GlucoseLogServiceImpl implements GlucoseLogService {
 							patientTreatmentPlan.getBgCheckFrequency(), Constants.DEFAULT);
 					// Note: There is no next bg assessment date for frequency name - pysician
 					// approval pending status
-//					PatientTracker patientTracker = new PatientTracker();
-//					patientTracker.setId(glucoseLog.getPatientTrackId());
-//					patientTracker.setGlucoseValue(glucoseLog.getGlucoseValue());
-//					patientTracker.setGlucoseUnit(glucoseLog.getGlucoseUnit());
-//					patientTracker.setGlucoseType(glucoseLog.getGlucoseType());
-//					patientTrack
 				}
 				patientTrackerService.UpdatePatientTrackerForGlucoseLog(glucoseLog.getPatientTrackId(), glucoseLog,
 						nextBGAssessmentDate);
@@ -113,7 +98,7 @@ public class GlucoseLogServiceImpl implements GlucoseLogService {
 	 */
 	public void validateGlucoseLog(GlucoseLog glucoseLog) {
 		if (Objects.isNull(glucoseLog.getGlucoseValue()) || Objects.isNull(glucoseLog.getGlucoseType())
-				|| Objects.isNull(glucoseLog.getGlucoseDateTime()) || Objects.isNull(glucoseLog.getLastMealTime())) {
+				|| Objects.isNull(glucoseLog.getGlucoseDateTime()) || Objects.isNull(glucoseLog.getGlucoseUnit())) {
 			throw new BadRequestException(7005);
 		}
 	}
@@ -181,7 +166,6 @@ public class GlucoseLogServiceImpl implements GlucoseLogService {
 						.collect(Collectors.toList());
 				glucoseLogsDTO.setGlucoseLogList(glucoseLogList);
 			}
-			System.out.println("in sorted block");
 		} else {
 			System.out.println("in else block");
 			glucoseLogsDTO.setGlucoseLogList(glucoseLogs.toList());

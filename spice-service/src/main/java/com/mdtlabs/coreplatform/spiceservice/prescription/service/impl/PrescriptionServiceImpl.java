@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
 import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
@@ -173,10 +174,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	 * @return Other Medication
 	 */
 	public OtherMedicationDTO getOtherMedication() {
-		// As of now, sent countryid as 1
-		// TODO::Need to get countryid from header
-		long countryId = 1;
-		ResponseEntity<OtherMedicationDTO> obj = apiInterface.getOtherMedication(countryId);
+
+		long countryId = UserContextHolder.getUserDto().getCountry().getId();
+		ResponseEntity<OtherMedicationDTO> obj = apiInterface
+				.getOtherMedication(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), countryId);
 		OtherMedicationDTO medicationDTO = obj.getBody();
 		return medicationDTO;
 	}

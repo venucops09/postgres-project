@@ -147,7 +147,7 @@ public class PatientController {
 				? (List<MyPatientListDTO>) (responseMap.get("patientList"))
 				: new ArrayList<>();
 
-		Integer totalCount = responseMap.containsKey("totalCount")
+		Integer totalCount = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 
@@ -172,7 +172,7 @@ public class PatientController {
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
-		Integer totalCount = responseMap.containsKey("totalCount")
+		Integer totalCount =(responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 
@@ -191,10 +191,10 @@ public class PatientController {
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
-		Integer totalCount = responseMap.containsKey("totalCount")
+		Integer totalCount = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
-
+		
 		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
 				HttpStatus.OK);
 	}
@@ -207,7 +207,7 @@ public class PatientController {
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
-		Integer totalCount = responseMap.containsKey("totalCount")
+		Integer totalCount = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 

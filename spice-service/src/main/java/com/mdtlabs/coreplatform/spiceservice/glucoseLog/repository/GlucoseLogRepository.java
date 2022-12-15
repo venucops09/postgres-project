@@ -75,4 +75,7 @@ public interface GlucoseLogRepository extends JpaRepository<GlucoseLog, Long> {
 
     @Query(value = GET_GLUCOSE_LOGS, nativeQuery = true)
     public Page<GlucoseLog> getGlucoseLogs(@Param("patientTrackId") Long id, Pageable pageable);
+
+	public GlucoseLog findFirstByPatientTrackIdAndIsDeletedOrderByBgTakenOnDesc(Long patientTrackId,
+			Boolean booleanFalse);
 }
