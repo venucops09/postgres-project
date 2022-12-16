@@ -77,8 +77,8 @@ public class SiteController {
 	 * @param siteId site id
 	 * @return Site entity
 	 */
-	@PostMapping(value = "/site/{id}")
-	public Site getSiteById(@PathVariable("id") Long siteId) {
+	@GetMapping(value = "/{siteId}")
+	public Site getSiteById(@PathVariable("siteId") Long siteId) {
 		return siteService.getSiteById(siteId);
 	}
 

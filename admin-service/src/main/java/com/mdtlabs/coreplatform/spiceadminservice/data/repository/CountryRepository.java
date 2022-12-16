@@ -119,6 +119,19 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 */
 	Country findByIdAndIsDeleted(long countryId, boolean isDeleted);
 
+	/**
+	 * To find a country by its Id, isDeleted and isActive fields.
+	 * 
+	 * @param id country Id
+	 * @return List of country entity
+	 */
 	List<Country> findByIdAndIsDeletedFalseAndIsActiveTrue(long id);
+
+	/**
+	 * To find the number of countries present. 
+	 * 
+	 * @return Number of countries.
+	 */
+	int countByIsDeletedFalse();
 
 }

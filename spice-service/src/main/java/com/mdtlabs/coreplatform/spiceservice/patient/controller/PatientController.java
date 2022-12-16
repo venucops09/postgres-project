@@ -151,6 +151,11 @@ public class PatientController {
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 
+		if (Objects.isNull(totalCount)) {
+			return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO,
+					HttpStatus.OK);
+		}
+		
 		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.GET_MY_PATIENTS_LIST, patientListDTO, totalCount,
 				HttpStatus.OK);
 	}
@@ -176,6 +181,11 @@ public class PatientController {
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 
+		if (Objects.isNull(totalCount)) {
+			return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO,
+					HttpStatus.OK);
+		}
+		
 		return new SuccessResponse<List<SearchPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
 				HttpStatus.OK);
 	}
@@ -187,13 +197,18 @@ public class PatientController {
 			patientRequestDTO.setIsGlobally(Constants.BOOLEAN_TRUE);
 		}
 		Map<String, Object> responseMap = patientTrackerService.patientAdvanceSearch(patientRequestDTO);
-		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+		List<SearchPatientListDTO> patientListDTO = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
 		Integer totalCount = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
+
+		if (Objects.isNull(totalCount)) {
+			return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO,
+					HttpStatus.OK);
+		}
 		
 		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
 				HttpStatus.OK);
@@ -203,7 +218,7 @@ public class PatientController {
 	public SuccessResponse<List<MyPatientListDTO>> getPatientsWithAdvanceSearch(
 			@RequestBody PatientRequestDTO patientRequestDTO) {
 		Map<String, Object> responseMap = patientTrackerService.patientAdvanceSearch(patientRequestDTO);
-		List<SearchPatientListDTO> patientListDTO = responseMap.containsKey("patientList")
+		List<SearchPatientListDTO> patientListDTO = (responseMap.containsKey("totalCount") && !Objects.isNull(responseMap.get("totalCount")))
 				? (List<SearchPatientListDTO>) responseMap.get("patientList")
 				: new ArrayList<>();
 
@@ -211,6 +226,11 @@ public class PatientController {
 				? Integer.parseInt(responseMap.get("totalCount").toString())
 				: null;
 
+		if (Objects.isNull(totalCount)) {
+			return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO,
+					HttpStatus.OK);
+		}
+		
 		return new SuccessResponse<List<MyPatientListDTO>>(SuccessCode.SEARCH_PATIENTS, patientListDTO, totalCount,
 				HttpStatus.OK);
 	}
