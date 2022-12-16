@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.userservice.repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -156,5 +157,14 @@ public interface OrganizationRepository
 	 * @return Organization entity
 	 */
 	Organization findByIdAndIsDeletedFalse(Long id);
+	
+	/**
+	 * <p>
+	 * To get list of organizations using list of ids.
+	 * </p>
+	 * @param roleNames - list of organizations ids
+	 * @return Set<Organization> - Set of Organization Entities
+	 */
+	public Set<Organization> findByIsDeletedFalseAndIsActiveTrueAndIdIn(List<Long> organizationIds);
 
 }

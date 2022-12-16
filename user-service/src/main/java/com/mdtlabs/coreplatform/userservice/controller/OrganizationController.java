@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.userservice.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
-import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
-import com.mdtlabs.coreplatform.userservice.service.OrganizationService;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.dto.spice.OrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
+import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
+import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
+import com.mdtlabs.coreplatform.userservice.service.OrganizationService;
 
 /**
  * <p>
@@ -150,5 +151,16 @@ public class OrganizationController {
 	@PostMapping("/get-child-organizations/{tenantId}")
 	public Map<String, List<Long>> getChildOrganizations(@PathVariable("tenantId") Long tenantId,@RequestBody String formName) {
 		return organizationService.getChildOrganizations(tenantId, formName);
+	}
+	
+	/**
+	 * This method is used to get organization information by list of ids.
+	 * 
+	 * @param ids - organization ids
+	 * @return Role - list of organization
+	 */
+	@PostMapping(value = "/organization-ids")
+	public SuccessResponse<Set<Organization>> getOrganizationsByIds(@RequestBody List<Long> organizationIds) {
+		return new SuccessResponse<>(SuccessCode.GET_ORGANIZATIONS, organizationService.getOrganizationsByIds(organizationIds), HttpStatus.OK);
 	}
 }

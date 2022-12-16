@@ -28,8 +28,6 @@ import com.mdtlabs.coreplatform.userservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.userservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.userservice.service.UserService;
 
-import io.swagger.annotations.Api;
-
 /**
  * <p>
  * User Controller used to perform any action in the user module like read and
@@ -40,7 +38,6 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping(value = "/user")
-@Api(value = Constants.MASTER_DATA, produces = Constants.APPLICATION_JSON)
 public class UserController {
 
 	@Autowired
@@ -165,15 +162,17 @@ public class UserController {
 	}
 
 	/**
-	 * This method is used to send password reset link email to the given username.
+	 * This method is used to send reset password link to the given username.
 	 * 
-	 * @param email - email of the users
-	 * @return boolean - response as true or false on reset
+	 * @param request
+	 * @return SuccessResponse
 	 */
-	@GetMapping(value = "/forgot-password/{email}", produces = Constants.APPLICATION_JSON)
-	public SuccessResponse<Boolean> forgotPassword(@PathVariable(Constants.EMAIL) String email) {
-		return new SuccessResponse<>(SuccessCode.SEND_EMAIL_USING_SMTP,
-				userService.forgotPassword(email, Boolean.FALSE), HttpStatus.OK);
+	@PostMapping(value = "/forgot-password", produces = "application/json")
+	public SuccessResponse<Boolean> forgotPassword(@RequestBody Map<String, String> request) {
+	   Boolean response = userService.forgotPassword(request.get(FieldConstants.USERNAME), false);
+		return Boolean.TRUE.equals(response)
+				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
+				: new SuccessResponse<>(SuccessCode.SEND_EMAIL_USING_SMTP, response, HttpStatus.OK);
 	}
 
 	/**
@@ -203,17 +202,19 @@ public class UserController {
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
 				: new SuccessResponse<>(SuccessCode.PASSWORD_DOES_NOT_MATCH, response, HttpStatus.OK);
 	}
-
+	
 	/**
-	 * This method is used to check forget password limit exceeded or not
+	 * <p>
+	 * Return false if user exceed the forget passowrd limit.
+	 * </p>
 	 * 
-	 * @param username - user name fo the user
-	 * @return Boolean - reponse of limit exceeded as true or false
+	 * @return User Entity
+	 * @throws Exception
 	 */
-	@PostMapping(value = "/forget-password-limit-exceed/{username}")
-	public SuccessResponse<Boolean> forgetPasswordLimitExceed(
+	@PostMapping(value = "/is-forget-password-limit-exceed/{username}")
+	public SuccessResponse<Boolean> isForgetPasswordLimitExceed(
 			@PathVariable(value = FieldConstants.USERNAME) String username) {
-		Boolean response = userService.forgetPasswordLimitExceed(username);
+		Boolean response = userService.isForgetPasswordLimitExceed(username, false);
 		return Boolean.TRUE.equals(response)
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
 				: new SuccessResponse<>(SuccessCode.SEND_EMAIL_USING_SMTP, response, HttpStatus.OK);
@@ -225,10 +226,10 @@ public class UserController {
 	 * @param username - user name fo the user
 	 * @return boolean - response of limit exceeded as true or false
 	 */
-	@PostMapping(value = "/reset-password-limit-exceed/{username}")
+	@PostMapping(value = "/is-reset-password-limit-exceed/{username}")
 	public SuccessResponse<Boolean> resetPasswordLimitExceed(
 			@PathVariable(value = FieldConstants.USERNAME) String username) {
-		Boolean response = userService.resetPasswordLimitExceed(username);
+		Boolean response = userService.isResetPasswordLimitExceed(username);
 		return Boolean.TRUE.equals(response)
 				? new SuccessResponse<>(SuccessCode.DISABLED_ACCOUNT, response, HttpStatus.OK)
 				: new SuccessResponse<>(SuccessCode.PASSWORD_UPDATED, response, HttpStatus.OK);

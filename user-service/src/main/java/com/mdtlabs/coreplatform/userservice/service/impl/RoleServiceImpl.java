@@ -79,5 +79,11 @@ public class RoleServiceImpl implements RoleService {
 		return roleRepository.findByIsDeletedFalseAndIsActiveTrueAndNameIn(roleNames);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<Role> getRolesByIds(List<Long> roleIds) {
+		return roleRepository.findByIsDeletedFalseAndIsActiveTrueAndIdIn(roleIds);
+	}
 
 }

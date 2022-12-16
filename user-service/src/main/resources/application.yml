@@ -15,12 +15,12 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       username : postgres
-      password : root
+      password : admin@123
    flyway:
       locations: classpath:db/migration
       url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
       user : postgres
-      password : root
+      password : admin@123
       baseline-on-migrate: true
       out-of-order: true
    jpa:
@@ -42,10 +42,12 @@ app:
    url: http://localhost
    mail-user: ${MAIL_USER:apikey}
    page-count: ${PAGE_COUNT:10}
-   login-time-limit-in-hour: ${TIME_LIMIT_IN_HOUR:1}
+   login-time-limit-in-hour: ${LOGIN_TIME_LIMIT_IN_HOUR:1}
    login-count-limit: ${LOGIN_COUNT_LIMIT:5}
-   reset-password-count-limit: ${RESET_PASSWORD_COUNT_LIMIT:5}
+   forgot-password-time-limit-in-minutes: ${FORGOT_PASSWORD_TIME_LIMIT_IN_MINUTES:60}
    forget-password-count-limit: ${FORGET_PASSWORD_COUNT_LIMIT:5}
+   reset-password-count-limit: ${RESET_PASSWORD_COUNT_LIMIT:5}
+   reset-password-time-limit-in-minutes: ${RESET_PASSWORD_TIME_LIMIT_IN_MINUTES:60}
    email-app-url: ${EMAIL_APP_URL:http://3.7.123.198:3000/reset-password/}
    public-key: public_key.der
    private-key: private_key.der

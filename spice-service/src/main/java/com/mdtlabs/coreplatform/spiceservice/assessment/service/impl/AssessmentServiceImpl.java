@@ -155,7 +155,10 @@ public class AssessmentServiceImpl implements AssessmentService {
 						glucoseLog.getGlucoseUnit()));
 				glucoseId = glucoseLog.getId();
 			}
-			Long assessmentLogId = patientAssessmentRepository.save(new PatientAssessment(bpLog.getId(), glucoseId, assessmentDTO.getTenantId(), assessmentDTO.getPatientTrackId())).getId();
+
+			Long assessmentLogId = patientAssessmentRepository.save(new PatientAssessment(bpLog.getId(), glucoseId,
+					assessmentDTO.getTenantId(), assessmentDTO.getPatientTrackId())).getId();
+
 			if (riskLevel.equals(Constants.HIGH)) {
 				addRedRiskNotification(patientTracker, assessmentDTO.getBpLog().getId(), glucoseId, assessmentLogId);
 			}
@@ -367,7 +370,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 		redRiskNotification.setPatientTrackId(patientTracker.getId());
 		redRiskNotification.setBpLogId(bpLogId);
 		redRiskNotification.setGlucoseLogId(glucoseLogId);
-		redRiskNotification.setTenentId(patientTracker.getTenantId());
+		redRiskNotification.setTenantId(patientTracker.getTenantId());
 		redRiskNotification.setAssessmentLogId(assessmentLogId);
 		redRiskNotification.setStatus(Constants.NEW);
 		return RedRiskService.createRedRiskNotification(redRiskNotification);
@@ -499,7 +502,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 			if (isRedRiskUser) {
 				SmsDTO smsDTO = new SmsDTO();
 				smsDTO.setNotificationId(notification.getId());
-				smsDTO.setTenantId(notification.getTenentId());
+				smsDTO.setTenantId(notification.getTenantId());
 				smsDTO.setFormDataId(patientTracker.getPatientId());
 				smsDTO.setToPhoneNo(user.getCountryCode() + user.getPhoneNumber());
 				smsDTO.setUserName(user.getUsername());

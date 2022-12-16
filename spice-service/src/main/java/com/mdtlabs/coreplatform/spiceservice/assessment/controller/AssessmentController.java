@@ -18,8 +18,6 @@ import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentServic
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on Assessment
  * operations.
@@ -30,7 +28,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/assessment")
 @Validated
-@Api(basePath = "/assessment", value = "master_data", description = "Assessment related APIs", produces = "application/json")
 public class AssessmentController {
 
 	@Autowired

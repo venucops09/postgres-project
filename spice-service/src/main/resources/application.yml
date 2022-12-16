@@ -14,7 +14,7 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice
       username : postgres
-      password : root
+      password : admin@123
    servlet:
       multipart:
          max-file-size: 15MB

@@ -18,11 +18,6 @@ import com.mdtlabs.coreplatform.spiceservice.glucoseLog.service.GlucoseLogServic
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
-import javax.validation.*;
-
-
 /**
  * This class is a controller class to perform operation on GlucoseLog entity.
  * 
@@ -32,7 +27,6 @@ import javax.validation.*;
 @RestController
 @RequestMapping(value = "/glucoselog")
 @Validated
-@Api(basePath = "/glucoselog", value = "master_data", description = "GlucoseLog related APIs", produces = "application/json")
 public class GlucoseLogController {
 
     @Autowired

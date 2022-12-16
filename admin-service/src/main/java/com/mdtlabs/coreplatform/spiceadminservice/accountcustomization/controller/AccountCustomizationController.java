@@ -19,8 +19,6 @@ import com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.service.A
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
 import javax.validation.Valid;
 
 /**
@@ -31,9 +29,8 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(value = "/account-customization")
-@Api(basePath = "/account-customization", value = "master_data", description = "Account Customization related APIs",
-        produces = "application/json")
 public class AccountCustomizationController {
+	
     @Autowired
     AccountCustomizationService accountCustomizationService;
 

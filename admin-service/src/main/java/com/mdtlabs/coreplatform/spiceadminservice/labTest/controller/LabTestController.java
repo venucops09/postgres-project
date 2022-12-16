@@ -25,11 +25,10 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.LabTest;
 import com.mdtlabs.coreplatform.common.model.entity.spice.LabTestResult;
+
 import com.mdtlabs.coreplatform.spiceadminservice.labTest.service.LabTestService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
 
 /**
  * This class is a controller class to perform operation on Labtest entities.
@@ -39,7 +38,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/labtest")
 @Validated
-@Api(basePath = "/labtest", value = "master_data", description = "LabTest related APIs", produces = "application/json")
 public class LabTestController {
 
     private static final List<String> noDataList = Arrays.asList(Constants.NO_DATA_FOUND);

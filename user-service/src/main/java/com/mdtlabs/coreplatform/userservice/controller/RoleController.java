@@ -1,6 +1,7 @@
 package com.mdtlabs.coreplatform.userservice.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,6 @@ import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.FieldConstants;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 
-import io.swagger.annotations.Api;
-
 /**
  * <p>
  * Role Controller used to perform any action in the role module like read and
@@ -32,7 +31,6 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping(value = "/role")
-@Api(value = Constants.MASTER_DATA, produces = Constants.APPLICATION_JSON)
 public class RoleController {
 
 	@Autowired
@@ -113,6 +111,17 @@ public class RoleController {
 	@GetMapping(value = "/{name}")
 	public SuccessResponse<Role> getRoleByName(@PathVariable(value = FieldConstants.NAME) String name) {
 		return new SuccessResponse<>(SuccessCode.GET_ROLE, roleService.getRoleByName(name), HttpStatus.OK);
+	}
+	
+	/**
+	 * This method is used to get role information by list of role ids.
+	 * 
+	 * @param ids - roles ids
+	 * @return Role - list of role
+	 */
+	@PostMapping(value = "/role-ids")
+	public SuccessResponse<Set<Role>> getRolesByIds(@RequestBody List<Long> roleIds) {
+		return new SuccessResponse<>(SuccessCode.GET_ROLES, roleService.getRolesByIds(roleIds), HttpStatus.OK);
 	}
 
 }

@@ -24,8 +24,6 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on PatientTracker
  * entity.
@@ -35,7 +33,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/patienttracker")
 @Validated
-@Api(basePath = "/patientTracker", value = "master_data", description = "Patient tracker related APIs", produces = "application/json")
 public class PatientTrackerController {
 
 	@Autowired

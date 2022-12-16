@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,10 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.SubCountyDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
 import com.mdtlabs.coreplatform.common.model.entity.County;
 import com.mdtlabs.coreplatform.common.model.entity.Subcounty;
+
 import com.mdtlabs.coreplatform.spiceadminservice.data.service.DataService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
-
-import javax.validation.*;
 
 /**
  * This controller class helps to perform actions on Country, Count and SubCounty Entities.
@@ -44,7 +43,6 @@ import javax.validation.*;
 @RestController
 @RequestMapping(value = "/data")
 @Validated
-@Api(basePath = "/data", value = "master_data", description = "Country related APIs", produces = "application/json")
 public class DataController {
 
     private static final List<String> noDataList = Arrays.asList(Constants.NO_DATA_FOUND);

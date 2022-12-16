@@ -17,8 +17,6 @@ import com.mdtlabs.coreplatform.spiceservice.medicalreview.service.MedicalReview
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on MedicalReview
  * entity.
@@ -28,7 +26,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/medical-review")
 @Validated
-@Api(basePath = "/medical-review", value = "master_data", description = "MedicalReview related APIs", produces = "application/json")
 public class MedicalReviewController {
 
 	@Autowired

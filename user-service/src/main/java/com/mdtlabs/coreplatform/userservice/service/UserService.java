@@ -125,23 +125,13 @@ public interface UserService {
 
 	/**
 	 * <p>
-	 * To check forget password limit exceeds or not.
-	 * </p>
-	 * 
-	 * @param username - user name of user
-	 * @return Boolean - true or false of forget password limit exceed state
-	 */
-	boolean forgetPasswordLimitExceed(String username);
-
-	/**
-	 * <p>
 	 * To check reset password limit exceeds or not.
 	 * </p>
 	 * 
 	 * @param username - user name of user
 	 * @return Boolean - true or false of reset password limit exceed state
 	 */
-	boolean resetPasswordLimitExceed(String username);
+	boolean isResetPasswordLimitExceed(String username);
 
 	/**
 	 * This method is used to clear the api role permission map
@@ -150,19 +140,34 @@ public interface UserService {
 	void clearApiPermissions();
 
 	/**
-	 * 
-	 * @param users
-	 * @param roles
-	 * @param isSiteUser
+	 * <p>
+	 * Add the user in organizations.
+	 * </p>
+	 * @param users - list of users
+	 * @param roles - list of roles
+	 * @param isSiteUser - boolean
 	 * @return
 	 */
 	List<User> addOrganizationUsers(List<User> users, List<String> roles, boolean isSiteUser);
 
 	/**
+	 * <p>
+	 * Get all users in the list of organizations.
+	 * </p>
 	 * 
-	 * @param tenantIds
-	 * @return
+	 * @param tenantIds - list of organization ids.
+	 * @return List of users.
 	 */
 	List<User> getUsersByTenantIds(List<Long> tenantIds);
+
+	/**
+	 * <p>
+	 * Check the forget password limit is exceed or not.
+	 * </p>
+	 * @param username - username
+	 * @param isFromCreation - From user creation
+	 * @return True or False
+	 */
+	Boolean isForgetPasswordLimitExceed(String username, boolean isFromCreation);
 
 }
