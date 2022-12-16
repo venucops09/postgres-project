@@ -1519,3 +1519,25 @@ CREATE TABLE sms_template_values(
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE Table device_details (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  type varchar,
+  model VARCHAR,
+  version VARCHAR,
+  aes_key VARCHAR,
+  rsa_private_key VARCHAR,
+  auth_tag VARCHAR,
+  device_id VARCHAR,
+  rsa_public_key VARCHAR,
+  last_logged_in TIMESTAMP,
+  ref_id varchar,
+  user_id BIGINT ,FOREIGN KEY (user_id) REFERENCES "user"(id),
+  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  created_by BIGINT NOT NULL ,
+  updated_by BIGINT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_deleted BOOLEAN DEFAULT false
+);
