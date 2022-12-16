@@ -41,7 +41,7 @@ public class DeviceDetailsController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public SuccessResponse<Map<String, Long>> validateDeviceDetails(@RequestBody DeviceDetails deviceDetails) {
-        return new SuccessResponse<Map<String, Long>>(SuccessCode.PATIENT_VISIT_SAVE,
+        return new SuccessResponse<Map<String, Long>>(SuccessCode.DEVICE_DETAILS_SAVE,
             deviceDetailsService.validateDeviceDetails(deviceDetails), HttpStatus.CREATED);
     }
 

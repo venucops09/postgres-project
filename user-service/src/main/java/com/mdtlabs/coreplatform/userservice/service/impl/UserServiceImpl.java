@@ -671,22 +671,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (Objects.isNull(users) || users.isEmpty()) {
 			throw new BadRequestException(10000);
 		}
-
-		if (isSiteUser) {
-			users.forEach(user -> user.setForgetPasswordCount(Constants.ZERO));
-		} else {
-			Set<Role> userRoles = roleService.getRolesByName(roles);
-			if (userRoles.isEmpty()) {
-				throw new DataNotFoundException(2002);
-			}
-			users.forEach(user -> {
-				user.setRoles(userRoles);
-				user.setForgetPasswordCount(Constants.ZERO);
-			});
-		}
-		users = userRepository.saveAll(users);
-		if (!Objects.isNull(users) && !users.isEmpty()) {
-			users.forEach(user -> forgotPassword(user.getUsername(), Boolean.TRUE));
+//		if (isSiteUser) {
+//			users.forEach(user -> user.setForgetPasswordCount(Constants.ZERO));
+//		} else {
+//			Set<Role> userRoles = roleService.getRolesByName(roles);
+//			if (userRoles.isEmpty()) {
+//				throw new DataNotFoundException(2002);
+//			}
+//			users.forEach(user -> {
+//				user.setRoles(userRoles);
+//				user.setForgetPasswordCount(Constants.ZERO);
+//			});
+//		}
+//		users = userRepository.saveAll(users);
+//		if (!Objects.isNull(users) && !users.isEmpty()) {
+//			users.forEach(user -> forgotPassword(user.getUsername(), Boolean.TRUE));
+//		}
+		for (User user : users) {
+			addUser(user);
 		}
 		return users;
 	}

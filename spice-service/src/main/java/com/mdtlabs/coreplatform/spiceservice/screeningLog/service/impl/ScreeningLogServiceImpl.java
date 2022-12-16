@@ -1,7 +1,6 @@
 package com.mdtlabs.coreplatform.spiceservice.screeningLog.service.impl;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -13,7 +12,6 @@ import com.mdtlabs.coreplatform.common.UnitConstants;
 import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
-import com.mdtlabs.coreplatform.common.exception.SpiceValidation;
 import com.mdtlabs.coreplatform.common.model.dto.spice.GlucoseLogDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.ScreeningLogDTO;
@@ -151,10 +149,11 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
             screeningLog.setFirstName(screeningLogDTO.getBioData().getFirstName());
             screeningLog.setLandmark(screeningLogDTO.getBioData().getLandmark());
             screeningLog.setPreferredName(screeningLogDTO.getBioData().getPreferredName());
+            screeningLog.setOtherIdType(screeningLogDTO.getBioData().getOtherIdType());
         }
 
         if (!Objects.isNull(screeningLogDTO.getBpLog())) {
-            // screeningLog.setIsBeforeHtnDiagnosis(screeningLogDTO.getBpLog().isBeforeHtnDiagnosis());
+             screeningLog.setIsBeforeHtnDiagnosis(screeningLogDTO.getBpLog().getIsBeforeHtnDiagnosis());
             screeningLog.setAvgDiastolic(screeningLogDTO.getBpLog().getAvgDiastolic());
             screeningLog.setAvgSystolic(screeningLogDTO.getBpLog().getAvgSystolic());
             screeningLog.setAvgPulse(screeningLogDTO.getBpLog().getAvgPulse());

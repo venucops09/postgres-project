@@ -33,10 +33,10 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.SmsDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SymptomDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Role;
 import com.mdtlabs.coreplatform.common.model.entity.User;
-import com.mdtlabs.coreplatform.common.model.entity.spice.AssessmentLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
 import com.mdtlabs.coreplatform.common.model.entity.spice.MentalHealth;
+import com.mdtlabs.coreplatform.common.model.entity.spice.PatientAssessment;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientMedicalCompliance;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientSymptom;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
@@ -44,7 +44,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTreatmentPlan;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RedRiskNotification;
 import com.mdtlabs.coreplatform.spiceservice.NotificationApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.UserApiInterface;
-import com.mdtlabs.coreplatform.spiceservice.assessment.repository.AssessmentLogRepository;
+import com.mdtlabs.coreplatform.spiceservice.assessment.repository.PatientAssessmentRepository;
 import com.mdtlabs.coreplatform.spiceservice.assessment.service.AssessmentService;
 import com.mdtlabs.coreplatform.spiceservice.bplog.repository.BpLogRepository;
 import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
@@ -95,7 +95,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 	private CustomizedModulesService customizedModulesService;
 
 	@Autowired
-	private AssessmentLogRepository assessmentLogRepository;
+	private PatientAssessmentRepository patientAssessmentRepository;
 
 	@Autowired
 	private BpLogRepository bpLogRepository;
@@ -155,9 +155,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 						glucoseLog.getGlucoseUnit()));
 				glucoseId = glucoseLog.getId();
 			}
-
-			Long assessmentLogId = assessmentLogRepository.save(new AssessmentLog(bpLog.getId(), glucoseId)).getId();
-
+			Long assessmentLogId = patientAssessmentRepository.save(new PatientAssessment(bpLog.getId(), glucoseId, assessmentDTO.getTenantId(), assessmentDTO.getPatientTrackId())).getId();
 			if (riskLevel.equals(Constants.HIGH)) {
 				addRedRiskNotification(patientTracker, assessmentDTO.getBpLog().getId(), glucoseId, assessmentLogId);
 			}

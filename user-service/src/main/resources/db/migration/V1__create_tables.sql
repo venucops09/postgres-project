@@ -477,7 +477,7 @@ CREATE TABLE screening_log (
   preferred_name VARCHAR,
   is_family_diabetes_history BOOLEAN,
   is_before_gestational_diabetes BOOLEAN,
-  screening_date_time TIMESTAMP WITH TIME ZONE DEFAULT,
+  screening_date_time TIMESTAMP WITH TIME ZONE,
   operating_unit_id BIGINT, FOREIGN KEY (operating_unit_id) REFERENCES operating_unit(id),
   account_id BIGINT, FOREIGN KEY (account_id) REFERENCES account(id),
   country_id BIGINT, FOREIGN KEY (country_id) REFERENCES country(id),
@@ -632,6 +632,7 @@ CREATE TABLE patient_assessment (
   bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
   glucose_log_id BIGINT, FOREIGN KEY (glucose_log_id) REFERENCES glucose_log(id),
   tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
   created_by BIGINT NOT NULL,
   updated_by BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -657,6 +658,7 @@ CREATE TABLE symptom (
 
 CREATE TABLE patient_symptom (
   id SERIAL PRIMARY KEY,
+  name VARCHAR,
   other_symptom VARCHAR,
   type VARCHAR,
   patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
@@ -1437,56 +1439,43 @@ CREATE TABLE country_customization(
     is_active BOOLEAN DEFAULT true
 );
 
-
-CREATE TABLE assessment_log (
+CREATE TABLE email_template (
   id SERIAL PRIMARY KEY,
-  bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
-  glucose_log_id BIGINT, FOREIGN KEY (glucose_log_id) REFERENCES glucose_log(id),
-  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
-  created_by BIGINT NOT NULL,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
+  type VARCHAR,
+  vm_content VARCHAR,
+  body VARCHAR,
+  title VARCHAR,
+  app_url VARCHAR
 );
 
+CREATE TABLE email_template_value (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR,
+  email_template_id BIGINT,
+  FOREIGN KEY (email_template_id) REFERENCES email_template(id)
+);
 
-CREATE TABLE patient_symptom (
+CREATE Table device_details (
   id SERIAL PRIMARY KEY,
   name VARCHAR,
-  other_symptom VARCHAR,
-  type VARCHAR,
-  patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
-  symptom_id BIGINT, FOREIGN KEY (symptom_id) REFERENCES symptom(id),
-  assessment_log_id BIGINT,  FOREIGN KEY (assessment_log_id) REFERENCES assessment_log(id),
-  bp_log_id BIGINT, FOREIGN KEY (bp_log_id) REFERENCES bp_log(id),
-  glucose_log_id BIGINT, FOREIGN KEY (glucose_log_id) REFERENCES glucose_log(id),
+  type varchar,
+  model VARCHAR,
+  version VARCHAR,
+  aes_key VARCHAR,
+  rsa_private_key VARCHAR,
+  auth_tag VARCHAR,
+  device_id VARCHAR,
+  rsa_public_key VARCHAR,
+  last_logged_in TIMESTAMP,
+  ref_id varchar,
+  user_id BIGINT ,FOREIGN KEY (user_id) REFERENCES "user"(id),
   tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
-  created_by BIGINT NOT NULL,
+  created_by BIGINT NOT NULL ,
   updated_by BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   is_active BOOLEAN DEFAULT true,
   is_deleted BOOLEAN DEFAULT false
-);
-
-CREATE TABLE public.email_template (
-    id serial4 NOT NULL,
-    "type" varchar NULL,
-    vm_content varchar NULL,
-    body varchar NULL,
-    title varchar NULL,
-    app_url varchar NULL,
-    CONSTRAINT email_template_pkey PRIMARY KEY (id)
-);
-
-CREATE TABLE public.email_template_value (
-    id serial4 NOT NULL,
-    "name" varchar NULL,
-    email_template_id int8 NULL,
-    CONSTRAINT email_template_value_pkey PRIMARY KEY (id),
-    CONSTRAINT email_template_value_email_template_id_fkey FOREIGN KEY (email_template_id) REFERENCES public.email_template(id)
 );
 
 CREATE TABLE outbound_sms(
@@ -1519,25 +1508,59 @@ CREATE TABLE sms_template_values(
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE Table device_details (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR,
-  type varchar,
-  model VARCHAR,
-  version VARCHAR,
-  aes_key VARCHAR,
-  rsa_private_key VARCHAR,
-  auth_tag VARCHAR,
-  device_id VARCHAR,
-  rsa_public_key VARCHAR,
-  last_logged_in TIMESTAMP,
-  ref_id varchar,
-  user_id BIGINT ,FOREIGN KEY (user_id) REFERENCES "user"(id),
-  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
-  created_by BIGINT NOT NULL ,
-  updated_by BIGINT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  is_deleted BOOLEAN DEFAULT false
-);
+INSERT INTO country ("name",country_code,unit_measurement,tenant_id,created_by,updated_by,created_at,updated_at,is_active,is_deleted,ref_id) VALUES
+	 ('India','91','metric',1,1,1,'2022-12-08 19:10:06.739','2022-12-08 19:10:06.739',true,false,NULL);
+
+INSERT INTO timezone (description,abbreviation,"offset",created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
+	 ('(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi','IST','UTC+05:30',1,1,'2022-12-08 19:11:09.138','2022-12-08 19:11:09.138',true,false); 
+	 
+INSERT INTO "user" (first_name,last_name,middle_name,gender,phone_number,address,username,"password",country_code,is_blocked,blocked_date,forget_password_token,forget_password_time,forget_password_count,invalid_login_attempts,invalid_login_time,invalid_reset_time,is_password_reset_enabled,password_reset_attempts,is_license_acceptance,last_logged_in,last_logged_out,country_id,timezone_id,created_by,updated_by,created_at,updated_at,is_active,is_deleted,ref_id) VALUES
+	 ('test','user','m','Male','98764321',NULL,'superuser@test.com','\xc30d040703021e2a37bef1a7243f61d2b101cd17bf7f7db36e4e9270c0a587d01272e49b2c54eafd4e86fc00e048d3c93e763808ab2599ffd3d5a914130bbe28132852951b58e1c3c389523b46821eb4cd8d5cc4809844a3c008c020858e9994407d70933745ea9c083030e2f6ac1386ea05549c64c75ebceee058fa68f49fd189e9b99e4aaca19dd50f8290a1b4048300119745c58f99be07138a527f4dad7ea9b74a3bad9c65d611799e4e371f04173cf4f87ed9a3bbc46722708e7815b78305d5',NULL,false,NULL,'1','2022-12-08 14:38:17.115',0,0,'2022-12-08 14:38:17.115','2022-12-08 14:38:17.115',true,0,false,NULL,NULL,1,1,1,1,'2022-12-08 14:38:17.115','2022-12-08 14:38:17.115',true,false,NULL);
+
+INSERT INTO "role" ("name","level",created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
+	 ('SUPER_USER',0,1,1,'2022-12-08 19:11:12.160','2022-12-08 19:11:12.160',true,false);
+
+INSERT INTO user_role (user_id,role_id) VALUES
+	 (1,1);
+
+INSERT INTO organization (form_data_id,form_name,"name","sequence",parent_organization_id,tenant_id,created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
+	 (1,'country','India',0,NULL,NULL,1,1,'2022-04-20 19:53:38.869','2022-04-20 19:53:39.050',true,false);
+
+INSERT INTO user_organization (user_id,organization_id) VALUES
+	 (1,1);
+
+INSERT INTO public.email_template (id,"type",vm_content,body,title,app_url) VALUES
+     (1,'Forgot_Password','vmContent','<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/spiceEngage.png" style=\"height:70%;width:10%;"></p><p style=\"font-size: 11pt\>Dear Telecounseling Application User,<br><br>    <p>We have received a request to reset your Telecounseling account password. It was initiated after you selected “Forgot Password” in the Telecounseling software application.    <br><br>    <strong>Please click on this 
+<a href="${app_url_email}">LINK</a> to reset your password. The link will expire in 60 minutes.If it is expires before the reset is completed, 
+click on Forgot Password in the application to reset it again.</strong>    <br><br>  
+ If you did not initiate an account password reset process or have a Telecounseling software application 
+account associated with this email address, it is possible that someone else might be trying to access your account.
+If so, please notify Medtronic LABS Support Team at support@medtroniclabs.org.    <br><br>   
+If you have any additional questions, please contact the Medtronic LABS Support Team at support@medtroniclabs.org.  
+ <br>      <br>    Sincerely,    <br>    The Medtronic LABS Telecounseling Platform Support
+Team<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/logo2.png" style="height:6%;width:25%;">','Email_notification','app_url_email'),
+     (2,'User_Creation','vmContent','<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/spiceEngage.png" style=\"height:70%;width:10%;"></p><p style=\"font-size: 11pt\>Dear Telecounseling Application User,<br><br>    <p>Welcome! An account has been created for you in the Telecounseling software application.     <br><br>    <strong>Your account username is your email address ${email}. To finish setting up your Telecounseling application account, please click on this <a href="${app_url_email}">LINK</a> to create your password. </strong>    <br><br>  Once you have set up your password you will be able to access the application. <br><br> If you have any additional questions, please contact the Medtronic LABS Support Team at support@medtroniclabs.org.  <br>      <br>    Sincerely,    <br>    The Medtronic LABS Telecounseling Platform SupportTeam<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/logo2.png" style="height:6%;width:25%;">','Email_notification','app_url_email');
+	 
+INSERT INTO public.email_template_value (id,"name",email_template_id) VALUES
+     (1,'app_url_email',1),
+     (2,'app_url_email',2),
+     (3,'email',2);  
+
+INSERT INTO api_role_permission ("method",api,roles) VALUES
+	 ('POST','/user','SUPER_USER'),
+	 ('GET','/user/clear','SUPER_USER');
+ 
+INSERT INTO sms_template (body,"type",created_at,updated_at) VALUES
+	 ('A Red Alert Notification was received for one of your patients. Log into the SPICE application to review patient details.
+','RED_RISK','2022-12-16 12:56:09.161','2022-12-16 12:56:09.161'),
+	 ('Hi {{name}}, thank you for getting screened by Spice health worker from {{orgname}} site. Your registration code is {{patient_id}}.
+
+','ENROLL_PATIENT','2022-12-16 12:56:09.161','2022-12-16 12:56:09.161');
+
+
+INSERT INTO sms_template_values ("key",template_id,created_at,updated_at) VALUES
+	 ('name',2,'2022-12-16 12:57:17.811','2022-12-16 12:57:17.811'),
+	 ('orgname',2,'2022-12-16 12:57:17.815','2022-12-16 12:57:17.815'),
+	 ('patient_id',2,'2022-12-16 12:57:17.816','2022-12-16 12:57:17.816');
+
+

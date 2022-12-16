@@ -70,8 +70,8 @@ public class MedicationServiceImpl implements MedicationService {
                 throw new DataNotAcceptableException(12010);
             }
             mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-            medication.setCreatedAt(null);
             medication.setCreatedBy(null);
+            medication.setUpdatedBy(null);
             mapper.map(medication, existingMedication);
             return medicationRepository.save(existingMedication);
         }

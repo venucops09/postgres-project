@@ -1,5 +1,6 @@
 package com.mdtlabs.coreplatform.spiceservice.deviceDetails.service.impl;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class DeviceDetailsServiceImpl implements DeviceDetailsService {
         DeviceDetails existingDeviceDetails = deviceDetailsRepositary.findByUserIdAndTenantIdAndDeviceId(userDto.getId(), deviceDetails.getTenantId(), deviceDetails.getDeviceId());
         if (!Objects.isNull(existingDeviceDetails)){
             mapper.map(deviceDetails, existingDeviceDetails);
+            existingDeviceDetails.setLastLoggedIn(new Date());
             response = deviceDetailsRepositary.save(existingDeviceDetails);
         } else {
             response = deviceDetailsRepositary.save(deviceDetails);

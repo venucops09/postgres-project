@@ -1,9 +1,8 @@
 package com.mdtlabs.coreplatform.spiceadminservice.data.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.mdtlabs.coreplatform.common.model.dto.spice.CountryDTO;
-import com.mdtlabs.coreplatform.common.model.dto.spice.CountryListDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CountryOrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Country;
@@ -141,7 +140,7 @@ public interface DataService {
      * @param countryId country Id
      * @return List of Subcounty
      */
-	List<CountryListDTO> getCountryList(RequestDTO requestDTO);
+	Map<String, Object> getCountryList(RequestDTO requestDTO);
 	
 	/**
 	 * Gets country by Id without users.
