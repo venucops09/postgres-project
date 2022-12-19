@@ -64,7 +64,8 @@ public class BpLogServiceImpl implements BpLogService {
 			}
 			bpLog.setLatest(true);
 
-			if (bpLog.getUnitMeasurement().equals(UnitConstants.IMPERIAL)) {
+			if (!Objects.isNull(bpLog.getUnitMeasurement())
+					&& bpLog.getUnitMeasurement().equals(UnitConstants.IMPERIAL)) {
 				bpLog = convertBpLogUnits(bpLog, UnitConstants.METRIC);
 			}
 			if (Objects.isNull(bpLog.getBpTakenOn())) {

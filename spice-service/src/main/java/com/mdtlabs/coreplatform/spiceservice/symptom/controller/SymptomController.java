@@ -1,7 +1,7 @@
 package com.mdtlabs.coreplatform.spiceservice.symptom.controller;
 
+import java.util.List;
 
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -15,12 +15,9 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.symptom.service.SymptomService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/symptom")
 @Validated
-@Api(basePath = "/symptom", value = "master_data", description = "Symptom related APIs", produces = "application/json")
 public class SymptomController {
 
 	@Autowired

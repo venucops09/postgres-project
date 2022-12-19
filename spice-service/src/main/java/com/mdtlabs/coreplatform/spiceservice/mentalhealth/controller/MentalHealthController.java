@@ -15,8 +15,6 @@ import com.mdtlabs.coreplatform.spiceservice.mentalhealth.service.MentalHealthSe
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on MentalHealth entity.
  * 
@@ -26,7 +24,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/mentalhealth")
 @Validated
-@Api(basePath = "/mentalhealth", value = "master_data", description = "Mental health related APIs", produces = "application/json")
 public class MentalHealthController {
 
 	@Autowired

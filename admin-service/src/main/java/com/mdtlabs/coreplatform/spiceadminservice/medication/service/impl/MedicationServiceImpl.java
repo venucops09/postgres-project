@@ -22,6 +22,7 @@ import com.mdtlabs.coreplatform.common.exception.DataNotFoundException;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Medication;
 import com.mdtlabs.coreplatform.common.util.Pagination;
+
 import com.mdtlabs.coreplatform.spiceadminservice.medication.repository.MedicationRepository;
 import com.mdtlabs.coreplatform.spiceadminservice.medication.service.MedicationService;
 
@@ -136,7 +137,6 @@ public class MedicationServiceImpl implements MedicationService {
      * {@inheritDoc}
      */
     public List<Medication> searchMedications(RequestDTO requestObject) {
-// >>>>>>> Stashed changes
 //        This validation is not needed. countryid should be get from user data.
 
 //        if (Objects.isNull(requestObject.getCountryId())) {

@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Program;
+
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceadminservice.program.service.ProgramService;
-
-import io.swagger.annotations.Api;
 
 /**
  * This class is a controller class to perform operation on Program entity.
@@ -31,7 +30,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/program")
 @Validated
-@Api(basePath = "/program", value = "master_data", description = "Program related APIs", produces = "application/json")
 public class ProgramController {
 
 	@Autowired

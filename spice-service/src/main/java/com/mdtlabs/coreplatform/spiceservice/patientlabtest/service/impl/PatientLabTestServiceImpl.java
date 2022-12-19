@@ -258,8 +258,9 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 		SearchRequestDTO requestEntity = new SearchRequestDTO();
 		requestEntity.setCountryId(countryId);
 		requestEntity.setSearchTerm(searchTerm);
-		ResponseEntity<LabTest> labTest = apiInterface
-				.getLabTestByName(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), requestEntity);
+		ResponseEntity<LabTest> labTest = apiInterface.getLabTestByName(
+				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+				UserContextHolder.getUserDto().getTenantId(), requestEntity);
 		return labTest.getBody();
 	}
 
@@ -280,8 +281,9 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //				.getBody();
 //		return labTests;
 
-		ResponseEntity<List<LabTest>> list = apiInterface
-				.getLabTestsByIds(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), labTestIds);
+		ResponseEntity<List<LabTest>> list = apiInterface.getLabTestsByIds(
+				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+				UserContextHolder.getUserDto().getTenantId(), labTestIds);
 		return list.getBody();
 	}
 
@@ -409,7 +411,8 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //		return response.stream().map(BaseEntity::getId).collect(Collectors.toList());
 
 		ResponseEntity<Map> userResponse = apiInterface.getLabTestResultsByLabTestId(
-				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), labTestId);
+				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+				UserContextHolder.getUserDto().getTenantId(), labTestId);
 		List<LabTestResult> response = modelMapper.map(userResponse.getBody().get("entity"),
 				new TypeToken<List<LabTestResult>>() {
 				}.getType());

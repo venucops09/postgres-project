@@ -1,5 +1,10 @@
 package com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -11,16 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.CustomizationRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
+
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service.RegionCustomizationService;
-
-import io.swagger.annotations.Api;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
 
 /**
  * This controller class maintains CRUD operation for region customization data.
@@ -30,7 +29,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/region-customization")
 @Validated
-@Api(basePath = "/region-customization", value = "master_data", description = "Region Customization related APIs", produces = "application/json")
 public class RegionCustomizationController {
 
 	@Autowired

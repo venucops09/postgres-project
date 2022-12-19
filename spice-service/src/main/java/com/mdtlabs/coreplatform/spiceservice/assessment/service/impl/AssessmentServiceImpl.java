@@ -127,6 +127,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 			} else {
 				patientTracker = patientTrackerService.getPatientTrackerById(assessmentDTO.getPatientTrackId());
 			}
+			
+			
 
 			String riskLevel = "";
 			String riskMessage = "";
@@ -155,11 +157,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 						glucoseLog.getGlucoseUnit()));
 				glucoseId = glucoseLog.getId();
 			}
-			Long assessmentLogId = patientAssessmentRepository.save(new PatientAssessment(bpLog.getId(), glucoseId, assessmentDTO.getTenantId(), assessmentDTO.getPatientTrackId())).getId();
-			constructPatientTracker(patientTracker, assessmentDTO);
-			if (riskLevel.equals(Constants.HIGH)) {
-				patientTracker.setRedRiskPatient(Constants.BOOLEAN_TRUE);
-				createRedRiskNotification(patientTracker, bpLog.getId(), glucoseId, assessmentLogId);
+
+			Long assessmentLogId = patientAssessmentRepository.save(new PatientAssessment(bpLog.getId(), glucoseId,
+					assessmentDTO.getTenantId(), assessmentDTO.getPatientTrackId())).getId();
 
 			if (riskLevel.equals(Constants.HIGH)) {
 				addRedRiskNotification(patientTracker, assessmentDTO.getBpLog().getId(), glucoseId, assessmentLogId);
@@ -338,6 +338,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 		bpLog.setTenantId(assessmentDTO.getTenantId());
 		bpLog.setRiskLevel(riskLevel);
 		bpLog.setBpTakenOn(Objects.isNull(bpLog.getBpTakenOn()) ? new Date() : bpLog.getBpTakenOn());
+		if (!Objects.isNull(assessmentDTO.getUnitMeasurement())) {
+			bpLog.setUnitMeasurement(assessmentDTO.getUnitMeasurement());
+		}
 		return bpLog;
 	}
 
@@ -372,7 +375,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 		redRiskNotification.setPatientTrackId(patientTracker.getId());
 		redRiskNotification.setBpLogId(bpLogId);
 		redRiskNotification.setGlucoseLogId(glucoseLogId);
-		redRiskNotification.setTenentId(patientTracker.getTenantId());
+		redRiskNotification.setTenantId(patientTracker.getTenantId());
 		redRiskNotification.setAssessmentLogId(assessmentLogId);
 		redRiskNotification.setStatus(Constants.NEW);
 		return RedRiskService.createRedRiskNotification(redRiskNotification);
@@ -492,11 +495,12 @@ public class AssessmentServiceImpl implements AssessmentService {
 	public void addRedRiskNotification(PatientTracker patientTracker, Long bpLogId, Long glucoseId,
 			Long assessmentLogId) {
 		patientTracker.setRedRiskPatient(Constants.BOOLEAN_TRUE);
+
 		RedRiskNotification notification = createRedRiskNotification(patientTracker, bpLogId, glucoseId,
 				assessmentLogId);
 		List<User> users = userApiInterface.getUsersBasedOnOrgId(
 				Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
-				Arrays.asList(patientTracker.getTenantId()));
+				UserContextHolder.getUserDto().getTenantId(), Arrays.asList(patientTracker.getTenantId()));
 		List<SmsDTO> smsDTOs = new ArrayList<>();
 		for (User user : users) {
 			Set<Role> roles = user.getRoles();
@@ -504,7 +508,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 			if (isRedRiskUser) {
 				SmsDTO smsDTO = new SmsDTO();
 				smsDTO.setNotificationId(notification.getId());
-				smsDTO.setTenantId(notification.getTenentId());
+				smsDTO.setTenantId(notification.getTenantId());
 				smsDTO.setFormDataId(patientTracker.getPatientId());
 				smsDTO.setToPhoneNo(user.getCountryCode() + user.getPhoneNumber());
 				smsDTO.setUserName(user.getUsername());
@@ -512,7 +516,8 @@ public class AssessmentServiceImpl implements AssessmentService {
 			}
 		}
 
-		apiInterface.saveOutBoundSMS(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), smsDTOs);
+		apiInterface.saveOutBoundSMS(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+				UserContextHolder.getUserDto().getTenantId(), smsDTOs);
 	}
 
 	/**

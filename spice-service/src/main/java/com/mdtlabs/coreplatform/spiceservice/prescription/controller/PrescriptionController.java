@@ -31,8 +31,6 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.prescription.service.PrescriptionService;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on prescription
  * entities.
@@ -42,7 +40,6 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @Validated
-@Api(basePath = "/prescription", value = "master_data", description = "Prescription related APIs", produces = "application/json")
 public class PrescriptionController {
 
 	@Autowired

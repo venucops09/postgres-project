@@ -13,7 +13,7 @@ spring:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://mypostgres:5432/spice
       username : postgres
-      password : root
+      password : admin@123
    servlet:
       multipart:
          max-file-size: 15MB
@@ -75,3 +75,12 @@ app:
    forget-password-count-limit: ${FORGET_PASSWORD_COUNT_LIMIT:5}
    public-key: public_key.der
    private-key: private_key.der
+   
+spicelog: 
+   fileName: './log/SpiceApplicationLog.log'
+   fileNamePattern: './log/SpiceApplicationLog.%d{yyyy-MM-dd}.%i.log.gz'
+   consolePattern: '%white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] :  %msg%n%throwable'
+   filePattern: '%-4relative [%thread] %-5level %logger{35} - %msg%n'
+   maxHistory: 2
+   totalSizeCap: 3GB
+   maxFileSize: 10MB

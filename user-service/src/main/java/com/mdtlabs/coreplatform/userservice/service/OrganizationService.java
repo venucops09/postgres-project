@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.userservice.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.OrganizationDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Organization;
@@ -100,6 +101,14 @@ public interface OrganizationService {
 	 * @return Map<String, List<Long>> - collection of child organization IDs.
 	 */
 	Map<String, List<Long>> getChildOrganizations(long tenantId, String formName);
+	
+	/**
+	 * To get list of organizations based on list of ids.
+	 * 
+	 * @param roles - list of organization ids
+	 * @return Set<Role> - List of organization entity
+	 */
+	Set<Organization> getOrganizationsByIds(List<Long> organizationIds);
 
 
 }

@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import com.mdtlabs.coreplatform.common.annotations.DisableTenantFilter;
 import com.mdtlabs.coreplatform.common.model.entity.spice.RiskAlgorithm;
-import com.mdtlabs.coreplatform.common.repository.GenericRepository;
+import com.mdtlabs.coreplatform.common.repository.TenantableRepository;
 
 /**
  * This interface is responsible for performing database operations between
@@ -16,7 +17,7 @@ import com.mdtlabs.coreplatform.common.repository.GenericRepository;
  *
  */
 @Repository
-public interface RiskAlgorithmRepository extends GenericRepository<RiskAlgorithm> {
+public interface RiskAlgorithmRepository extends TenantableRepository<RiskAlgorithm> {
 
 	/**
 	 * Gets lsit of RiksAlgorithm by country id.
@@ -25,6 +26,7 @@ public interface RiskAlgorithmRepository extends GenericRepository<RiskAlgorithm
 	 * @param sort      Sorting object
 	 * @return List of RiskAlgorithm entities
 	 */
+	@DisableTenantFilter
 	List<RiskAlgorithm> findByCountryId(Long countryId, Sort sort);
 
 }

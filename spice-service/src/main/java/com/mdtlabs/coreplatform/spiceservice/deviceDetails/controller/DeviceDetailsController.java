@@ -15,8 +15,6 @@ import com.mdtlabs.coreplatform.spiceservice.deviceDetails.service.DeviceDetails
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on DeviceDetails entity.
  * 
@@ -26,7 +24,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/devicedetails")
 @Validated
-@Api(basePath = "/devicedetails", value = "master_data", description = "Device Releated Data", produces = "application/json")
 public class DeviceDetailsController {
 
     @Autowired

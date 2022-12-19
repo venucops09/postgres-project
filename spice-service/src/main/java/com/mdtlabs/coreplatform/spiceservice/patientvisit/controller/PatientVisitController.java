@@ -15,8 +15,6 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitService;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on PatientVisit entity.
  * 
@@ -26,7 +24,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/patientvisit")
 @Validated
-@Api(basePath = "/patientvisit", value = "master_data", description = "patient visit related APIs", produces = "application/json")
 public class PatientVisitController {
 
 	@Autowired

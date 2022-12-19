@@ -2,6 +2,7 @@ package com.mdtlabs.coreplatform.spiceservice.medicalreview.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.FieldConstants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
 import com.mdtlabs.coreplatform.common.exception.DataNotAcceptableException;
 import com.mdtlabs.coreplatform.common.exception.SpiceValidation;
+import com.mdtlabs.coreplatform.common.model.dto.UserDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CurrentMedicationDetailsDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.DiagnosisDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.InitialMedicalReviewDTO;
@@ -23,6 +27,7 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.MedicalReviewResponseDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.PatientMedicalReviewDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RedRiskDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
+import com.mdtlabs.coreplatform.common.model.entity.spice.Patient;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientComorbidity;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientComplication;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientCurrentMedication;
@@ -34,6 +39,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTreatmentPlan;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientVisit;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PrescriptionHistory;
+import com.mdtlabs.coreplatform.spiceservice.UserApiInterface;
 import com.mdtlabs.coreplatform.spiceservice.common.RedRiskService;
 import com.mdtlabs.coreplatform.spiceservice.common.repository.ComplaintsRepository;
 import com.mdtlabs.coreplatform.spiceservice.common.repository.PatientComorbidityRepository;
@@ -44,6 +50,7 @@ import com.mdtlabs.coreplatform.spiceservice.common.repository.PatientLifestyleR
 import com.mdtlabs.coreplatform.spiceservice.common.repository.PhysicalExaminationRepository;
 import com.mdtlabs.coreplatform.spiceservice.medicalreview.repository.MedicalReviewRepository;
 import com.mdtlabs.coreplatform.spiceservice.medicalreview.service.MedicalReviewService;
+import com.mdtlabs.coreplatform.spiceservice.patient.repository.PatientRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientNutritionLifestyle.repository.PatientNutritionLifestyleRepository;
 import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrackerService;
 import com.mdtlabs.coreplatform.spiceservice.patientlabtest.service.PatientLabTestService;
@@ -106,20 +113,12 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 
 	@Autowired
 	private PatientNutritionLifestyleRepository lifestyleRepository;
-//	@Autowired
-//	private ComorbidityService comorbidityService;
-//	@Autowired
-//	private ComplicationService complicationService;
-//	@Autowired
-//	private LifestyleService lifestyleService;
-//	@Autowired
-//	private PhysicalExaminationService physicalExaminationService;
-//	@Autowired
-//	private ComplaintsService complaintsService;
-//	@Autowired
-//	private CurrentMedicationService currentMedicationService;
-//	@Autowired
-//	private FrequencyService frequencyService;
+
+	@Autowired
+	private PatientRepository patientRepository;
+
+	@Autowired
+	private UserApiInterface userApiInterface;
 
 	/**
 	 * {@inheritDoc}
@@ -132,8 +131,10 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		if (Objects.isNull(medicalReviewDTO.getContinuousMedicalReview())) {
 			throw new BadRequestException(6001);
 		}
+
 		PatientTracker patientTracker = patientTrackerService
 				.getPatientTrackerById(medicalReviewDTO.getPatientTrackId());
+
 		System.out.println("medicalrevire ++++++++++++++" + medicalReviewDTO);
 		System.out.println("initial medical review ++++++++++++" + medicalReviewDTO.getInitialMedicalReview());
 		System.out.println(!Objects.isNull(medicalReviewDTO.getInitialMedicalReview()));
@@ -164,12 +165,16 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		patientMedicalReview
 				.setPhysicalExamComments(medicalReviewDTO.getContinuousMedicalReview().getPhysicalExamComments());
 		patientMedicalReview.setCompliantComments(medicalReviewDTO.getContinuousMedicalReview().getComplaintComments());
-		patientMedicalReview.setComplaints(
-				complaintsRepository.getComplaintsByIds(medicalReviewDTO.getContinuousMedicalReview().getComplaints()));
-		patientMedicalReview.setPhysicalExams(physicalExaminationRepository
-				.getPhysicalExaminationByIds(medicalReviewDTO.getContinuousMedicalReview().getPhysicalExams()));
+		if (!Objects.isNull(medicalReviewDTO.getContinuousMedicalReview().getComplaints())) {
+			patientMedicalReview.setComplaints(complaintsRepository
+					.getComplaintsByIds(medicalReviewDTO.getContinuousMedicalReview().getComplaints()));
+		}
+		if (!Objects.isNull(medicalReviewDTO.getContinuousMedicalReview().getPhysicalExams())) {
+			patientMedicalReview.setPhysicalExams(physicalExaminationRepository
+					.getPhysicalExaminationByIds(medicalReviewDTO.getContinuousMedicalReview().getPhysicalExams()));
+		}
 		System.out.println(patientMedicalReview);
-		medicalReviewRepository.save(patientMedicalReview);
+		patientMedicalReview = medicalReviewRepository.save(patientMedicalReview);
 		PatientVisit patientVisit = patientVisitService.getPatientVisit(medicalReviewDTO.getPatientVisitId(),
 				medicalReviewDTO.getTenantId());
 		patientVisit.setMedicalReview(true);
@@ -187,10 +192,10 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 				.getPatientTreatmentPlan(patientTracker.getId());
 
 		if (!Objects.isNull(patientTreatmentPlan)) {
-			Date nextMedicalReviewDate = patientTreatmentPlanService
-					.getTreatmentPlanFollowupDate(patientTreatmentPlan.getMedicalReviewFrequency(), Constants.DEFAULT);
-			patientTracker.setNextMedicalReviewDate(nextMedicalReviewDate);
+			patientTracker.setNextMedicalReviewDate(patientTreatmentPlanService
+					.getTreatmentPlanFollowupDate(patientTreatmentPlan.getMedicalReviewFrequency(), Constants.DEFAULT));
 		}
+		patientTracker.setLastReviewDate(patientMedicalReview.getCreatedAt());
 		patientTrackerService.addOrUpdatePatientTracker(patientTracker);
 
 	}
@@ -205,24 +210,55 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 
 		if (Constants.ENROLLED.equals(patientTracker.getPatientStatus())) {
 			System.out.println("==========createPatientInitialEncounter");
-			int comorbiditiesCount = medicalReview.getInitialMedicalReview().getComorbidities().stream()
-					.filter(comorbidity -> Objects.isNull(comorbidity.getOtherComorbidity())
-							|| comorbidity.getOtherComorbidity().equals(""))
-					.collect(Collectors.toList()).size();
-			System.out.println("comorbiditiesCPunt" + comorbiditiesCount);
-			String diabetesDiagControlledType = Objects
-					.isNull(medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesDiagControlledType()) ? ""
-							: medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesDiagControlledType();
+			int comorbiditiesCount = 0;
+			String diabetesDiagControlledType = "";
+			String diabetesPatientType = "";
+			String riskLevel = "";
+			PatientDiagnosis patientDiagnosis = new PatientDiagnosis();
+			if (!Objects.isNull(medicalReview) && !Objects.isNull(medicalReview.getInitialMedicalReview())) {
+				if (!Objects.isNull(medicalReview.getInitialMedicalReview().getComorbidities())) {
+					comorbiditiesCount = medicalReview.getInitialMedicalReview().getComorbidities().stream()
+							.filter(comorbidity -> Objects.isNull(comorbidity.getOtherComorbidity())
+									|| comorbidity.getOtherComorbidity().isBlank())
+							.collect(Collectors.toList()).size();
+					System.out.println("comorbiditiesCPunt" + comorbiditiesCount);
+				}
+
+				if (!Objects.isNull(medicalReview.getInitialMedicalReview().getDiagnosis())) {
+					diabetesDiagControlledType = Objects.isNull(
+							medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesDiagControlledType())
+									? Constants.EMPTY
+									: medicalReview.getInitialMedicalReview().getDiagnosis()
+											.getDiabetesDiagControlledType();
+					diabetesPatientType = Objects
+							.isNull(medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesPatientType())
+									? Constants.EMPTY
+									: medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesPatientType();
+
+				} else {
+					patientDiagnosis = patientDiagnosisRepository.findByPatientTrackIdAndIsActiveAndIsDeleted(
+							patientTracker.getId(), Constants.BOOLEAN_TRUE, Constants.BOOLEAN_FALSE);
+					if (!Objects.isNull(patientDiagnosis.getDiabetesDiagControlledType())) {
+						diabetesDiagControlledType = patientDiagnosis.getDiabetesDiagControlledType();
+					}
+					if (!Objects.isNull(patientDiagnosis.getDiabetesPatientType())) {
+						diabetesPatientType = patientDiagnosis.getDiabetesPatientType();
+					}
+				}
+			}
+
+			riskLevel = RedRiskService.getPatientRiskLevel(patientTracker, patientDiagnosis,
+					new RedRiskDTO(comorbiditiesCount, diabetesDiagControlledType, diabetesPatientType));
+
 			System.out.println("diabetesDiagControlledType       " + diabetesDiagControlledType);
-			String riskLevel = RedRiskService.getPatientRiskLevel(patientTracker,
-					new RedRiskDTO(comorbiditiesCount, diabetesDiagControlledType,
-							medicalReview.getInitialMedicalReview().getDiagnosis().getDiabetesPatientType()));
-			if (!Objects.isNull(riskLevel) && "" != riskLevel) {
+
+			if (!riskLevel.isBlank()) {
 				patientTracker.setRiskLevel(riskLevel);
-				// Update patient risk level. risk level
 			}
 			if (!Objects.isNull(medicalReview.getIsPregent())) {
-				// Update pregnancy info in patient form
+				Patient patient = patientRepository.findById(patientTracker.getPatientId()).orElse(new Patient());
+				patient.setIsPregnant(Constants.BOOLEAN_TRUE);
+				patientRepository.save(patient);
 			}
 			// update
 		}
@@ -240,34 +276,41 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 	public void createInitialMedicalReview(MedicalReviewDTO medicalReview) {
 		// Create initial medical review for the patient
 		InitialMedicalReviewDTO initialMedicalReview = medicalReview.getInitialMedicalReview();
-		if (!Objects.isNull(initialMedicalReview.getDiagnosis())) {
-			initialMedicalReview.getDiagnosis().setPatientTrackId(medicalReview.getPatientTrackId());
-			initialMedicalReview.getDiagnosis().setPatientVisitId(medicalReview.getPatientVisitId());
-			initialMedicalReview.getDiagnosis().setTenantId(medicalReview.getTenantId());
-			patientDiagnosisRepository.save(initialMedicalReview.getDiagnosis());
-			// createPatientDiagnosis(initialMedicalReview.getDiagnosis(),
-			// medicalReview.getPatientTrackId(),
-			// medicalReview.getPatientVisitId(), medicalReview.getTenantId());
+
+		if (!Objects.isNull(initialMedicalReview.getCurrentMedications())
+				&& (!Objects.isNull(initialMedicalReview.getCurrentMedications().getMedications()))
+				&& !initialMedicalReview.getCurrentMedications().getMedications().isEmpty()) {
+			createPatientCurrentMedication(initialMedicalReview.getCurrentMedications(),
+					medicalReview.getPatientTrackId(), medicalReview.getPatientVisitId(), medicalReview.getTenantId());
 		}
-		if (!Objects.isNull(initialMedicalReview.getComplications())
-				&& !initialMedicalReview.getComplications().isEmpty()) {
-			createPatientComplication(initialMedicalReview.getComplications(), medicalReview.getPatientTrackId(),
-					medicalReview.getPatientVisitId(), medicalReview.getTenantId());
-		}
+
 		if (!Objects.isNull(initialMedicalReview.getComorbidities())
 				&& !initialMedicalReview.getComorbidities().isEmpty()) {
 			createPatientComorbidity(initialMedicalReview.getComorbidities(), medicalReview.getPatientTrackId(),
 					medicalReview.getPatientVisitId(), medicalReview.getTenantId());
 		}
+
+		if (!Objects.isNull(initialMedicalReview.getComplications())
+				&& !initialMedicalReview.getComplications().isEmpty()) {
+			createPatientComplication(initialMedicalReview.getComplications(), medicalReview.getPatientTrackId(),
+					medicalReview.getPatientVisitId(), medicalReview.getTenantId());
+		}
+
+		// track id, is initial review, risk level, is htn diagnosis, is diabetes
+		// diagnosis
+
+		if (!Objects.isNull(initialMedicalReview.getDiagnosis())) {
+			initialMedicalReview.getDiagnosis().setPatientTrackId(medicalReview.getPatientTrackId());
+			initialMedicalReview.getDiagnosis().setPatientVisitId(medicalReview.getPatientVisitId());
+			initialMedicalReview.getDiagnosis().setTenantId(medicalReview.getTenantId());
+			patientDiagnosisRepository.save(initialMedicalReview.getDiagnosis());
+		}
+
 		if (!Objects.isNull(initialMedicalReview.getLifestyle()) && !initialMedicalReview.getLifestyle().isEmpty()) {
 			createPatientLifestyle(initialMedicalReview.getLifestyle(), medicalReview.getPatientTrackId(),
 					medicalReview.getPatientVisitId(), medicalReview.getTenantId());
 		}
-		if (!Objects.isNull(initialMedicalReview.getCurrentMedications())
-				&& !initialMedicalReview.getCurrentMedications().getMedications().isEmpty()) {
-			createPatientCurrentMedication(initialMedicalReview.getCurrentMedications(),
-					medicalReview.getPatientTrackId(), medicalReview.getPatientVisitId(), medicalReview.getTenantId());
-		}
+
 	}
 
 	/**
@@ -287,11 +330,6 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 			patientLifestyle.setPatientTrackId(patientTrackId);
 			patientLifestyle.setPatinetVisitId(patientVisitId);
 		}
-		// Set<PatientLifestyle> patientLifestyles = lifestyles.stream().map(
-		// lifestyle -> new PatientLifestyle(tenantId, patientTrackId, patientVisitId,
-		// lifestyle.getLifestyleId(),
-		// lifestyle.getLifestyleAnswer(), lifestyle.getComments()))
-		// .collect(Collectors.toSet());
 
 		patientLifestyleRepository.saveAll(lifestyles);
 
@@ -312,7 +350,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 			// patientComorbidity.setIds(tenantId, patientTrackId, patientVisitId);
 			patientComorbidity.setTenantId(tenantId);
 			patientComorbidity.setPatientTrackId(patientTrackId);
-			patientComorbidity.setPatinetVisitId(patientVisitId);
+			patientComorbidity.setPatientVisitId(patientVisitId);
 		}
 		// Set<PatientComorbidity> patientComorbidities = comorbidities.stream().map(
 		// comorbidity -> new PatientComorbidity(tenantId, patientTrackId,
@@ -418,31 +456,26 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 	}
 
 	public MedicalReviewResponseDTO getMedicalReviewSummaryHistory(RequestDTO medicalReviewListDTO) {
-		Boolean isMedicalReview;
-		Boolean isInvestigation;
-		Boolean isPrescription;
-		List<PatientVisit> patientVisitList = new ArrayList<>();
-		List<Map<String, Object>> visits = new ArrayList<>();
-		PatientVisit latestPatientVisit = null;
+
 		if (Objects.isNull(medicalReviewListDTO.getPatientTrackId())) {
 			throw new DataNotAcceptableException(10010);
 		}
+
+		List<PatientVisit> patientVisitList = new ArrayList<>();
+		List<Map<String, Object>> visits = new ArrayList<>();
+		PatientVisit latestPatientVisit = null;
+
 		if (medicalReviewListDTO.isLatestRequired()) {
-			isMedicalReview = true;
-			isInvestigation = true;
-			isPrescription = true;
+			boolean isMedicalReview = Constants.BOOLEAN_TRUE;
+			Boolean isInvestigation = Constants.BOOLEAN_TRUE;
+			Boolean isPrescription = Constants.BOOLEAN_TRUE;
 			if (medicalReviewListDTO.isMedicalReviewSummary()) {
-				isMedicalReview = true;
 				isInvestigation = null;
 				isPrescription = null;
 			}
 			patientVisitList = patientVisitService.getPatientVisitDates(medicalReviewListDTO.getPatientTrackId(),
 					isInvestigation, isMedicalReview, isPrescription);
-			// visitDates = patientVisitList.stream().map(
-			// visit -> visit.getVisitDate()).collect(Collectors.toList());
-			// visit dates
 			if (patientVisitList.isEmpty()) {
-				// Set patient visit Id
 				return new MedicalReviewResponseDTO();
 			} else {
 				patientVisitList.stream()
@@ -460,9 +493,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 		MedicalReviewResponseDTO medicalReviewSummary = getMedicalReviewSummary(medicalReviewListDTO,
 				latestPatientVisit);
 		medicalReviewSummary.setPatientReviewDates(visits);
-		if (medicalReviewListDTO.isDetailedSummaryRequired()) {
 
-		}
 		return medicalReviewSummary;
 
 	}
@@ -508,12 +539,20 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 			}
 			medicalReviewResponse.setReviewedAt(patientVisit.getCreatedAt());
 
-			// TODO : reviewer details from user model
+			Map<String, String> reviewerMap = new HashMap<String, String>();
+
+			UserDTO userDTO = userApiInterface.getPrescriberDetails(
+					Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),
+					UserContextHolder.getUserDto().getTenantId(), patientVisit.getCreatedBy());
+			if (!Objects.isNull(userDTO)) {
+				reviewerMap.put(FieldConstants.FIRST_NAME, userDTO.getFirstName());
+				reviewerMap.put(FieldConstants.LAST_NAME, userDTO.getLastName());
+				reviewerMap.put(FieldConstants.USERNAME, userDTO.getUsername());
+			}
+			medicalReviewResponse.setReviewerDetails(reviewerMap);
 		}
 		if (!medicalReviewListDTO.isDetailedSummaryRequired() && patientVisit.isPrescription()) {
-			List<PrescriptionHistory> histories = getPrescriptionHistory(patientVisit);
-			medicalReviewResponse.setPrescriptions(histories);
-			// medicalReviewResponse.setPrescriptions(getPrescriptionHistory(patientVisit));
+			medicalReviewResponse.setPrescriptions(getPrescriptionHistory(patientVisit));
 		}
 
 		return medicalReviewResponse;
@@ -544,7 +583,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 
 	public Map<String, Integer> getPrescriptionAndLabtestCount(RequestDTO request) {
 		if (!Objects.isNull(request.getPatientTrackId())) {
-			throw new SpiceValidation();
+			throw new DataNotAcceptableException(10010);
 		}
 		int prescriptionDaysCompletedCount = prescriptionRepository.getPrecriptionCount(new Date(),
 				request.getPatientTrackId());

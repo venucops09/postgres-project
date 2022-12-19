@@ -107,17 +107,18 @@ public class StaticDataServiceImpl implements StaticDataService {
 		UserDTO userDTO = UserContextHolder.getUserDto();
 		Long countryId = userDTO.getCountry().getId();
 		String token = Constants.BEARER + userDTO.getAuthorization();
+		Long tenantId = userDTO.getTenantId();
+
 		List<Long> tenants = List.of(1L, 2L, 3L, 4L);
-		Long userTenantId = 4L;
 //		Long userTenantId = Long.parseLong(UserSelectedTenantContextHolder.get().toString());
 //		List<Long> tenants = UserTenantsContextHolder.get().stream().map(a -> Long.parseLong(a.toString()))
 //				.collect(Collectors.toList());
-		List<Site> sites = apiInterface.getSitesByTenantIds(token, tenants);
+		List<Site> sites = apiInterface.getSitesByTenantIds(token, tenantId, tenants);
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		List<SiteDTO> siteDTOList = mapper.map(sites, new TypeToken<List<SiteDTO>>() {
 		}.getType());
-		Account account = apiInterface.getAccountById(token, sites.get(0).getAccountId());
-		List<AccountWorkflow> workflows = apiInterface.getAllAccountWorkFlows(token);
+		Account account = apiInterface.getAccountById(token, tenantId, sites.get(0).getAccountId());
+		List<AccountWorkflow> workflows = apiInterface.getAllAccountWorkFlows(token, tenantId);
 		List<AccountWorkflow> clinicalWorkflows = account.getClinicalWorkflows();
 
 		List<AccountWorkflow> customizedWorkflows = account.getCustomizedWorkflows();
@@ -142,20 +143,22 @@ public class StaticDataServiceImpl implements StaticDataService {
 		}
 
 		List<Long> siteIds = sites.stream().map(Site::getId).collect(Collectors.toList());
-		response.setPrograms(apiInterface.getPrograms(token, siteIds));
+		response.setPrograms(apiInterface.getPrograms(token, tenantId, siteIds));
 		response.setMenus(sideMenuRepository.findByRoleNameIn(userRoles));
 
 		response.setClinicalWorkflow(clinicalWorkflowResponse);
 		response.setAccountId(account.getId());
 		response.setOperatingUnitId(sites.get(0).getOperatingUnitId());
 		response.setSites(siteDTOList);
+
 		response.setDefaultSite(
-				sites.stream().filter(site -> site.getTenantId() == userTenantId).findAny().orElse(null));
+				sites.stream().filter(site -> site.getTenantId() == UserContextHolder.getUserDto().getTenantId())
+						.findAny().orElse(null));
+		response.setOperatingSites(
+				apiInterface.getSitesByOperatingUnitId(token, tenantId, sites.get(0).getOperatingUnitId()));
 
-		response.setOperatingSites(apiInterface.getSitesByOperatingUnitId(token, sites.get(0).getOperatingUnitId()));
-
-		setMetaData(response, countryId, token);
-		getAccountCustomization(countryId, response, token);
+		setMetaData(response, countryId, token, tenantId);
+		getAccountCustomization(countryId, response, token, tenantId);
 		return response;
 	}
 
@@ -165,7 +168,7 @@ public class StaticDataServiceImpl implements StaticDataService {
 	 * @param response  Object containing meta data.
 	 * @param countryId user country id
 	 */
-	private void setMetaData(StaticDataDTO response, long countryId, String token) {
+	private void setMetaData(StaticDataDTO response, long countryId, String token, long tenantId) {
 		response.setDosageForm(dosageFormRepository.findByNameNotLike(Constants.OTHER));
 		response.setUnits(unitRepository.findByNameNotLike(Constants.OTHER));
 		response.setNutritionLifestyle(
@@ -178,9 +181,9 @@ public class StaticDataServiceImpl implements StaticDataService {
 				(riskAlgorithmRepository.findByCountryId(countryId, Sort.by(Sort.Direction.ASC, "countryId"))).get(0)
 						.getRiskAlgorithm());
 		response.setReasons(reasonRepository.findAll(Sort.by(Sort.Direction.ASC, "displayOrder")));
-		response.setCountries(List.of(apiInterface.getCountryById(token, countryId)));
-		response.setCounties(apiInterface.getAllCountyByCountryId(token, countryId));
-		response.setSubcounties(apiInterface.getAllSubCountyByCountryId(token, countryId));
+		response.setCountries(List.of(apiInterface.getCountryById(token, tenantId, countryId)));
+		response.setCounties(apiInterface.getAllCountyByCountryId(token, tenantId, countryId));
+		response.setSubcounties(apiInterface.getAllSubCountyByCountryId(token, tenantId, countryId));
 		response.setMentalHealth(getMentalHealthStaticData(countryId));
 	}
 
@@ -191,13 +194,14 @@ public class StaticDataServiceImpl implements StaticDataService {
 	 * @param response  object containing meta data.
 	 * @return
 	 */
-	private List<AccountCustomization> getAccountCustomization(Long countryId, StaticDataDTO response, String token) {
+	private List<AccountCustomization> getAccountCustomization(Long countryId, StaticDataDTO response, String token,
+			long tenantId) {
 		List<AccountCustomization> accountCustomizations = new ArrayList<>();
 //		List<CustomizationDTO> workflowsCutomizationDTOs = new ArrayList<>();
 		List<String> screenTypes = List.of(Constants.WORKFLOW_ENROLLMENT, Constants.WORKFLOW_SCREENING,
 				Constants.WORKFLOW_ASSESSMENT, Constants.MODULE);
 		List<String> category = List.of(Constants.INPUT_FORM, Constants.CONSENT_FORM);
-		accountCustomizations = apiInterface.getAccountCustomization(token,
+		accountCustomizations = apiInterface.getAccountCustomization(token, tenantId,
 				Map.of("screenTypes", screenTypes, "category", category, "countryId", countryId));
 		List<AccountCustomization> accountConsentForms = new ArrayList<>();
 		List<AccountCustomization> accountCustomizedModules = new ArrayList<>();
@@ -231,7 +235,8 @@ public class StaticDataServiceImpl implements StaticDataService {
 		Map<String, String> screening = new HashMap<>();
 		Map<String, String> assessment = new HashMap<>();
 		if (!regionConsentFormTypes.isEmpty()) {
-			List<RegionCustomization> regionCustomizations = apiInterface.getRegionCustomizations(token, requestData);
+			List<RegionCustomization> regionCustomizations = apiInterface.getRegionCustomizations(token, tenantId,
+					requestData);
 //			workflowsCutomizationDTOs.addAll(
 			if (!Objects.isNull(regionCustomizations) && !regionCustomizations.isEmpty()) {
 				for (RegionCustomization customization : regionCustomizations) {

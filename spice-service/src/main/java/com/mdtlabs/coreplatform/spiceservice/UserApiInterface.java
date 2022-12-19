@@ -22,10 +22,11 @@ public interface UserApiInterface {
 	public List<Long> getUserTenants(@PathVariable long id);
 
 	@GetMapping("/user/{id}")
-	public UserDTO getPrescriberDetails(@RequestHeader("Authorization") String authToken, @PathVariable long id);
+	public UserDTO getPrescriberDetails(@RequestHeader("Authorization") String authToken,
+			@RequestHeader("TenantId") Long tenantId, @PathVariable long id);
 
 	@PostMapping("/user/get-by-tenants")
 	public List<User> getUsersBasedOnOrgId(@RequestHeader("Authorization") String authToken,
-			@RequestBody List<Long> orgIds);
+			@RequestHeader("TenantId") Long tenantId, @RequestBody List<Long> orgIds);
 
 }

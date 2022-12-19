@@ -20,7 +20,7 @@ CREATE TABLE country (
   name VARCHAR NOT NULL,
   country_code VARCHAR NOT NULL,
   unit_measurement VARCHAR NOT NULL,
-  tenant_id BIGINT, FOREIGN KEY (tenant_id) REFERENCES organization(id),
+  tenant_id BIGINT,
   created_by BIGINT NOT NULL, 
   updated_by BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -72,6 +72,7 @@ CREATE TABLE "user" (
   last_logged_out TIMESTAMP,
   country_id BIGINT, FOREIGN KEY (country_id) REFERENCES country(id),
   timezone_id BIGINT, FOREIGN KEY (timezone_id) REFERENCES timezone(id),
+  tenant_id BIGINT NOT NULL,
   created_by BIGINT NOT NULL,
   updated_by BIGINT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -572,6 +573,7 @@ CREATE TABLE glucose_log (
   hba1c FLOAT,
   is_latest BOOLEAN,
   type VARCHAR,
+  is_red_risk_patient BOOLEAN,
   is_updated_from_enrollment BOOLEAN,
   hba1c_unit VARCHAR,
   patient_track_id BIGINT, FOREIGN KEY (patient_track_id) REFERENCES patient_tracker(id),
@@ -601,6 +603,7 @@ CREATE TABLE bp_log (
   is_latest BOOLEAN,
   is_regular_smoker BOOLEAN,
   type VARCHAR,
+  is_red_risk_patient BOOLEAN,
   risk_level VARCHAR,
   bp_position VARCHAR,
   bp_arm VARCHAR,
@@ -1439,6 +1442,7 @@ CREATE TABLE country_customization(
     is_active BOOLEAN DEFAULT true
 );
 
+
 CREATE TABLE email_template (
   id SERIAL PRIMARY KEY,
   type VARCHAR,
@@ -1454,6 +1458,7 @@ CREATE TABLE email_template_value (
   email_template_id BIGINT,
   FOREIGN KEY (email_template_id) REFERENCES email_template(id)
 );
+
 
 CREATE Table device_details (
   id SERIAL PRIMARY KEY,
@@ -1480,7 +1485,7 @@ CREATE Table device_details (
 
 CREATE TABLE outbound_sms(
 	id SERIAL PRIMARY KEY, 
-	user_name VARCHAR,
+	username VARCHAR,
 	form_data_id BIGINT,
 	retry_attempts INT DEFAULT 0,
 	phone_number VARCHAR,
@@ -1513,15 +1518,18 @@ INSERT INTO country ("name",country_code,unit_measurement,tenant_id,created_by,u
 
 INSERT INTO timezone (description,abbreviation,"offset",created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
 	 ('(UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi','IST','UTC+05:30',1,1,'2022-12-08 19:11:09.138','2022-12-08 19:11:09.138',true,false); 
-	 
+
+
 INSERT INTO "user" (first_name,last_name,middle_name,gender,phone_number,address,username,"password",country_code,is_blocked,blocked_date,forget_password_token,forget_password_time,forget_password_count,invalid_login_attempts,invalid_login_time,invalid_reset_time,is_password_reset_enabled,password_reset_attempts,is_license_acceptance,last_logged_in,last_logged_out,country_id,timezone_id,created_by,updated_by,created_at,updated_at,is_active,is_deleted,ref_id) VALUES
 	 ('test','user','m','Male','98764321',NULL,'superuser@test.com','\xc30d040703021e2a37bef1a7243f61d2b101cd17bf7f7db36e4e9270c0a587d01272e49b2c54eafd4e86fc00e048d3c93e763808ab2599ffd3d5a914130bbe28132852951b58e1c3c389523b46821eb4cd8d5cc4809844a3c008c020858e9994407d70933745ea9c083030e2f6ac1386ea05549c64c75ebceee058fa68f49fd189e9b99e4aaca19dd50f8290a1b4048300119745c58f99be07138a527f4dad7ea9b74a3bad9c65d611799e4e371f04173cf4f87ed9a3bbc46722708e7815b78305d5',NULL,false,NULL,'1','2022-12-08 14:38:17.115',0,0,'2022-12-08 14:38:17.115','2022-12-08 14:38:17.115',true,0,false,NULL,NULL,1,1,1,1,'2022-12-08 14:38:17.115','2022-12-08 14:38:17.115',true,false,NULL);
+
 
 INSERT INTO "role" ("name","level",created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
 	 ('SUPER_USER',0,1,1,'2022-12-08 19:11:12.160','2022-12-08 19:11:12.160',true,false);
 
 INSERT INTO user_role (user_id,role_id) VALUES
 	 (1,1);
+
 
 INSERT INTO organization (form_data_id,form_name,"name","sequence",parent_organization_id,tenant_id,created_by,updated_by,created_at,updated_at,is_active,is_deleted) VALUES
 	 (1,'country','India',0,NULL,NULL,1,1,'2022-04-20 19:53:38.869','2022-04-20 19:53:39.050',true,false);
@@ -1532,6 +1540,7 @@ INSERT INTO user_organization (user_id,organization_id) VALUES
 INSERT INTO public.email_template (id,"type",vm_content,body,title,app_url) VALUES
      (1,'Forgot_Password','vmContent','<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/spiceEngage.png" style=\"height:70%;width:10%;"></p><p style=\"font-size: 11pt\>Dear Telecounseling Application User,<br><br>    <p>We have received a request to reset your Telecounseling account password. It was initiated after you selected “Forgot Password” in the Telecounseling software application.    <br><br>    <strong>Please click on this 
 <a href="${app_url_email}">LINK</a> to reset your password. The link will expire in 60 minutes.If it is expires before the reset is completed, 
+
 click on Forgot Password in the application to reset it again.</strong>    <br><br>  
  If you did not initiate an account password reset process or have a Telecounseling software application 
 account associated with this email address, it is possible that someone else might be trying to access your account.
@@ -1539,12 +1548,14 @@ If so, please notify Medtronic LABS Support Team at support@medtroniclabs.org.  
 If you have any additional questions, please contact the Medtronic LABS Support Team at support@medtroniclabs.org.  
  <br>      <br>    Sincerely,    <br>    The Medtronic LABS Telecounseling Platform Support
 Team<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/logo2.png" style="height:6%;width:25%;">','Email_notification','app_url_email'),
+
      (2,'User_Creation','vmContent','<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/spiceEngage.png" style=\"height:70%;width:10%;"></p><p style=\"font-size: 11pt\>Dear Telecounseling Application User,<br><br>    <p>Welcome! An account has been created for you in the Telecounseling software application.     <br><br>    <strong>Your account username is your email address ${email}. To finish setting up your Telecounseling application account, please click on this <a href="${app_url_email}">LINK</a> to create your password. </strong>    <br><br>  Once you have set up your password you will be able to access the application. <br><br> If you have any additional questions, please contact the Medtronic LABS Support Team at support@medtroniclabs.org.  <br>      <br>    Sincerely,    <br>    The Medtronic LABS Telecounseling Platform SupportTeam<p><img src="https://mdt-shruti.s3.ap-south-1.amazonaws.com/logo/logo2.png" style="height:6%;width:25%;">','Email_notification','app_url_email');
 	 
 INSERT INTO public.email_template_value (id,"name",email_template_id) VALUES
      (1,'app_url_email',1),
      (2,'app_url_email',2),
      (3,'email',2);  
+
 
 INSERT INTO api_role_permission ("method",api,roles) VALUES
 	 ('POST','/user','SUPER_USER'),

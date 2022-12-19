@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mdtlabs.coreplatform.common.model.entity.Site;
+
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceadminservice.site.service.SiteService;
 
-import io.swagger.annotations.Api;
 
 /**
  * This controller class maintains CRUD operation for site data.
@@ -30,7 +29,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/site")
 @Validated
-@Api(basePath = "/site", value = "master_data", description = "Site related APIs", produces = "application/json")
 public class SiteController {
 
 	@Autowired

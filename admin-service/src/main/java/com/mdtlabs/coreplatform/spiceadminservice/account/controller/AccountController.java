@@ -3,6 +3,8 @@ package com.mdtlabs.coreplatform.spiceadminservice.account.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -17,13 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.Account;
+
 import com.mdtlabs.coreplatform.spiceadminservice.account.service.AccountService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
-
-import javax.validation.Valid;
 
 /**
  * This controller class maintains CRUD operation for account data.
@@ -34,7 +33,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/account")
 @Validated
-@Api(basePath = "/account", value = "master_data", description = "Account related APIs", produces = "application/json")
 public class AccountController {
 
 	@Autowired

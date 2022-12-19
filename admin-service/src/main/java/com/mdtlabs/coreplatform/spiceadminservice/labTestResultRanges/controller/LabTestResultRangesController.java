@@ -3,6 +3,8 @@ package com.mdtlabs.coreplatform.spiceadminservice.labTestResultRanges.controlle
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,10 @@ import com.mdtlabs.coreplatform.common.Constants;
 import com.mdtlabs.coreplatform.common.model.dto.spice.LabTestResultRangeDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.LabTestResultRangeRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.LabTestResultRange;
+
 import com.mdtlabs.coreplatform.spiceadminservice.labTestResultRanges.service.LabTestResultRangesService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
-
-import javax.validation.*;
 
 /**
  * This controller class maintains the CRUD operations for lab test result
@@ -38,7 +37,6 @@ import javax.validation.*;
 @RestController
 @RequestMapping(value = "/labTestResultRanges")
 @Validated
-@Api(basePath = "/labTestResultRanges", value = "master_data", description = "Lab test result ranges related APIs", produces = "application/json")
 public class LabTestResultRangesController {
 
 	@Autowired

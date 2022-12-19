@@ -16,8 +16,6 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 import com.mdtlabs.coreplatform.spiceservice.screeningLog.service.ScreeningLogService;
 
-import io.swagger.annotations.Api;
-
 /**
  * This class is a controller class to perform operation on PatientVisit entity.
  *
@@ -26,7 +24,6 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/screeninglog")
 @Validated
-@Api(basePath = "/screeninglog", value = "master_data", description = "Screening related APIs", produces = "application/json")
 public class ScreeningLogController {
 
 	@Autowired

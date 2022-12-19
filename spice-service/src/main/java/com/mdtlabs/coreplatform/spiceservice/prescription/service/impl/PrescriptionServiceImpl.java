@@ -177,7 +177,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 		long countryId = UserContextHolder.getUserDto().getCountry().getId();
 		ResponseEntity<OtherMedicationDTO> obj = apiInterface
-				.getOtherMedication(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(), countryId);
+				.getOtherMedication(Constants.BEARER + UserContextHolder.getUserDto().getAuthorization(),UserContextHolder.getUserDto().getTenantId(), countryId);
 		OtherMedicationDTO medicationDTO = obj.getBody();
 		return medicationDTO;
 	}
@@ -435,7 +435,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		Prescription prescriptionToBeDeleted = prescriptionRepository.findById(prescriptionListRequestDTO.getId())
 				.orElseThrow(() -> new DataNotAcceptableException(29010));
 
-		prescriptionToBeDeleted.setIsDeleted(Constants.BOOLEAN_TRUE);
+		prescriptionToBeDeleted.setDeleted(Constants.BOOLEAN_TRUE);
 		prescriptionToBeDeleted.setDiscontinuedOn(new Date());
 		prescriptionToBeDeleted.setDiscontinuedReason(prescriptionListRequestDTO.getDiscontinuedReason());
 		prescriptionToBeDeleted.setTenantId(prescriptionListRequestDTO.getTenantId());

@@ -230,7 +230,7 @@ public class ScreeningLogServiceImpl implements ScreeningLogService {
             throw new BadRequestException(8001);
         }
 		String authToken = Constants.BEARER + UserContextHolder.getUserDto().getAuthorization();
-		Site site = apiInterface.getSiteById(authToken, screeningLog.getSiteId());
+		Site site = apiInterface.getSiteById(authToken,UserContextHolder.getUserDto().getTenantId(), screeningLog.getSiteId());
 		if (Objects.isNull(site)) {
 			throw new DataNotAcceptableException(9006);
 		}

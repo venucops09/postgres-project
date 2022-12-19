@@ -63,7 +63,6 @@ public class DataServiceImpl implements DataService {
 
 	ModelMapper modelMapper = new ModelMapper();
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,7 +93,8 @@ public class DataServiceImpl implements DataService {
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			organizationDTO.setUsers(modelMapper.map(countryDTO.getUsers(), new TypeToken<Country>() {
 			}.getType()));
-			ResponseEntity<Organization> response = userApiInterface.createOrganization(token, organizationDTO);
+			ResponseEntity<Organization> response = userApiInterface.createOrganization(token,
+					UserContextHolder.getUserDto().getTenantId(), organizationDTO);
 			countryResponse.setTenantId(response.getBody().getId());
 			countryResponse = countryRepository.save(countryResponse);
 			return countryResponse;
@@ -195,7 +195,8 @@ public class DataServiceImpl implements DataService {
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		countryOrganizationDTO = modelMapper.map(country, new TypeToken<CountryOrganizationDTO>() {
 		}.getType());
-		List<User> users = userApiInterface.getUsersByTenantIds(token, List.of(country.getTenantId()));
+		List<User> users = userApiInterface.getUsersByTenantIds(token, UserContextHolder.getUserDto().getTenantId(),
+				List.of(country.getTenantId()));
 		countryOrganizationDTO.setUsers(modelMapper.map(users, new TypeToken<List<UserOrganizationDTO>>() {
 		}.getType()));
 		return countryOrganizationDTO;
@@ -296,7 +297,8 @@ public class DataServiceImpl implements DataService {
 				CountryListDTO countryListDTO = new CountryListDTO();
 				countryListDTO.setId(country.getId());
 				countryListDTO.setName(country.getName());
-				Map<String, List<Long>> childOrgList = userApiInterface.getChildOrganizations(token,country.getTenantId(), Constants.COUNTRY);
+				Map<String, List<Long>> childOrgList = userApiInterface.getChildOrganizations(token,
+						UserContextHolder.getUserDto().getTenantId(), country.getTenantId(), Constants.COUNTRY);
 				countryListDTO.setAccountsCount(childOrgList.get("accountIds").size());
 				countryListDTO.setOUCount(childOrgList.get("operatingUnitIds").size());
 				countryListDTO.setSiteCount(childOrgList.get("siteIds").size());
@@ -309,7 +311,7 @@ public class DataServiceImpl implements DataService {
 
 	/**
 	 * {@inheritDoc}
-	 */	
+	 */
 	public Country findCountryById(Long countryId) {
 		Country country = countryRepository.findByIdAndIsDeleted(countryId, false);
 		if (Objects.isNull(country)) {

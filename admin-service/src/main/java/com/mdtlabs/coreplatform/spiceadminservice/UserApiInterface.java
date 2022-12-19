@@ -24,11 +24,14 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
 public interface UserApiInterface {
 	@PostMapping("/organization/create")
 	public ResponseEntity<Organization> createOrganization(@RequestHeader("Authorization") String token,
-			@RequestBody OrganizationDTO organizationDTO);
-	
+			@RequestHeader("TenantId") long tenantId, @RequestBody OrganizationDTO organizationDTO);
+
 	@PostMapping("/organization/get-child-organizations/{tenantId}")
-	public Map<String, List<Long>> getChildOrganizations(@RequestHeader("Authorization") String token, @PathVariable("tenantId")Long tenantId,@RequestBody String formName);
+	public Map<String, List<Long>> getChildOrganizations(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId, @PathVariable("tenantId") Long tenantID,
+			@RequestBody String formName);
 
 	@PostMapping("/user/get-by-tenants")
-	public List<User> getUsersByTenantIds(@RequestHeader("Authorization") String token,@RequestBody List<Long> tenantIds);
+	public List<User> getUsersByTenantIds(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId, @RequestBody List<Long> tenantIds);
 }

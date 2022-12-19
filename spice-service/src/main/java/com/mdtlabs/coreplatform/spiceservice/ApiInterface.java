@@ -31,62 +31,66 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
  * @author Niraimathi S
  *
  */
-//@FeignClient(value = "AdminServiceFeign", url = "http://192.168.178.174/admin-service")
 @FeignClient(name = "admin-service")
 public interface ApiInterface {
 
 	@GetMapping("/medication/other-medication/{countryId}")
 	public ResponseEntity<OtherMedicationDTO> getOtherMedication(@RequestHeader("Authorization") String token,
-			@PathVariable long countryId);
+			@RequestHeader("TenantId") long tenantId, @PathVariable long countryId);
 
 	@PostMapping("/labtest/patient-labtest/get-by-name")
 	public ResponseEntity<LabTest> getLabTestByName(@RequestHeader("Authorization") String token,
-			@RequestBody SearchRequestDTO searchRequestDTO);
+			@RequestHeader("TenantId") long tenantId, @RequestBody SearchRequestDTO searchRequestDTO);
 
 	@PostMapping("/labtest/patient-labtest/get-list-by-ids")
 	public ResponseEntity<List<LabTest>> getLabTestsByIds(@RequestHeader("Authorization") String token,
-			@RequestBody Set<Long> labTestIds);
+			@RequestHeader("TenantId") long tenantId, @RequestBody Set<Long> labTestIds);
 
 	@GetMapping("/labtest/labtest-result/{id}")
 	public ResponseEntity<Map> getLabTestResultsByLabTestId(@RequestHeader("Authorization") String token,
-			@PathVariable long id);
+			@RequestHeader("TenantId") long tenantId, @PathVariable long id);
 
 	@GetMapping("/data/get-country/{id}")
-	public Country getCountryById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") long id);
+	public Country getCountryById(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId, @PathVariable(value = "id") long id);
 
 	@GetMapping(value = "/data/county-list/{id}")
 	public List<County> getAllCountyByCountryId(@RequestHeader("Authorization") String token,
-			@PathVariable(value = "id") long id);
+			@RequestHeader("TenantId") long tenantId, @PathVariable(value = "id") long id);
 
 	@GetMapping(value = "/data/subcounty-list/{id}")
 	public List<Subcounty> getAllSubCountyByCountryId(@RequestHeader("Authorization") String token,
-			@PathVariable(value = "id") long id);
+			@RequestHeader("TenantId") long tenantId, @PathVariable(value = "id") long id);
 
 	@PostMapping(value = "/site/get-sites-by-tenants")
 	public List<Site> getSitesByTenantIds(@RequestHeader("Authorization") String token,
-			@RequestBody List<Long> tenants);
+			@RequestHeader("TenantId") long tenantId, @RequestBody List<Long> tenants);
 
 	@GetMapping("/account/get-account/{id}")
-	public Account getAccountById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") long id);
+	public Account getAccountById(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId, @PathVariable(value = "id") long id);
 
 	@GetMapping("/clinical-workflow/get-all-workflows")
-	public List<AccountWorkflow> getAllAccountWorkFlows(@RequestHeader("Authorization") String token);
+	public List<AccountWorkflow> getAllAccountWorkFlows(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId);
 
 	@PostMapping("/account-customization/static-data/get-list")
 	public List<AccountCustomization> getAccountCustomization(@RequestHeader("Authorization") String token,
-			@RequestBody Map<String, Object> requestData);
+			@RequestHeader("TenantId") long tenantId, @RequestBody Map<String, Object> requestData);
 
 	@PostMapping("/region-customization/static-data/get-list")
 	public List<RegionCustomization> getRegionCustomizations(@RequestHeader("Authorization") String token,
-			Map<String, Object> requestData);
+			@RequestHeader("TenantId") long tenantId, Map<String, Object> requestData);
 
 	@GetMapping("/site/get-by-ou-id/{operatingUnitId}")
 	public List<Site> getSitesByOperatingUnitId(@RequestHeader("Authorization") String token,
-			@PathVariable(value = "operatingUnitId") Long operatingUnitId);
+			@RequestHeader("TenantId") long tenantId, @PathVariable(value = "operatingUnitId") Long operatingUnitId);
 
 	@PostMapping("program/get-by-site-ids")
-	public List<Program> getPrograms(@RequestHeader("Authorization") String token, @RequestBody List<Long> siteIds);
+	public List<Program> getPrograms(@RequestHeader("Authorization") String token,
+			@RequestHeader("TenantId") long tenantId, @RequestBody List<Long> siteIds);
 
 	@GetMapping(value = "/site/{id}")
-	public Site getSiteById(@RequestHeader("Authorization") String token, @PathVariable("siteId") Long siteId);
+	public Site getSiteById(@RequestHeader("Authorization") String token, @RequestHeader("TenantId") long tenantId,
+			@PathVariable("siteId") Long siteId);
 }

@@ -1,5 +1,9 @@
 package com.mdtlabs.coreplatform.spiceadminservice.accountworkflow.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -13,15 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.SearchRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.AccountWorkflow;
+
 import com.mdtlabs.coreplatform.spiceadminservice.accountworkflow.service.AccountWorkflowService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
-
-import java.util.List;
-
-import javax.validation.Valid;
 
 /**
  * This controller class maintains CRUD operation for account workflow data.
@@ -32,8 +31,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/clinical-workflow")
 @Validated
-@Api(basePath = "/clinical-workflow", value = "master_data", description = "Account workflow related APIs", produces = "application/json")
-
 public class AccountWorkflowController {
 
 	@Autowired
