@@ -23,11 +23,10 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.MedicationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.OtherMedicationDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.Medication;
+
 import com.mdtlabs.coreplatform.spiceadminservice.medication.service.MedicationService;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
-
-import io.swagger.annotations.Api;
 
 /**
  * This class is a controller class to perform operation on medication entities.
@@ -37,8 +36,8 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping(value = "/medication")
 @Validated
-@Api(basePath = "/medication", value = "master_data", description = "Medication related APIs", produces = "application/json")
 public class MedicationController {
+	
 	private static final List<String> noDataList = Arrays.asList(Constants.NO_DATA_FOUND);
 
 	@Autowired

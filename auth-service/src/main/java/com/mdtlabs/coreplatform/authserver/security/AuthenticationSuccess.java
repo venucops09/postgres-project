@@ -133,7 +133,8 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 		}
 		createUserToken(user.getId(), authToken, refreshToken);
 		response.setHeader(Constants.AUTHORIZATION, authToken);
-		response.setHeader(FieldConstants.REFRESH_TOKEN, refreshToken);
+		response.setHeader(Constants.REFRESH_TOKEN, refreshToken);
+		response.setHeader(Constants.HEADER_TENANT_ID, String.valueOf(user.getTenantId()));
 	}
 
 	/**
@@ -146,15 +147,11 @@ public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler
 	 */
 	private String authTokenCreation(AuthUserDTO user, Map<String, Object> userInfo) throws JOSEException {
 		List<Long> tenantIds = new ArrayList<>();
-//		for (Organization organization : user.getTenants()) {
-//			tenantIds.add(organization.getId());
-//		}
 		String tenantData = tenantIds.stream().map(String::valueOf).collect(Collectors.joining(","));
 		JWTClaimsSet.Builder claimsSet = new JWTClaimsSet.Builder();
 		claimsSet.issuer(Constants.TOKEN_ISSUER);
 		claimsSet.subject(Constants.AUTH_TOKEN_SUBJECT);
 		claimsSet.claim(Constants.USER_ID_PARAM, user.getId());
-//		claimsSet.claim(Constants.TENANT_IDS_CLAIM, tenantData);
 		claimsSet.claim(Constants.USER_DATA, userInfo);
 		claimsSet.claim(Constants.APPLICATION_TYPE, Constants.WEB);
 		claimsSet.expirationTime(

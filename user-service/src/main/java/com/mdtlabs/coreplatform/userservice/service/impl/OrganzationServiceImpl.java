@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -156,6 +157,13 @@ public class OrganzationServiceImpl implements OrganizationService {
 			childOrgIdsToDelete.addAll(childOrgIds);
 		}
 		return childIds;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<Organization> getOrganizationsByIds(List<Long> organizationIds) {
+		return organizationRepository.findByIsDeletedFalseAndIsActiveTrueAndIdIn(organizationIds);
 	}
 
 }

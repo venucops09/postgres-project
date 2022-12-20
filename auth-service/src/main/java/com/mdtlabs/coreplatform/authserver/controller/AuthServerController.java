@@ -37,7 +37,7 @@ public class AuthServerController {
 	@PostMapping("/generate-token")
 	public Map<String, String> generateRefreshToken(@RequestBody Map<String, Object> requestBody)
 			throws JsonMappingException, JsonProcessingException, ParseException {
-		String refreshToken = String.valueOf(requestBody.get(FieldConstants.REFRESH_TOKEN));
+		String refreshToken = String.valueOf(requestBody.get(Constants.REFRESH_TOKEN));
 		long userId = Long.parseLong(requestBody.get(FieldConstants.USER_ID).toString());
 		System.out.println("refresh token: " + refreshToken);
 		System.out.println("userId: " + userId);
@@ -45,7 +45,7 @@ public class AuthServerController {
 
 		if (!tokensMap.isEmpty()) {
 //			response.setHeader(Constants.AUTHORIZATION, tokensMap.get("authToken"));
-//			response.setHeader(FieldConstants.REFRESH_TOKEN, tokensMap.get("refreshToken"));
+//			response.setHeader(Constants.REFRESH_TOKEN, tokensMap.get("refreshToken"));
 		}
 
 		return tokensMap;

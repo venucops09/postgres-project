@@ -31,7 +31,6 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
  * @author Niraimathi S
  *
  */
-//@FeignClient(value = "AdminServiceFeign", url = "http://192.168.178.174/admin-service")
 @FeignClient(name = "admin-service")
 public interface ApiInterface {
 

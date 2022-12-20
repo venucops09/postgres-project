@@ -43,6 +43,12 @@ spring:
         - Path=/admin-service/**
         filters:
         - RewritePath=/admin-service/(?<path>.*), /$\{path}
+      - id: notification-service
+        uri: lb://notification-service
+        predicates:
+        - Path=/notification-service/**
+        filters:
+        - RewritePath=/notification-service/(?<path>.*), /$\{path}
       - id: openapi
         uri: http://localhost:${server.port}
         predicates:
@@ -61,3 +67,5 @@ springdoc:
         url: /v3/api-docs/spice-service
       - name: admin-service
         url: /v3/api-docs/admin-service
+      - name: notification-service
+        url: /v3/api-docs/notification-service

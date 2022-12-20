@@ -29,7 +29,6 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 
 	public static final String GET_ALL_ROLES = "select role from Role as role where role.isActive =:status ";
 	public static final String UPDATE_ROLE_STATUS_BY_ID = "update Role as role set role.isActive =:status where role.id =:roleId";
-	public static final String GET_ROLES_BY_IDS = "select role from Role as role where role.id in (:roleIds)";
 	public static final String GET_ROLE_BY_ID = "select role from Role as role where role.id =:roleId ";
 	public static final String GET_ROLE_BY_NAME = "select role from Role as role where role.name =:name ";
 
@@ -80,10 +79,21 @@ public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSort
 	public Role getRoleByName(@Param(FieldConstants.NAME) String name);
 
 	/**
+	 * <p>
 	 * To get list of roles using list of role name.
+	 * </p>
 	 * @param roleNames - list of role names
 	 * @return Set<Role> - Set of Role Entities
 	 */
 	public Set<Role> findByIsDeletedFalseAndIsActiveTrueAndNameIn(List<String> roleNames);
+	
+	/**
+	 * <p>
+	 * To get list of roles using list of ids.
+	 * </p>
+	 * @param roleNames - list of role ids
+	 * @return Set<Role> - Set of Role Entities
+	 */
+	public Set<Role> findByIsDeletedFalseAndIsActiveTrueAndIdIn(List<Long> roleIds);
 
 }

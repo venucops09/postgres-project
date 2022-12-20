@@ -312,7 +312,7 @@ public class MedicalReviewServiceImpl implements MedicalReviewService {
 			// patientComorbidity.setIds(tenantId, patientTrackId, patientVisitId);
 			patientComorbidity.setTenantId(tenantId);
 			patientComorbidity.setPatientTrackId(patientTrackId);
-			patientComorbidity.setPatinetVisitId(patientVisitId);
+			patientComorbidity.setPatientVisitId(patientVisitId);
 		}
 		// Set<PatientComorbidity> patientComorbidities = comorbidities.stream().map(
 		// comorbidity -> new PatientComorbidity(tenantId, patientTrackId,

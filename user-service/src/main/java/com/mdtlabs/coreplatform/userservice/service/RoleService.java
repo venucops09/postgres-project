@@ -82,5 +82,13 @@ public interface RoleService {
 	 * @return Set<Role> - List of Role entity
 	 */
 	Set<Role> getRolesByName(List<String> roles);
+	
+	/**
+	 * To get list of roles based on list of role ids.
+	 * 
+	 * @param roles - list of role ids
+	 * @return Set<Role> - List of Role entity
+	 */
+	Set<Role> getRolesByIds(List<Long> roleIds);
 
 }

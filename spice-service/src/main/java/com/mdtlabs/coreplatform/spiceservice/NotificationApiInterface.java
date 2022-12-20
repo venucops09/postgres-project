@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.mdtlabs.coreplatform.common.model.dto.spice.SmsDTO;
 
-@FeignClient(name = "notification", path = "/notification-service")
+@FeignClient(name = "notification")
 public interface NotificationApiInterface {
 
 	@PostMapping("/sms/save-outboundsms")

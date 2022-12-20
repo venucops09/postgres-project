@@ -1,5 +1,9 @@
 package com.mdtlabs.coreplatform.spiceservice.bplog.controller;
 
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -16,12 +20,6 @@ import com.mdtlabs.coreplatform.spiceservice.bplog.service.BpLogService;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessCode;
 import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 
-import io.swagger.annotations.Api;
-
-import java.util.Map;
-
-import javax.validation.*;
-
 /**
  * This class is a controller class to perform operation on BpLog entity.
  * 
@@ -31,7 +29,6 @@ import javax.validation.*;
 @RestController
 @RequestMapping(value = "/bplog")
 @Validated
-@Api(basePath = "/bplog", value = "master_data", description = "GlucoseLog related APIs", produces = "application/json")
 public class BpLogController {
 
     @Autowired

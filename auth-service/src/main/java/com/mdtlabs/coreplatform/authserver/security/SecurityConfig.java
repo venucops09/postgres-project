@@ -70,7 +70,7 @@ public class SecurityConfig {
 		config.addAllowedMethod(HttpMethod.DELETE);
 		config.addAllowedMethod(HttpMethod.PATCH);
 		config.addAllowedMethod(HttpMethod.OPTIONS);
-//		config.addExposedHeader(FieldConstants.REFRESH_TOKEN);
+//		config.addExposedHeader(Constants.REFRESH_TOKEN);
 		source.registerCorsConfiguration(
 				 Constants.ASTERISK_SYMBOL + Constants.FORWARD_SLASH + Constants.ASTERISK_SYMBOL, config);
 		return source;
