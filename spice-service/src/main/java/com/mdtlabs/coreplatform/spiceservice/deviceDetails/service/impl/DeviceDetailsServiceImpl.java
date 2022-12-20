@@ -38,6 +38,8 @@ public class DeviceDetailsServiceImpl implements DeviceDetailsService {
             existingDeviceDetails.setLastLoggedIn(new Date());
             response = deviceDetailsRepositary.save(existingDeviceDetails);
         } else {
+            deviceDetails.setUserId(userDto.getId());
+            deviceDetails.setLastLoggedIn(new Date());
             response = deviceDetailsRepositary.save(deviceDetails);
         }
         return Map.of("id", response.getId());

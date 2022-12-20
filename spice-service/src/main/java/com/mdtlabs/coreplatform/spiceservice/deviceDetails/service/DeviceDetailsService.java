@@ -13,7 +13,7 @@ import com.mdtlabs.coreplatform.common.model.entity.DeviceDetails;
 public interface DeviceDetailsService {
 
 	/**
-	 * This method adds a new Glucose log.
+	 * If Exists update Else create New devicedetail
      *
      * @param deviceDetails
      * @return deviceDetails Entity
