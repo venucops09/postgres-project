@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mdtlabs.coreplatform.common.Constants;
+import com.mdtlabs.coreplatform.common.contexts.UserContextHolder;
 import com.mdtlabs.coreplatform.common.exception.BadRequestException;
+import com.mdtlabs.coreplatform.common.model.dto.TimezoneDTO;
+import com.mdtlabs.coreplatform.common.model.dto.UserDTO;
 import com.mdtlabs.coreplatform.common.model.dto.spice.CommonRequestDTO;
 import com.mdtlabs.coreplatform.common.model.entity.spice.PatientVisit;
 import com.mdtlabs.coreplatform.common.util.CommonUtil;
@@ -32,8 +35,10 @@ public class PatientVisitServiceImpl implements PatientVisitService {
 
 	
 	public Map<String, Long> addPatientVisit(CommonRequestDTO patientVisitDTO) {
-		String startDate = DateUtil.getStartOfDay("Asia/Kolkata");
-		String endDate = DateUtil.getEndOfDay("Asia/Kolkata");
+        UserDTO userDto = UserContextHolder.getUserDto();
+        TimezoneDTO timeZone = userDto.getTimezone();
+        String startDate = DateUtil.getStartOfDay(timeZone.getOffset());
+        String endDate = DateUtil.getEndOfDay(timeZone.getOffset());
 		PatientVisit existingPatientVisit = patientVisitRepository
 				.getPatientVisitByTrackId(patientVisitDTO.getPatientTrackId(), startDate, endDate);
 		PatientVisit patientVisit;
