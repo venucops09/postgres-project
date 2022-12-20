@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mdtlabs.coreplatform.common.model.entity.spice.PhysicalExamination;
-import com.mdtlabs.coreplatform.common.repository.TenantableRepository;
+import com.mdtlabs.coreplatform.common.repository.GenericRepository;
 
 /**
  * <p>
@@ -23,7 +23,7 @@ import com.mdtlabs.coreplatform.common.repository.TenantableRepository;
  * @author Karthick Murugesan
  */
 @Repository
-public interface PhysicalExaminationRepository extends TenantableRepository<PhysicalExamination> {
+public interface PhysicalExaminationRepository extends GenericRepository<PhysicalExamination> {
 
 	public static final String GET_PHYSICAL_EXAMINATION_BY_IDS = "select physicalExamination from PhysicalExamination as physicalExamination where physicalExamination.id in (:physicalExaminationIds)";
 
