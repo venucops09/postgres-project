@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
  * to communicate between each of them.
  * </p>
  * 
- * @author Vigneshkumar created on 30, Jun 2022.
+ * @author Rajkumar created on 30, Jun 2022.
  */
 @SpringBootApplication
 @EnableEurekaServer

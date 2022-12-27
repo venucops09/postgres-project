@@ -39,7 +39,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
  * This controller class helps to perform actions on Country, Count and
  * SubCounty Entities.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/data")
@@ -58,7 +58,7 @@ public class DataController {
 	 *
 	 * @param requestDTO
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/country", method = RequestMethod.GET)
 	public SuccessResponse<List<CountryDTO>> getAllCountries(@RequestBody RequestDTO requestDTO) {
@@ -79,7 +79,7 @@ public class DataController {
 	 *
 	 * @param county
 	 * @return County entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/county", method = RequestMethod.POST)
 	public SuccessResponse<County> addCounty(@Valid @RequestBody County county) {
@@ -93,7 +93,7 @@ public class DataController {
 	 *
 	 * @param id
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/county/{id}", method = RequestMethod.GET)
 	public SuccessResponse<County> getCountyById(@PathVariable(value = "id") long id) {
@@ -106,7 +106,7 @@ public class DataController {
 	 *
 	 * @param id
 	 * @return List of County entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/county-list/{id}", method = RequestMethod.GET)
 	public List<County> getAllCountyByCountryId(@PathVariable(value = "id") long id) {
@@ -124,7 +124,7 @@ public class DataController {
 	 *
 	 * @param county
 	 * @return updated county entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/county", method = RequestMethod.PUT)
 	public SuccessResponse<Boolean> updateCounty(@Valid @RequestBody County county) {
@@ -138,7 +138,7 @@ public class DataController {
 	 *
 	 * @param country
 	 * @return Country Entity.
-	 * @author karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/country")
 	public SuccessResponse<Country> createCountry(@Valid @RequestBody CountryOrganizationDTO countryDTO) {
@@ -151,7 +151,7 @@ public class DataController {
 	 *
 	 * @param country
 	 * @return country Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/country")
 	public SuccessResponse<Country> updateCountry(@Valid @RequestBody Country country) {
@@ -165,7 +165,7 @@ public class DataController {
 	 *
 	 * @param subCounty
 	 * @return subcounty Entity.
-	 * @author karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/subcounty")
 	public SuccessResponse<SubCountyDTO> createSubCounty(@Valid @RequestBody Subcounty subCounty) {
@@ -179,7 +179,7 @@ public class DataController {
 	 *
 	 * @param countryId
 	 * @return Country Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/country/{id}")
 	public SuccessResponse<CountryOrganizationDTO> getCountryById(@PathVariable(value = "id") long countryId) {
@@ -192,7 +192,7 @@ public class DataController {
 	 * Used to update a subCounty detail like name, etc.,
 	 *
 	 * @return subCounty Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/subcounty")
 	public SuccessResponse<Subcounty> updateSubCountry(@Valid @RequestBody Subcounty subCounty) {
@@ -206,7 +206,7 @@ public class DataController {
 	 *
 	 * @param subCountyId
 	 * @return Country Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/subcounty/{id}")
 	public SuccessResponse<Subcounty> getSubCountyById(@PathVariable(value = "id") long subCountyId) {
@@ -221,7 +221,7 @@ public class DataController {
 	 * @param countryId
 	 * @param countyId
 	 * @return List of SubCounty entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/subcounty-list/{countryid}/{countyid}", method = RequestMethod.GET)
 	public SuccessResponse<List<Subcounty>> getAllSubCounty(@PathVariable(value = "countryid") long countryId,

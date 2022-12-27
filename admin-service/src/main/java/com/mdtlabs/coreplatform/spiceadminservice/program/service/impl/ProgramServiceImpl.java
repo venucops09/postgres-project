@@ -25,7 +25,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.program.service.ProgramService
  * This class implements the Program interface and contains actual business
  * logic to perform operations on Program entity.
  * 
- * @author Karthick M
+ * @author Rajkumar
  *
  */
 @Service

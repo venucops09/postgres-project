@@ -24,7 +24,7 @@ import com.mdtlabs.coreplatform.common.FieldConstants;
  * In this class is the entry point for user authentication and authorization.
  * </p>
  * 
- * @author Vigneshkumar Created on 30 Jun 2022
+ * @author Rajkumar Created on 30 Jun 2022
  *
  */
 @Configuration

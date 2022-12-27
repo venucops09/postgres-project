@@ -27,7 +27,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Role;
  * write.
  * </p>
  * 
- * @author VigneshKumar created on Jan 30, 2022
+ * @author Rajkumar created on Jan 30, 2022
  */
 @RestController
 @RequestMapping(value = "/role")

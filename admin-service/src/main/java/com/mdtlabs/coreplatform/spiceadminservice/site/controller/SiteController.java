@@ -23,7 +23,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.site.service.SiteService;
 /**
  * This controller class maintains CRUD operation for site data.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 
 @RestController

@@ -34,7 +34,7 @@ import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.Patien
  * This class implements the BpLogService interface and contains actual business
  * logic to perform operations on BpLog entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 @Service

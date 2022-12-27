@@ -36,7 +36,7 @@ import com.mdtlabs.coreplatform.spiceservice.screeningLog.service.ScreeningLogSe
  * This class implements the ScreeningLogService interface and contains actual
  * business logic to perform operations on screeninglog entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Service
 public class ScreeningLogServiceImpl implements ScreeningLogService {

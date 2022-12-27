@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
  * Authentication based operation performed in this service.
  * </p>
  * 
- * @author Vigneshkumar created on Jun 30, 2022.
+ * @author Rajkumar created on Jun 30, 2022.
  *
  */
 @EnableDiscoveryClient

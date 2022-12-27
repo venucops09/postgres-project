@@ -15,7 +15,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.AccountWorkflow;
 /**
  * This class maintains the connection between Entity and database.
  *
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 @Repository
 public interface AccountWorkflowRepository extends JpaRepository<AccountWorkflow, Long> {
@@ -30,7 +30,7 @@ public interface AccountWorkflowRepository extends JpaRepository<AccountWorkflow
 	 * @param name
 	 * @param countryId
 	 * @return boolean
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public boolean existsByNameIgnoreCaseAndCountryId(String name, long countryId);
 
@@ -41,7 +41,7 @@ public interface AccountWorkflowRepository extends JpaRepository<AccountWorkflow
 	 * @param searchTerm search term
 	 * @param pageable Pagination details
 	 * @return AccountWorkflow Entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_ACCOUT_WORKFLOWS)
 	public Page<AccountWorkflow> getAccountWorkflowsWithPagination(@Param("countryId") long countryid,
@@ -53,7 +53,7 @@ public interface AccountWorkflowRepository extends JpaRepository<AccountWorkflow
 	 * @param countryid
 	 * @param searchTerm
 	 * @return AccountWorkflow Entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_ACCOUT_WORKFLOWS)
 	public List<AccountWorkflow> getAllAccountWorkflows(@Param("countryId") long countryid,

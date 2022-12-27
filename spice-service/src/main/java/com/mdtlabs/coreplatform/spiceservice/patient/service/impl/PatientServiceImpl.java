@@ -87,7 +87,7 @@ import com.mdtlabs.coreplatform.spiceservice.screeningLog.service.ScreeningLogSe
  * This is the class that implements PatientService class and contains the
  * actual business logic for Patient Entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -315,7 +315,7 @@ public class PatientServiceImpl implements PatientService {
 	 * Validates enrollment request data.
 	 *
 	 * @param requestData Request data
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void validateRequestData(EnrollmentRequestDTO requestData) {
 		if (!Objects.isNull(requestData.getBplog()) && (2 > requestData.getBplog().getBpLogDetails().size())) {
@@ -329,7 +329,7 @@ public class PatientServiceImpl implements PatientService {
 	 * @param bioData BioData DTO with patient bio data info
 	 * @param data    Request data with necessary data
 	 * @return Patient entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private Patient constructPatientData(BioDataDTO bioData, EnrollmentRequestDTO data) {
 		Patient patient = new Patient();
@@ -376,7 +376,7 @@ public class PatientServiceImpl implements PatientService {
 	 *
 	 * @param data Request data with glucose values
 	 * @return GlucoseLog Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private GlucoseLog constructGlucoseLogData(EnrollmentRequestDTO data) {
 		GlucoseLog glucoseLog = data.getGlucoseLog();
@@ -397,7 +397,7 @@ public class PatientServiceImpl implements PatientService {
 	 *
 	 * @param data request data with BpLog data
 	 * @return BpLog Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private BpLog constructBpLogData(EnrollmentRequestDTO data) {
 		BpLog bpLog = data.getBplog();
@@ -425,7 +425,7 @@ public class PatientServiceImpl implements PatientService {
 	 * @param enrolledPatient patient data
 	 * @param requestData     request data containing necessary fields
 	 * @return PatientTracker Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTracker constructPatientTracker(Patient enrolledPatient, EnrollmentRequestDTO requestData,
 			PatientTracker patientTracker) {
@@ -573,7 +573,7 @@ public class PatientServiceImpl implements PatientService {
 	 *
 	 * @param requestData Request data with pregnancy details.
 	 * @return Constructed pregnancy data.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private PatientPregnancyDetails constructPregnancyData(PregnancyRequestDTO requestData) {
 		ModelMapper modelMapper = new ModelMapper();
@@ -602,7 +602,6 @@ public class PatientServiceImpl implements PatientService {
 			throw new DataNotFoundException(12005);
 		}
 
-//        if (organizationUnit.unit_measurement === UnitConstants.IMPERIAL) {
 		if (true) {
 			pregnancyDetails.setTemperature(
 					UnitConversion.convertTemperature(pregnancyDetails.getTemperature(), UnitConstants.IMPERIAL));
@@ -614,7 +613,7 @@ public class PatientServiceImpl implements PatientService {
 	 * Checks if PatientTrack id exists and throws exception if not.
 	 *
 	 * @param patientTrackId PatientTrackId
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void isPatientTrackIdExist(Long patientTrackId) {
 		if (Objects.isNull(patientTrackId)) {
@@ -656,7 +655,7 @@ public class PatientServiceImpl implements PatientService {
 	 *
 	 * @param patientTracker patientTracker object to update.
 	 * @param requestData    Request data with pregnancy details
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void updatePatientTrackForPregnancyDetails(PatientTracker patientTracker, PregnancyRequestDTO requestData) {
 		patientTracker.setIsPregnant(Constants.BOOLEAN_TRUE);
@@ -672,7 +671,7 @@ public class PatientServiceImpl implements PatientService {
 	 * @param requestData Request data containing pregnancy details
 	 * @param unit        Unit to convert
 	 * @return converted temperature
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private float convertTemperatureUnitForPregnancy(PregnancyRequestDTO requestData, String unit) {
 		float temperature = requestData.getTemperature();

@@ -87,7 +87,7 @@ import org.springframework.web.client.RestTemplate;
  * all the user operation here.
  * </p>
  * 
- * @author VigneshKumar created on Jun 30, 2022
+ * @author Rajkumar created on Jun 30, 2022
  */
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {

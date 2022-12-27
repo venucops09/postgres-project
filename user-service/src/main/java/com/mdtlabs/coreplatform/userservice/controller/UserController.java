@@ -34,7 +34,7 @@ import com.mdtlabs.coreplatform.userservice.service.UserService;
  * write.
  * </p>
  * 
- * @author VigneshKumar created on Jun 30, 2022
+ * @author Rajkumar created on Jun 30, 2022
  */
 @RestController
 @RequestMapping(value = "/user")

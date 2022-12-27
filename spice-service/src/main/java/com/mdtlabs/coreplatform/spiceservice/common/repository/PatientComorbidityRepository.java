@@ -14,7 +14,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientComorbidity;
  * This class is a repository class to establish communication between database
  * and server side.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @Repository

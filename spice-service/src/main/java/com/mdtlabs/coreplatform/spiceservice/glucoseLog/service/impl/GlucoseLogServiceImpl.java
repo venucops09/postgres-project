@@ -33,7 +33,7 @@ import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.Patien
  * This class implements the GlucoseLogService interface and contains actual
  * business logic to perform operations on GlucoseLog entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 @Service

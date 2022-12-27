@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.info.Info;
  * User based operation performed in this service.
  * </p>
  * 
- * @author Vigneshkumar created on Jun 30, 2022.
+ * @author Rajkumar created on Jun 30, 2022.
  */
 @SpringBootApplication
 @ComponentScan(value = Constants.PACKAGE_CORE_PLATFORM)

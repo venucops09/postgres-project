@@ -12,7 +12,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RedRiskNotification;
  * This is the repository class for communicate link between server side and
  * database. This class used to perform all the RedRiskNotification module action in database.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface RedRiskNotificationRepository extends JpaRepository<RedRiskNotification, Long> {

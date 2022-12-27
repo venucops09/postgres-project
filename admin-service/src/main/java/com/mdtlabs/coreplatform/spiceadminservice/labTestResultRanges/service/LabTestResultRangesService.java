@@ -8,7 +8,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.LabTestResultRange;
 /**
  * This interface maintains the CRUD operation for lab test result range
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 public interface LabTestResultRangesService {
@@ -18,7 +18,7 @@ public interface LabTestResultRangesService {
 	 * 
 	 * @param labTestResultRangeDTO
 	 * @return List of added LabTestResultRange
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public List<LabTestResultRange> addLabTestResultRanges(LabTestResultRangeRequestDTO labTestResultRangeDTO);
 
@@ -27,7 +27,7 @@ public interface LabTestResultRangesService {
 	 * 
 	 * @param labTestResultRanges
 	 * @return List of updated LabTestResultRange
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public List<LabTestResultRange> updateLabTestResultRanges(
 			LabTestResultRangeRequestDTO labTestResultRangeRequestDTO);
@@ -37,7 +37,7 @@ public interface LabTestResultRangesService {
 	 * 
 	 * @param id
 	 * @return boolean - removal status
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public boolean removeLabTestResultRange(long id);
 
@@ -46,7 +46,7 @@ public interface LabTestResultRangesService {
 	 * 
 	 * @param labTestResultId
 	 * @return List of LabTestResultRangeDTO
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public List<LabTestResultRange> getLabTestResultRange(long labTestResultId);
 

@@ -22,7 +22,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.GlucoseLog;
  * Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface GlucoseLogRepository extends JpaRepository<GlucoseLog, Long> {

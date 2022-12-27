@@ -16,7 +16,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.LabTestResultRange;
  * This repository class maintains the custom functions needs for
  * LabTestResultRange module
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Repository

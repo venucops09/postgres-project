@@ -15,7 +15,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Program;
  * This class is a repository class to establish communication between database
  * and server side.
  * 
- * @author Karthick M
+ * @author Rajkumar
  *
  */
 @Repository

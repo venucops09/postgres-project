@@ -27,7 +27,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 /**
  * This controller class maintains CRUD operation for account data.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 
 @RestController
@@ -45,7 +45,7 @@ public class AccountController {
 	 * 
 	 * @param account Account data to save
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PostMapping("/create")
 	public SuccessResponse<Account> addAccount(@Valid @RequestBody Account account) {
@@ -58,7 +58,7 @@ public class AccountController {
 	 * 
 	 * @param account Account data to update.
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PutMapping("/update")
 	public SuccessResponse<Account> updateAccount(@Valid @RequestBody Account account) {
@@ -72,7 +72,7 @@ public class AccountController {
 	 * 
 	 * @param id Accoutn id to get account details.
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/{id}")
 	public SuccessResponse<Account> getAccountById(@PathVariable("id") long id) {
@@ -84,7 +84,7 @@ public class AccountController {
 	 * 
 	 * @param id Account id to activate deactivated account.
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/activate/{id}")
 	public SuccessResponse<Account> activateAccountById(@PathVariable("id") long id) {
@@ -97,7 +97,7 @@ public class AccountController {
 	 * 
 	 * @param id Account id to deactivate an active account
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/deactivate/{id}")
 	public SuccessResponse<Account> deactivateAccountById(@PathVariable("id") long id) {
@@ -110,7 +110,7 @@ public class AccountController {
 	 *
 	 * @param searchRequestDTO Request object containing search term and pagination information to get accounts.
 	 * @return List of Account entities
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/deactivate-list")
 	public SuccessResponse<List<Account>> getAllDeactivedAccounts(@RequestBody SearchRequestDTO searchRequestDTO) {

@@ -12,7 +12,7 @@ import com.mdtlabs.coreplatform.common.model.entity.UserToken;
  * class.
  * </p>
  * 
- * @author VigneshKumar created on Jun 30, 2022
+ * @author Rajkumar created on Jun 30, 2022
  */
 public interface UserService {
 

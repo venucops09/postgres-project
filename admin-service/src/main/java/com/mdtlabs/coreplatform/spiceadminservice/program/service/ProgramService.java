@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Program;
 /**
  * This is an interface to perform any actions in Program entities
  *
- * @author Karthick M
+ * @author Rajkumar
  */
 public interface ProgramService {
 

@@ -24,7 +24,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.account.service.AccountService
 /**
  * This service class maintains the CRUD operations for the account
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Transactional

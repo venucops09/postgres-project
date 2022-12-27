@@ -17,7 +17,7 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
 /**
  * This interface is used to access User service APIs.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @FeignClient(name = "user-service")

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * This class implements the PatientSymptomService interface and contains actual
  * business logic to perform operations on PatientSymptom entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 @Service

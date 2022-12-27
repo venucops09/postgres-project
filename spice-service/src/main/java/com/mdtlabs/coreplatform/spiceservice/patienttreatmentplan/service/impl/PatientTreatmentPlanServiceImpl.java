@@ -194,7 +194,7 @@ public class PatientTreatmentPlanServiceImpl implements PatientTreatmentPlanServ
 	 *
 	 * @param frequency
 	 * @return date next treatment review date
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public Date getTreatmentPlanFollowupDate(Frequency frequency) {
 		Calendar calendar = Calendar.getInstance();

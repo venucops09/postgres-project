@@ -24,7 +24,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Organization;
  * like SQL. Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author VigneshKumar created on Jan 30, 2022
+ * @author Rajkumar created on Jan 30, 2022
  */
 @Repository
 public interface OrganizationRepository

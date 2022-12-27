@@ -19,7 +19,7 @@ import com.mdtlabs.coreplatform.AuthenticationFilter;
  * Authentication has been done here for this service.
  * </p>
  * 
- * @author Vigneshkumar Created on 30 Jun 2022
+ * @author Rajkumar Created on 30 Jun 2022
  */
 @Configuration
 @EnableWebSecurity

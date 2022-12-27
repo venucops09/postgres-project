@@ -25,7 +25,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 /**
  * This controller class maintains CRUD operation for account workflow data.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 
 @RestController
@@ -41,7 +41,7 @@ public class AccountWorkflowController {
 	 * 
 	 * @param accountWorkflow
 	 * @return AccountWorkflow
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PostMapping("/create")
 	public SuccessResponse<AccountWorkflow> addAccountWorkflow(@Valid @RequestBody AccountWorkflow accountWorkflow) {
@@ -54,7 +54,7 @@ public class AccountWorkflowController {
 	 * 
 	 * @param searchRequestDTO
 	 * @return Account workflow entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/list")
 	public SuccessResponse<AccountWorkflow> getAccountWorkflows(@RequestBody SearchRequestDTO searchRequestDTO) {
@@ -67,7 +67,7 @@ public class AccountWorkflowController {
 	 * 
 	 * @param accountWorkflow workflow
 	 * @return Account workflow Entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PutMapping("/update")
 	public SuccessResponse<AccountWorkflow> updateAccountWorkflow(@Valid @RequestBody AccountWorkflow accountWorkflow) {
@@ -80,7 +80,7 @@ public class AccountWorkflowController {
 	 * 
 	 * @param id
 	 * @return AccountWorkflow entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PutMapping("/remove/{id}")
 	public SuccessResponse<AccountWorkflow> deleteAccountWorkflow(@PathVariable("id") long id) {

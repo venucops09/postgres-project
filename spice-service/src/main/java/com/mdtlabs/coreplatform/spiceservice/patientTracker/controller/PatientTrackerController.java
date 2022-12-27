@@ -28,7 +28,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrack
  * This class is a controller class to perform operation on PatientTracker
  * entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/patienttracker")
@@ -72,7 +72,7 @@ public class PatientTrackerController {
 	 *
 	 * @param patientRequestDTO
 	 * @return List of patient tracker entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping("/search")
 	public SuccessResponse<List<SearchPatientListDTO>> searchPatients(
@@ -97,7 +97,7 @@ public class PatientTrackerController {
 	 *
 	 * @param confirmDiagnosis
 	 * @return ConfirmDiagnosisDTO
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/confirm-diagnosis/update", method = RequestMethod.PATCH)
 	public SuccessResponse<ConfirmDiagnosisDTO> updateConfirmDiagnosis(

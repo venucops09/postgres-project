@@ -53,7 +53,7 @@ public class PatientTreatmentPlanController {
 	 * 
 	 * @param patientTreatmentPlan
 	 * @return Boolean
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	public SuccessResponse<Boolean> updateTreatmentPlanData(@Valid @RequestBody PatientTreatmentPlan patientTreatmentPlan) {

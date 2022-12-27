@@ -54,7 +54,7 @@ import com.mdtlabs.coreplatform.authservice.repository.UserRepository;
  * <tt>AuthenticationSuccess</tt> Sent to successful authentication.
  * </p>
  * 
- * @author Vigneshkumar Created on 16 Oct 2020
+ * @author Rajkumar Created on 16 Oct 2020
  *
  */
 public class AuthenticationSuccess extends SimpleUrlAuthenticationSuccessHandler {

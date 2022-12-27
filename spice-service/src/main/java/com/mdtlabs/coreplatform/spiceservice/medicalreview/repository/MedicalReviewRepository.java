@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientMedicalReview;
  * Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface MedicalReviewRepository extends JpaRepository<PatientMedicalReview, Long> {

@@ -80,7 +80,7 @@ public class RedRiskService {
 	 * @param patientTracker
 	 * @param redRiskDTO
 	 * @return redRisk
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public static String getPatientRiskLevel(PatientTracker patientTracker, PatientDiagnosis patientDiagnosis,
 			RedRiskDTO redRiskDTO) {

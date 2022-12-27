@@ -63,7 +63,7 @@ import com.mdtlabs.coreplatform.spiceservice.prescription.repository.Prescriptio
  * This class implements the MedicalReviewService interface and contains actual
  * business logic to perform operations on medical review entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 @Service

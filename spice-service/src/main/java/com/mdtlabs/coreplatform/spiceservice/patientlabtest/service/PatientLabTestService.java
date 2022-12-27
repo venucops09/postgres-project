@@ -17,7 +17,7 @@ public interface PatientLabTestService {
      *
      * @param patientLabTest PatientLabTest data
      * @return List of patientLabTestEntity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     List<PatientLabTest> createPatientLabTest(PatientLabTestRequestDTO patientLabTest);
 
@@ -26,7 +26,7 @@ public interface PatientLabTestService {
      *
      * @param requestData Request Data
      * @return PatientLabTestResponseDTO Response containing list of PatientLabTest
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     PatientLabTestResponseDTO getPatientLabTestList(GetRequestDTO requestData);
 
@@ -35,7 +35,7 @@ public interface PatientLabTestService {
      *
      * @param requestData request date object containing, patientLabTest id and tenant id
      * @return Boolean
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     boolean removePatientLabTest(GetRequestDTO requestData);
 
@@ -44,7 +44,7 @@ public interface PatientLabTestService {
      *
      * @param requestData Request data containing patientLabTestId, patientTrackId, tenantId and review comments.
      * @return No of affected rows
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     int reviewPatientLabTest(GetRequestDTO requestData);
 
@@ -53,7 +53,7 @@ public interface PatientLabTestService {
      *
      * @param requestData Request Data
      * @return Created PatientLabTestResults
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     List<PatientLabTestResult> createPatientLabTestResult(PatientLabTestResultRequestDTO requestData);
 
@@ -62,7 +62,7 @@ public interface PatientLabTestService {
      *
      * @param requestData Request Data
      * @return Response containing the list of patientLabTestResult.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     PatientLabTestResultResponseDTO getPatientLabTestResults(PatientLabTestResultRequestDTO requestData);
 

@@ -23,7 +23,7 @@ public interface PatientVisitService {
 	 * @param isMedicalReview
 	 * @param isPrescription
 	 * @return List of PatientVisit Entities
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public List<PatientVisit> getPatientVisitDates(Long patientTrackId, Boolean isInvestigation,
 			Boolean isMedicalReview, Boolean isPrescription);
@@ -37,7 +37,7 @@ public interface PatientVisitService {
 	 * @param isInvestigation
 	 * @param visitId
 	 * @return Number of rows affected.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientVisit updatePatientVisit(PatientVisit patientVisit);
 

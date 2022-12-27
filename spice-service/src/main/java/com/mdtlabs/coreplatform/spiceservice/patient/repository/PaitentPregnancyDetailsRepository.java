@@ -8,7 +8,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientPregnancyDetail
  * This interface handles the connection between service layer and database and is responsible for database operations
  * for PatientPregnancyDetails entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface PaitentPregnancyDetailsRepository extends JpaRepository<PatientPregnancyDetails, Long> {
     /**
@@ -17,7 +17,7 @@ public interface PaitentPregnancyDetailsRepository extends JpaRepository<Patient
      * @param patientTrackId PatientTrack Id
      * @param isDeleted      isDeleted field
      * @return PatientPregnancyDetails Entity.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     PatientPregnancyDetails findByPatientTrackIdAndIsDeleted(Long patientTrackId, Boolean isDeleted);
 
@@ -27,7 +27,7 @@ public interface PaitentPregnancyDetailsRepository extends JpaRepository<Patient
      * @param patientPregnancyId patientPregnancyId
      * @param isDeleted          isDeleted field.
      * @return PatientPregnancyDetails Entity.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     PatientPregnancyDetails findByIdAndIsDeleted(Long patientPregnancyId, Boolean isDeleted);
 }

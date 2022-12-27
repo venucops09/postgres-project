@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitSe
 /**
  * This class is a controller class to perform operation on PatientVisit entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  * 
  */
 @RestController
@@ -34,7 +34,7 @@ public class PatientVisitController {
 	 *
 	 * @param patientVisitDTO
 	 * @return patientVisit Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<Map<String, Long>> addPatientVisit(@RequestBody RequestDTO patientVisitDTO) {

@@ -25,7 +25,7 @@ import javax.validation.Valid;
  * This controller class maintains CRUD operation for account customization
  * data.
  *
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/account-customization")
@@ -39,7 +39,7 @@ public class AccountCustomizationController {
      *
      * @param accountCustomization
      * @return AccountCustomization
-     * @author Jeyaharini T A
+     * @author Rajkumar
      */
     @PostMapping("/create")
     public SuccessResponse<AccountCustomization> addCustomization(
@@ -54,7 +54,7 @@ public class AccountCustomizationController {
      *
      * @param customizationRequestDTO
      * @return AccountCustomization entity.
-     * @author Jeyaharini T A
+     * @author Rajkumar
      */
     @GetMapping("/details")
     public SuccessResponse<AccountCustomization> getCustomization(
@@ -69,7 +69,7 @@ public class AccountCustomizationController {
      *
      * @param accountCustomization
      * @return AccountCustomization entity.
-     * @author Jeyaharini T A
+     * @author Rajkumar
      */
     @PutMapping("/update")
     public SuccessResponse<AccountCustomization> updateCustomization(
@@ -83,7 +83,7 @@ public class AccountCustomizationController {
      *
      * @param requestMap
      * @return boolean
-     * @author Jeyaharini T A
+     * @author Rajkumar
      */
     @PutMapping("/remove")
     public SuccessResponse<Boolean> removeCustomization(@RequestBody Map<String, Object> requestMap) {

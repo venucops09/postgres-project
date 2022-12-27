@@ -63,7 +63,7 @@ import com.mdtlabs.coreplatform.spiceservice.patienttreatmentplan.service.Patien
  * This class implements the AssessmentService interface and contains actual
  * business logic to perform operations on assessment entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Service
 @Validated

@@ -19,7 +19,7 @@ import com.mdtlabs.coreplatform.spiceservice.screeningLog.service.ScreeningLogSe
 /**
  * This class is a controller class to perform operation on PatientVisit entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/screeninglog")
@@ -34,7 +34,7 @@ public class ScreeningLogController {
 	 *
 	 * @param screeningLog
 	 * @return ScreeningLog Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<ScreeningLog> addScreeningLog(

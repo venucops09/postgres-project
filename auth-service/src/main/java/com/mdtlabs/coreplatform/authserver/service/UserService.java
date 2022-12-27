@@ -18,7 +18,7 @@ public interface UserService {
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
 	 * 
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	Map<String, String> generateRefreshToken(long userId, String authToken)
 			throws ParseException, JsonMappingException, JsonProcessingException;

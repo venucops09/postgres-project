@@ -28,7 +28,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
 /**
  * This interface is used to access admin service APIs.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @FeignClient(name = "admin-service")

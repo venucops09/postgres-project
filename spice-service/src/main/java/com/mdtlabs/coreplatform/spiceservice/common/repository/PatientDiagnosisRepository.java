@@ -8,7 +8,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientDiagnosis;
 
 /**
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 

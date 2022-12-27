@@ -67,7 +67,7 @@ public interface PatientVisitRepository extends JpaRepository<PatientVisit, Long
 	 * @param isMedicalReview
 	 * @param isPrescription
 	 * @return List of PatientVisit Entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_PATIENT_VISIT_DATES)
 	List<PatientVisit> getPatientVisitDates(@Param("patientTrackId") Long patientTrackId,

@@ -23,7 +23,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.accountworkflow.service.Accoun
 /**
  * This is the service class which contains the business logic for manipulating AccountWorkFlow entity.
  *
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 @Service
 public class AccountWorkflowServiceImpl implements AccountWorkflowService {

@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * This interface is responsible for performing actions in CustomizedModules Entity.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface CustomizedModulesService {
     /**
@@ -15,7 +15,7 @@ public interface CustomizedModulesService {
      * @param modules        customized modules with dynamic fields and its values.
      * @param type           type of workflow like Screening, Enrollment or Assessment
      * @param patientTrackId patientTrack Id
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public void createCustomizedModules(List<Map<String, Object>> modules, String type, Long patientTrackId);
 }

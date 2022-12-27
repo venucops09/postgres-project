@@ -7,7 +7,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.MentalHealth;
 /**
  * This is an interface to perform any actions in mentalHealth related entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface MentalHealthService {
@@ -17,7 +17,7 @@ public interface MentalHealthService {
 	 * 
 	 * @param mentalHealth
 	 * @return MentalHealth
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	public MentalHealth createOrUpdateMentalHealth(MentalHealth mentalHealth);
 
@@ -26,7 +26,7 @@ public interface MentalHealthService {
 	 * 
 	 * @param requestData a MentalHealthRequestDTO object
 	 * @return MentalHealthDTO
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	public MentalHealthDTO getMentalHealthDetails(RequestDTO requestData);
 

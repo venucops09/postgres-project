@@ -16,7 +16,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.AccountCustomization;
  * This repository interface has the needed customized functions for account
  * customization
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Repository
@@ -35,7 +35,7 @@ public interface AccountCustomizationRepository extends JpaRepository<AccountCus
 	 * @param id
 	 * @param isDeleted
 	 * @return AccountCustomization entity.
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountCustomization findByIdAndIsDeleted(Long id, Boolean isDeleted);
 
@@ -47,7 +47,7 @@ public interface AccountCustomizationRepository extends JpaRepository<AccountCus
 	 * @param category
 	 * @param type
 	 * @return AccountCustomization entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_ACCOUNT_CUSOMIZATION_WITH_CONDITIONS)
 	public AccountCustomization getAccountCustomization(@Param("countryId") Long countryId,
@@ -60,7 +60,7 @@ public interface AccountCustomizationRepository extends JpaRepository<AccountCus
 	 * @param isDeleted
 	 * @param tenantId
 	 * @return AccountCustomization
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Modifying
 	@Transactional

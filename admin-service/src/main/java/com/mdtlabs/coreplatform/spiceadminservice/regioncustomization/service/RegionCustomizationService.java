@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
 /**
  * This service class maintains the CRUD operations for region customization
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 public interface RegionCustomizationService {
@@ -19,7 +19,7 @@ public interface RegionCustomizationService {
 	 * 
 	 * @param regionCustomization
 	 * @return RegionCustomization entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public RegionCustomization addCustomization(RegionCustomization regionCustomization);
 
@@ -29,7 +29,7 @@ public interface RegionCustomizationService {
 	 * 
 	 * @param regionCustomizationRequestDTO
 	 * @return RegionCustomization entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public RegionCustomization getCustomization(CustomizationRequestDTO regionCustomizationRequestDTO);
 
@@ -39,7 +39,7 @@ public interface RegionCustomizationService {
 	 * 
 	 * @param regionCustomization
 	 * @return Count of rows updated.regionFormData
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public RegionCustomization updateCustomization(RegionCustomization regionCustomization);
 

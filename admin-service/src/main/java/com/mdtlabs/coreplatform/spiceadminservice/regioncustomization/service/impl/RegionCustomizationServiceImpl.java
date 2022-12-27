@@ -22,7 +22,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service.Re
 /**
  * This service class maintains the CRUD operations for region customization
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Service

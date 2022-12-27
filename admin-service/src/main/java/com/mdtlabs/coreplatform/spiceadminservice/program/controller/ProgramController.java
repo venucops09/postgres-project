@@ -24,7 +24,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.program.service.ProgramService
 /**
  * This class is a controller class to perform operation on Program entity.
  * 
- * @author Karthick M
+ * @author Rajkumar
  * 
  */
 @RestController
@@ -40,7 +40,7 @@ public class ProgramController {
 	 * 
 	 * @param program request data containing program details
 	 * @return program Entity.
-	 * @author karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<Program> createProgram(@Valid @RequestBody Program program) {
@@ -53,7 +53,7 @@ public class ProgramController {
 	 * 
 	 * @param programId program id to get program entity.
 	 * @return Program Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public SuccessResponse<Program> getProgramById(@PathVariable(value = "id") long programId) {
@@ -66,7 +66,7 @@ public class ProgramController {
 	 * 
 	 * @param request request data
 	 * @return Program Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public SuccessResponse<Program> getPrograms(@RequestBody RequestDTO request) {
@@ -79,7 +79,7 @@ public class ProgramController {
 	 * 
 	 * @param programId
 	 * @return Boolean
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public SuccessResponse<Boolean> removeProgram(@PathVariable(value = "id") long programId) {
@@ -92,7 +92,7 @@ public class ProgramController {
 	 * 
 	 * @param program
 	 * @return program Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.PATCH)
 	public SuccessResponse<Program> updateProgram(@RequestBody Program program) {

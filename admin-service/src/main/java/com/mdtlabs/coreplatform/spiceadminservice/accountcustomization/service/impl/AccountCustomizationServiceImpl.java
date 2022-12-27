@@ -21,7 +21,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.accountcustomization.service.A
 /**
  * This service maintains the CRUD operations for account customization
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Service

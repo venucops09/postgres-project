@@ -17,7 +17,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Account;
 /**
  * This repository contains the needed customized functions for account.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Repository
@@ -38,7 +38,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	 * @param id
 	 * @param isDeleted
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account findByIdAndIsDeleted(long id, boolean isDeleted);
 
@@ -49,7 +49,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	 * @param isActive
 	 * @param isDeleted
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account findByIdAndIsActiveAndIsDeleted(long id, boolean isActive, boolean isDeleted);
 
@@ -59,7 +59,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	 * @param searchTerm
 	 * @param pageable
 	 * @return Page of account entities
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_DEACTIVATED_ACCOUNTS)
 	public Page<Account> getDeactivatedAccountsWithPagination(@Param("searchTerm") String searchTerm,
@@ -70,7 +70,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	 * 
 	 * @param searchTerm
 	 * @return List of account entities
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_DEACTIVATED_ACCOUNTS)
 	public List<Account> getDeactivatedAccounts(@Param("searchTerm") String searchTerm);

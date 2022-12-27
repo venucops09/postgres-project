@@ -13,7 +13,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.MentalHealth;
 /**
  * This repository class is responsible for communication between database and server side.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface MentalHealthRepository extends JpaRepository<MentalHealth, Long> {

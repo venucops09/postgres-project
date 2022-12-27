@@ -22,7 +22,7 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
  * This class is a controller class to perform operation on Assessment
  * operations.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  * 
  */
 @RestController
@@ -38,7 +38,7 @@ public class AssessmentController {
 	 *
 	 * @param assessmentDTO
 	 * @return AssessmentDto Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@PostMapping
 	public SuccessResponse<AssessmentResponseDTO> createAssessment(@Valid @RequestBody AssessmentDTO assessmentDTO) {

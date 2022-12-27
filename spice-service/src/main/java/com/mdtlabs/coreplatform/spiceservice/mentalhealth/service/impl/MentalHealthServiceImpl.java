@@ -25,7 +25,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrack
  * This class implements the MentalHealthService class and contains business
  * logic for the operations of MentalHealth Entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Service
 public class MentalHealthServiceImpl implements MentalHealthService {
@@ -84,7 +84,7 @@ public class MentalHealthServiceImpl implements MentalHealthService {
 	 * 
 	 * @param patientTracker
 	 * @param mentalHealth
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	private void updatePatientTracker(PatientTracker patientTracker, MentalHealth mentalHealth) {
 		patientTracker.setTenantId(mentalHealth.getTenantId());
@@ -109,7 +109,7 @@ public class MentalHealthServiceImpl implements MentalHealthService {
 	 * Sets the phq4 first and second scores
 	 * 
 	 * @param mentalHealth
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	public void setPHQ4Score(MentalHealth mentalHealth) {
 		mentalHealth.setPhq4FirstScore(Constants.ZERO);

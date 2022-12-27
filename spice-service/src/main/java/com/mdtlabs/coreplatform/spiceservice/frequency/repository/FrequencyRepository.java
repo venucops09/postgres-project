@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.Frequency;
 /**
  * This repository maintains connection between database and frequency entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface FrequencyRepository extends JpaRepository<Frequency, Long> {
 

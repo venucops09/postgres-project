@@ -25,7 +25,7 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
  * Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author VigneshKumar created on Jun 20, 2022
+ * @author Rajkumar created on Jun 20, 2022
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {

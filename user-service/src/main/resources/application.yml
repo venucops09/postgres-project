@@ -13,14 +13,14 @@ spring:
       allow-circular-references: true
    datasource:
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
+      url: jdbc:postgresql://mypostgres:5432/spice1?serverTimezone=UTC
       username : postgres
-      password : admin@123
+      password : postgres
    flyway:
       locations: classpath:db/migration
-      url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
+      url: jdbc:postgresql://mypostgres:5432/spice1?serverTimezone=UTC
       user : postgres
-      password : admin@123
+      password : postgres
       baseline-on-migrate: true
       out-of-order: true
    jpa:

@@ -10,7 +10,7 @@ import com.mdtlabs.coreplatform.common.model.dto.spice.RequestDTO;
  * This is an interface to perform any actions in medical review related
  * entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface MedicalReviewService {

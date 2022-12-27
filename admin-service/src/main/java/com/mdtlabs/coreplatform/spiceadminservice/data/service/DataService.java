@@ -13,7 +13,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Subcounty;
  * This interface contains business logic for manipulating Country, County and
  * SubCounty entities.
  *
- * @author Karthick M
+ * @author Rajkumar
  */
 public interface DataService {
 
@@ -22,7 +22,7 @@ public interface DataService {
 	 *
 	 * @param country
 	 * @return Country Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country createCountry(CountryOrganizationDTO countryDTO);
 
@@ -31,7 +31,7 @@ public interface DataService {
 	 *
 	 * @param country
 	 * @return country Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country updateCountry(Country country);
 
@@ -40,7 +40,7 @@ public interface DataService {
 	 *
 	 * @param county
 	 * @return County entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	County addCounty(County county);
 
@@ -49,7 +49,7 @@ public interface DataService {
 	 *
 	 * @param id
 	 * @return County entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	County getCountyById(long id);
 
@@ -58,7 +58,7 @@ public interface DataService {
 	 *
 	 * @param id
 	 * @return List of county entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	List<County> getAllCountyByCountryId(long id);
 
@@ -67,7 +67,7 @@ public interface DataService {
 	 *
 	 * @param county
 	 * @return Updated county entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	County updateCounty(County county);
 
@@ -76,7 +76,7 @@ public interface DataService {
 	 *
 	 * @param requestDTO
 	 * @return List of county entities
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	List<Country> getAllCountries(RequestDTO requestDTO);
 
@@ -85,7 +85,7 @@ public interface DataService {
 	 *
 	 * @param subCounty
 	 * @return SubCounty Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Subcounty createSubCounty(Subcounty subCounty);
 
@@ -94,7 +94,7 @@ public interface DataService {
 	 *
 	 * @param countryId
 	 * @return Country entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	CountryOrganizationDTO getCountryById(long countryId);
 
@@ -103,7 +103,7 @@ public interface DataService {
 	 *
 	 * @param subCounty
 	 * @return subcounty entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Subcounty updateSubCounty(Subcounty subCounty);
 
@@ -113,7 +113,7 @@ public interface DataService {
 	 * @param countryId
 	 * @param countyId
 	 * @return List of SubCounty entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	List<Subcounty> getAllSubCounty(long countryId, long countyId);
 
@@ -122,7 +122,7 @@ public interface DataService {
 	 *
 	 * @param id
 	 * @return Country entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Subcounty getSubCountyById(long id);
 

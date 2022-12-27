@@ -22,7 +22,7 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
  * Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author VigneshKumar created on Aug 26, 2022
+ * @author Rajkumar created on Aug 26, 2022
  */
 
 @Repository

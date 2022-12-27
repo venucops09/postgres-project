@@ -46,7 +46,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitSe
  * This class implements the PatientLabTestService class and contains business
  * logic for the operations of PatientLabTest Entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Service
 public class PatientLabTestServiceImpl implements PatientLabTestService {
@@ -207,7 +207,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 *
 	 * @param requestData request Data
 	 * @return List of PatientLabTest Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private List<PatientLabTest> constructPatientLabTestData(PatientLabTestRequestDTO requestData) {
 		List<PatientLabTest> patientLabTests = new ArrayList<PatientLabTest>();
@@ -235,7 +235,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 *
 	 * @param data request data
 	 * @return LabTest Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private LabTest getOtherLabTest(PatientLabTestRequestDTO data) {
 		LabTest labTest = getLabTestbyName(Constants.OTHER, 1); // country id obtained from user information.
@@ -252,7 +252,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 * @param searchTerm LabTest name
 	 * @param countryId  Country id
 	 * @return LabTest Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private LabTest getLabTestbyName(String searchTerm, long countryId) {
 		SearchRequestDTO requestEntity = new SearchRequestDTO();
@@ -270,7 +270,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 *
 	 * @param labTestIds
 	 * @return List of LabTest Entities
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private List<LabTest> getLabTestsByIds(Set<Long> labTestIds) {
 		HttpHeaders headers = new HttpHeaders();
@@ -291,7 +291,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 * Validates the request date to check null.
 	 *
 	 * @param requestData Request Data
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void validateRequestData(PatientLabTestRequestDTO requestData) {
 		if (Objects.isNull(requestData)) {
@@ -344,7 +344,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 * @param requestData    Request data
 	 * @param patientLabTest Patient LabTest Data
 	 * @return List of Constructed PatientLabTestResult
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private List<PatientLabTestResult> constructPatientLabTestResults(PatientLabTestResultRequestDTO requestData,
 			PatientLabTest patientLabTest) {
@@ -376,7 +376,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 * Validates the request data for PatientLabTestResult.
 	 *
 	 * @param requestData Request Data
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void validatePatientLabTestResultRequest(PatientLabTestResultRequestDTO requestData) {
 		if (requestData.getPatientLabTestResults().isEmpty()) {
@@ -395,7 +395,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 *
 	 * @param labTestId Labtest Id
 	 * @return List of LabTestResult Ids
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private List<Long> getLabTestResultsByLabTestId(Long labTestId) {
 		HttpHeaders headers = new HttpHeaders();
@@ -425,7 +425,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 *
 	 * @param requestData    request data
 	 * @param patientLabTest patient labtest data
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void updatePatientLabtestValues(PatientLabTestResultRequestDTO requestData, PatientLabTest patientLabTest) {
 		patientLabTest.setResultDate(requestData.getTestedOn());
@@ -586,7 +586,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      *
 //      * @param requestData request Data
 //      * @return List of PatientLabTest Entity
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private List<PatientLabTest> constructPatientLabTestData(PatientLabTestRequestDTO requestData) {
 //         List<PatientLabTest> patientLabTests = new ArrayList<PatientLabTest>();
@@ -612,7 +612,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      *
 //      * @param data request data
 //      * @return LabTest Entity
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private LabTest getOtherLabTest(PatientLabTestRequestDTO data) {
 //         LabTest labTest = getLabTestbyName(Constants.OTHER, 1); //country id obtained from user information.
@@ -628,7 +628,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      * @param searchTerm LabTest name
 //      * @param countryId  Country id
 //      * @return LabTest Entity.
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private LabTest getLabTestbyName(String searchTerm, long countryId) {
 //         SearchRequestDTO requestEntity = new SearchRequestDTO();
@@ -646,7 +646,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      *
 //      * @param labTestIds
 //      * @return List of LabTest Entities
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private List<LabTest> getLabTestsByIds(Set<Long> labTestIds) {
 //         HttpHeaders headers = new HttpHeaders();
@@ -661,7 +661,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      * Validates the request date to check null.
 //      *
 //      * @param requestData Request Data
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private void validateRequestData(PatientLabTestRequestDTO requestData) {
 //         if (Objects.isNull(requestData)) {
@@ -716,7 +716,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      * @param requestData    Request data
 //      * @param patientLabTest Patient LabTest Data
 //      * @return List of Constructed PatientLabTestResult
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private List<PatientLabTestResult> constructPatientLabTestResults(PatientLabTestResultRequestDTO requestData, PatientLabTest patientLabTest) {
 //         List<PatientLabTestResult> results = new ArrayList<>();
@@ -747,7 +747,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      * Validates the request data for PatientLabTestResult.
 //      *
 //      * @param requestData Request Data
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private void validatePatientLabTestResultRequest(PatientLabTestResultRequestDTO requestData) {
 //         if (requestData.getPatientLabTestResults().isEmpty()) {
@@ -766,7 +766,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      *
 //      * @param labTestId Labtest Id
 //      * @return List of LabTestResult Ids
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private List<Long> getLabTestResultsByLabTestId(Long labTestId) {
 //         HttpHeaders headers = new HttpHeaders();
@@ -787,7 +787,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 //      *
 //      * @param requestData    request data
 //      * @param patientLabTest patient labtest data
-//      * @author Niraimathi S
+//      * @author Rajkumar
 //      */
 //     private void updatePatientLabtestValues(PatientLabTestResultRequestDTO requestData, PatientLabTest patientLabTest) {
 //         patientLabTest.setResultDate(requestData.getTestedOn());
@@ -832,7 +832,7 @@ public class PatientLabTestServiceImpl implements PatientLabTestService {
 	 * @param patientTrackId    PatientTracker Id
 	 * @param tenantId          tenantId
 	 * @param isLabTestReferred boolean value isLabTestReferred
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private void updatePatientTrackerLabtestReferral(long patientTrackId, Long tenantId, boolean isLabTestReferred) {
 		if (!isLabTestReferred) {

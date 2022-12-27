@@ -36,7 +36,7 @@ import com.mdtlabs.coreplatform.common.model.entity.User;
  * precondition like isActiveRole, isEnabled..etc.
  * </p>
  * 
- * @author Vigneshkumar created on 30 Jun 2022
+ * @author Rajkumar created on 30 Jun 2022
  *
  */
 public class AuthenticationProvider implements org.springframework.security.authentication.AuthenticationProvider {

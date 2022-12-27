@@ -6,7 +6,7 @@ package com.mdtlabs.coreplatform.spiceservice.message;
  * file(application.property) present in resource folder.
  * </p>
  * 
- * @author Vigneshkumar created on Jun 30, 2022
+ * @author Rajkumar created on Jun 30, 2022
  *
  */
 public enum SuccessCode {

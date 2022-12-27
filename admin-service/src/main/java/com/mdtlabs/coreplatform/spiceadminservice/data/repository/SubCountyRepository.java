@@ -14,7 +14,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Subcounty;
 /**
  * This interface provides database connection for SubCounty entity.
  *
- * @author Karthick M
+ * @author Rajkumar
  */
 @Repository
 public interface SubCountyRepository extends JpaRepository<Subcounty, Long> {
@@ -75,7 +75,7 @@ public interface SubCountyRepository extends JpaRepository<Subcounty, Long> {
 	 * @param countryId
 	 * @param countyId
 	 * @return List of Subcounty entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_ALL_SUBCOUNTIES)
 	public List<Subcounty> getAllSubCounty(@Param("countryId") long countryId, @Param("countyId") long countyId);

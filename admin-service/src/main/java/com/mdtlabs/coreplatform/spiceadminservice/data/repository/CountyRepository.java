@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.County;
 /**
  * This is the repository interface helps maintain the DB connection to perform operations on County entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface CountyRepository extends JpaRepository<County, Long> {
 
@@ -19,7 +19,7 @@ public interface CountyRepository extends JpaRepository<County, Long> {
    * @param countryId
    * @param name
    * @return County Entity
-   * @author Niraimathi S
+   * @author Rajkumar
    */
   public County findByCountryIdAndName(Long countryId, String name);
 
@@ -29,7 +29,7 @@ public interface CountyRepository extends JpaRepository<County, Long> {
    * @param id
    * @param b
    * @return County Entity.
-   * @author Niraimathi S
+   * @author Rajkumar
    */
   public County findByIdAndIsDeleted(long id, boolean b);
 
@@ -38,7 +38,7 @@ public interface CountyRepository extends JpaRepository<County, Long> {
    * 
    * @param countryId
    * @return List of County entites.
-   * @author Niraimathi S
+   * @author Rajkumar
    */
   public List<County> findByCountryId(long countryId);
 }

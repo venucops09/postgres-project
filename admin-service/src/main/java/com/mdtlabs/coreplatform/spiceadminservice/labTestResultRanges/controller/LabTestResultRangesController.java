@@ -31,7 +31,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
  * This controller class maintains the CRUD operations for lab test result
  * ranges.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @RestController
@@ -51,7 +51,7 @@ public class LabTestResultRangesController {
 	 * 
 	 * @param labTestResultRangeRequestDTO
 	 * @return List of added LabTestResultRange
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PostMapping
 	public SuccessResponse<List<LabTestResultRange>> addLabTestResultRanges(@Valid @RequestBody LabTestResultRangeRequestDTO labTestResultRangeRequestDTO) {
@@ -64,7 +64,7 @@ public class LabTestResultRangesController {
 	 * 
 	 * @param labTestResultRangeRequestDTO
 	 * @return List of updated LabTestResultRange
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PutMapping
 	public SuccessResponse<List<LabTestResultRange>> updateLabTestResultRanges(
@@ -85,7 +85,7 @@ public class LabTestResultRangesController {
 	 * 
 	 * @param id
 	 * @return boolean
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PutMapping(value = "/{id}")
 	public SuccessResponse<Boolean> removeLabTestResultRanges(@PathVariable long id) {
@@ -98,7 +98,7 @@ public class LabTestResultRangesController {
 	 * 
 	 * @param labTestResultId
 	 * @return List of LabTestResultRanges
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@GetMapping(value = "/{labTestResultId}")
 	public SuccessResponse<List<LabTestResultRangeDTO>> getLabTestResultRanges(@PathVariable long labTestResultId) {

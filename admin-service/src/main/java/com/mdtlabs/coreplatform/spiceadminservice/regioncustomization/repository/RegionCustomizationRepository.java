@@ -13,7 +13,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.RegionCustomization;
  * This Repository class contains the needed customized functions for region
  * customization.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Repository
@@ -28,7 +28,7 @@ public interface RegionCustomizationRepository extends JpaRepository<RegionCusto
 	 * 
 	 * @param id
 	 * @return RegionCustomization entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public RegionCustomization findByIdAndIsDeleted(Long id, Boolean isDeleted);
 
@@ -39,7 +39,7 @@ public interface RegionCustomizationRepository extends JpaRepository<RegionCusto
 	 * @param category
 	 * @param type
 	 * @return RegionCustomization entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_COUNTRY_CUSOMIZATION_WITH_CONDITIONS)
 	public RegionCustomization findByCountryIdAndCategoryAndType(@Param("countryId") Long countryId,

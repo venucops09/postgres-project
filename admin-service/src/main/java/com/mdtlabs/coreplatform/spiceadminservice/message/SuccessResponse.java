@@ -15,7 +15,7 @@ import java.util.List;
  * Generic success response
  * </p>
  *
- * @author Vigneshkumar created on Jun 30, 2022
+ * @author Rajkumar created on Jun 30, 2022
  *
  * @param <T>
  */

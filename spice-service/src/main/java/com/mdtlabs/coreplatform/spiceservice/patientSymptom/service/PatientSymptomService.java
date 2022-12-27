@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientSymptom;
 /**
  * This is an interface to perform any actions in PatientSymptom related entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface PatientSymptomService {

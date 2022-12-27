@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientTracker;
  * This is an interface to perform any actions in PatientTracker related
  * entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface PatientTrackerService {
@@ -58,7 +58,7 @@ public interface PatientTrackerService {
 	 * 
 	 * @param patientRequestDTO
 	 * @return List<MyPatientListDTO>
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Map<String, Object> listMyPatients(PatientRequestDTO patientRequestDTO);
 
@@ -68,7 +68,7 @@ public interface PatientTrackerService {
 	 * 
 	 * @param patientRequestDTO
 	 * @return List<SearchPatientListDTO>
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Map<String, Object> searchPatients(PatientRequestDTO patientRequestDTO);
 
@@ -77,7 +77,7 @@ public interface PatientTrackerService {
 	 * 
 	 * @param patientRequestDTO
 	 * @return List<MyPatientListDTO>
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Map<String, Object> patientAdvanceSearch(PatientRequestDTO patientRequestDTO);
 
@@ -87,7 +87,7 @@ public interface PatientTrackerService {
 	 * @param patientTrackId    PatientTrackId
 	 * @param tenantId          tenantId
 	 * @param isLabTestReferred isLabTestReferred field
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	void updatePatientTrackerLabtestReferral(long patientTrackId, Long tenantId, boolean isLabTestReferred);
 

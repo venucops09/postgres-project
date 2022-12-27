@@ -13,7 +13,7 @@ import com.mdtlabs.coreplatform.common.repository.TenantableRepository;
  * This interface is responsible for performing database operations between
  * server and RiksAlgorithm entity.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @Repository

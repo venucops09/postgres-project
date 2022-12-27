@@ -44,7 +44,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.data.service.DataService;
  * This class is responsible for performing operations on Country, county and
  * sub-county entities.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Service
 public class DataServiceImpl implements DataService {

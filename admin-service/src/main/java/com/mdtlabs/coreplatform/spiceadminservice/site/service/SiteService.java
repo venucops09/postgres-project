@@ -11,7 +11,7 @@ public interface SiteService {
 	 * 
 	 * @param site
 	 * @return Site entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Site addSite(Site site);
 
@@ -20,7 +20,7 @@ public interface SiteService {
 	 * 
 	 * @param site
 	 * @return Site entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Site updateSite(Site site);
 
@@ -30,7 +30,7 @@ public interface SiteService {
 	 * @param id
 	 * @param isActiveStatus
 	 * @return Site entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Site activateDeactivateSite(long id, boolean isActiveStatus);
 
@@ -39,7 +39,7 @@ public interface SiteService {
 	 * 
 	 * @param tenants List of tenantIds
 	 * @return List of Site Entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public List<Site> getSitesByTenantIds(List<Long> tenants);
 

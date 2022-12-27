@@ -21,7 +21,7 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 /**
  * This class is a controller class to perform operation on GlucoseLog entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  * 
  */
 @RestController

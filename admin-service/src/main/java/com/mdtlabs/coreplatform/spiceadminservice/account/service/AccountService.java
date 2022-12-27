@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Account;
 /**
  * This service interface maintains the CRUD operations for the account
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 public interface AccountService {
@@ -19,7 +19,7 @@ public interface AccountService {
 	 * 
 	 * @param account
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account addAccount(Account account);
 
@@ -28,7 +28,7 @@ public interface AccountService {
 	 * 
 	 * @param account
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account updateAccount(Account account);
 
@@ -37,7 +37,7 @@ public interface AccountService {
 	 * 
 	 * @param id
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account getAccountById(long id);
 
@@ -47,7 +47,7 @@ public interface AccountService {
 	 * @param id
 	 * @param isActive
 	 * @return Account entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public Account activateDeactivateAccount(long id, boolean isActive);
 
@@ -56,7 +56,7 @@ public interface AccountService {
 	 * 
 	 * @param searchRequestDTO
 	 * @return list of account entities
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public List<Account> getDeactivatedAccounts(SearchRequestDTO searchRequestDTO);
 }

@@ -31,7 +31,7 @@ public class FrequencyController {
      *
      * @param frequency
      * @return Frequency Entity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(method = RequestMethod.POST)
     public SuccessResponse<Frequency> addFrequency(@RequestBody Frequency frequency) {
@@ -44,7 +44,7 @@ public class FrequencyController {
      *
      * @param id frequency Id
      * @return Frequency Entity.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SuccessResponse<Frequency> getFrequency(@PathVariable("id") long id) {

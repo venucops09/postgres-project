@@ -21,7 +21,7 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
  * This class is a controller class to perform operation on MedicalReview
  * entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/medical-review")
@@ -36,7 +36,7 @@ public class MedicalReviewController {
 	 *
 	 * @param medicalReviewDTO
 	 * @return medicalReviewDTO Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<MedicalReviewDTO> addMedicalReview(@RequestBody MedicalReviewDTO medicalReviewDTO) {

@@ -19,7 +19,7 @@ import java.util.Map;
  * to Send failure response.
  * </p>
  * 
- * @author Vigneshkumar created on 30 Jun 2022
+ * @author Rajkumar created on 30 Jun 2022
  *
  */
 public class AuthenticationFailure extends SimpleUrlAuthenticationFailureHandler {

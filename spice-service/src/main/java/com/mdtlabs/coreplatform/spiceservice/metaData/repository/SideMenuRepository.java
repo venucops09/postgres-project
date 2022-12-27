@@ -22,7 +22,7 @@ public interface SideMenuRepository extends GenericRepository<SideMenu> {
 	 * 
 	 * @param userRoles list of user role names
 	 * @return List of SideMenu entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	List<SideMenu> findByRoleNameIn(List<String> userRoles);
 

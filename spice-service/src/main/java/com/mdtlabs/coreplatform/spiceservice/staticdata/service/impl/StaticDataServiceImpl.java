@@ -56,7 +56,7 @@ import com.mdtlabs.coreplatform.spiceservice.symptom.repository.SymptomRepositor
  * This service implements the StaticDataService and is responsible for
  * implementing business logic needed to get meta data related to the service.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Service
 public class StaticDataServiceImpl implements StaticDataService {

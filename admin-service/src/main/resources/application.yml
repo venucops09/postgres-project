@@ -11,9 +11,9 @@ spring:
       allow-bean-definition-overriding: true
    datasource:
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://mypostgres:5432/spice
+      url: jdbc:postgresql://mypostgres:5432/spice1
       username : postgres
-      password : admin@123
+      password : postgres
    servlet:
       multipart:
          max-file-size: 15MB

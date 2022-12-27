@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.AccountCustomization;
 /**
  * This interface maintains the CRUD operations for account customization
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 public interface AccountCustomizationService {
@@ -19,7 +19,7 @@ public interface AccountCustomizationService {
 	 * 
 	 * @param accountCustomization
 	 * @return AccountCustomization
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountCustomization addAccountCustomization(AccountCustomization accountCustomization);
 
@@ -29,7 +29,7 @@ public interface AccountCustomizationService {
 	 * 
 	 * @param customizationRequestDTO
 	 * @return AccountCustomization
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountCustomization getCustomization(CustomizationRequestDTO customizationRequestDTO);
 
@@ -39,7 +39,7 @@ public interface AccountCustomizationService {
 	 * 
 	 * @param accountCustomization
 	 * @return Count of rows updated.
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountCustomization updateCustomization(AccountCustomization accountCustomization);
 
@@ -48,7 +48,7 @@ public interface AccountCustomizationService {
 	 * 
 	 * @param requestMap
 	 * @return AccountCustomization
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public boolean removeCustomization(Map<String, Object> requestMap);
 

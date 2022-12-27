@@ -23,7 +23,7 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 /**
  * This class is a controller class to perform operation on BpLog entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  * 
  */
 @RestController
@@ -39,7 +39,7 @@ public class BpLogController {
      *
      * @param bpLog
      * @return BpLog Entity.
-     * @author Karthick Murugesan
+     * @author Rajkumar
      */
     @RequestMapping(method = RequestMethod.POST)
     public SuccessResponse<Map<String, Object>> addBpLog(@Valid @RequestBody BpLog bpLog) {

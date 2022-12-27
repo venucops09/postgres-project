@@ -113,7 +113,7 @@ public class RiskAlgorithm {
 	 * @param patientTracker PatientTracker object
 	 * @param redRiskDTO     RedRiskDTO object
 	 * @return riskLevel of the new Patient.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public static String getRiskLevelForNewPatient(PatientTracker patientTracker, RedRiskDTO redRiskDTO) {
 		String riskLevel = null;
@@ -135,7 +135,7 @@ public class RiskAlgorithm {
 	 * 
 	 * @param patientTracker PatientTracker object
 	 * @return riskFactorCount risk factor count
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public static int getRiskFactorsCount(PatientTracker patientTracker) {
 		int riskFactorCount = 0;
@@ -171,7 +171,7 @@ public class RiskAlgorithm {
 	 * @param riskFactorsCount riskFactor count
 	 * @param redRiskDTO       ResRiskDTO object
 	 * @return risk level of the patient.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	private static String calculateRiskFromBPAndRiskFactors(PatientTracker patientTracker, int riskFactorsCount,
 			RedRiskDTO redRiskDTO) {

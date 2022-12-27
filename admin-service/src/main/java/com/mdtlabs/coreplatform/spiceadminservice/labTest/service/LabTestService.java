@@ -15,7 +15,7 @@ public interface LabTestService {
      *
      * @param labTest
      * @return Labtest Entity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public LabTest addLabTest(LabTest labTest);
 
@@ -24,7 +24,7 @@ public interface LabTestService {
      *
      * @param requestDTO
      * @return List of LabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public List<LabTest> getAllLabTests(RequestDTO requestDTO);
 
@@ -33,7 +33,7 @@ public interface LabTestService {
      *
      * @param requestDTO
      * @return list of LabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public List<Map> searchLabTests(RequestDTO requestDTO);
 
@@ -43,7 +43,7 @@ public interface LabTestService {
      * @param status
      * @param requestDTO
      * @return Boolean
-     * @author Karthick M
+     * @author Rajkumar
      */
     public boolean removeLabTest(RequestDTO requestDTO, boolean status);
 
@@ -52,7 +52,7 @@ public interface LabTestService {
      *
      * @param labTest
      * @return labTest Entity
-     * @author Karthick M
+     * @author Rajkumar
      */
     public LabTest updateLabTest(LabTest labTest);
 
@@ -69,7 +69,7 @@ public interface LabTestService {
      *
      * @param labTest
      * @return boolean
-     * @author Karthick M
+     * @author Rajkumar
      */
     public Boolean validateLabTest(LabTest labTest);
 
@@ -78,7 +78,7 @@ public interface LabTestService {
      *
      * @param labTestId
      * @return
-     * @author Karthick M
+     * @author Rajkumar
      */
     public List<LabTestResult> getLabTestResultsById(long labTestId);
 
@@ -88,7 +88,7 @@ public interface LabTestService {
      * @param searchTerm
      * @param countryId
      * @return LabTest entity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public LabTest getLabTestbyName(String searchTerm, long countryId);
 
@@ -97,7 +97,7 @@ public interface LabTestService {
      *
      * @param uniqueLabTestIds
      * @return List of LabTest entities
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public List<LabTest> getLabTestsById(Set<Long> uniqueLabTestIds);
 

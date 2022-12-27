@@ -15,7 +15,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Country;
  * This Repository interface maintains connection between Country entity and
  * database
  *
- * @author Karthick M
+ * @author Rajkumar
  */
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Long> {
@@ -48,7 +48,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 * @param countryCode
 	 * @param name
 	 * @return Country
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country findByCountryCodeAndName(String countryCode, String name);
 
@@ -57,7 +57,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 *
 	 * @param countryCode
 	 * @return Country
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country findByCountryCode(String countryCode);
 
@@ -74,7 +74,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 *
 	 * @param countryId
 	 * @return Country
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country findById(long countryId);
 
@@ -83,7 +83,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 *
 	 * @param pageable
 	 * @return Pageable
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_ALL_COUNTRIES)
 	Page<Country> getAllCountries(Pageable pageable);
@@ -94,7 +94,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 * @param searchTerm
 	 * @param pageable
 	 * @return Page<Country>
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@Query(value = GET_COUNTRIES_BY_NAME)
 	Page<Country> searchCountries(@Param("searchTerm") String searchTerm, Pageable pageable);
@@ -105,7 +105,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 * @param countryId
 	 * @param isActive
 	 * @return Country
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country findByIdAndIsActive(long countryId, boolean isActive);
 
@@ -115,7 +115,7 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 	 * @param countryId
 	 * @param isDeleted
 	 * @return
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	Country findByIdAndIsDeleted(long countryId, boolean isDeleted);
 

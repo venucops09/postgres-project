@@ -20,7 +20,7 @@ import com.mdtlabs.coreplatform.common.repository.GenericRepository;
  * nativeQuery FALSE
  * </p>
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface PhysicalExaminationRepository extends GenericRepository<PhysicalExamination> {

@@ -37,7 +37,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientTracker.service.PatientTrack
  * This is the conntroller class for the patient entity. It maintains the
  * request and response for the Patient Entity.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/patient")
@@ -56,7 +56,7 @@ public class PatientController {
 	 * 
 	 * @param patient
 	 * @return Patient Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 * @throws InterruptedException
 	 */
 	@RequestMapping(value = "/enrollment", method = RequestMethod.POST)
@@ -72,7 +72,7 @@ public class PatientController {
 	 * @param requestData Request data containing fields like patientTrackId,
 	 *                    tenantId to get patient details.
 	 * @return Patient Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/details", method = RequestMethod.POST)
 	public SuccessResponse<PatientTrackerDTO> getPatientDetails(@RequestBody PatientGetRequestDTO requestData) {
@@ -85,7 +85,7 @@ public class PatientController {
 	 *
 	 * @param requestData Request data containing pregnancy details
 	 * @return PatientPregnancyDetails Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/pregnancy-details/create", method = RequestMethod.POST)
 	public SuccessResponse<PregnancyRequestDTO> createPregnancyDetails(
@@ -101,7 +101,7 @@ public class PatientController {
 	 *
 	 * @param requestData Request data with patientTrackId and PatientPregnancy Id
 	 * @return PatientPregnancyDetails entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/pregnancy-details", method = RequestMethod.GET)
 	public SuccessResponse<PregnancyRequestDTO> getPregnancyDetails(@RequestBody GetRequestDTO requestData) {
@@ -118,7 +118,7 @@ public class PatientController {
 	 *
 	 * @param requestData Request data containing updated pregnancy details.
 	 * @return Updated PatientPregnancyDetails Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/pregnancy-details/update", method = RequestMethod.POST)
 	public SuccessResponse<PatientPregnancyDetails> updatePregnancyDetails(
@@ -133,7 +133,7 @@ public class PatientController {
 	 *
 	 * @param patientRequestDTO
 	 * @return List of patient tracker entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PostMapping("/list")
 	public SuccessResponse<List<MyPatientListDTO>> getMyPatientsList(@RequestBody PatientRequestDTO patientRequestDTO) {
@@ -163,7 +163,7 @@ public class PatientController {
 	 *
 	 * @param patientRequestDTO
 	 * @return List of patient tracker entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	@PostMapping("/search")
 	public SuccessResponse<List<SearchPatientListDTO>> searchPatients(

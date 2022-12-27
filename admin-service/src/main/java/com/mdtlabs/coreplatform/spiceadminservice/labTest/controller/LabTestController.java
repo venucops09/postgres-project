@@ -33,7 +33,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.message.SuccessResponse;
 /**
  * This class is a controller class to perform operation on Labtest entities.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/labtest")
@@ -52,7 +52,7 @@ public class LabTestController {
 	 *
 	 * @param labTest
 	 * @return LabTest Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<LabTest> addLabTest(@Valid @RequestBody LabTest labTest) {
@@ -65,7 +65,7 @@ public class LabTestController {
 	 *
 	 * @param requestObject
 	 * @return List of LabTest Entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public SuccessResponse<List<LabTestDTO>> getAllLabTests(@RequestBody RequestDTO requestObject) {
@@ -84,7 +84,7 @@ public class LabTestController {
 	 *
 	 * @param requestDTO
 	 * @return List of LabTest entities.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public SuccessResponse<List<Map>> searchLabtests(@RequestBody RequestDTO requestDTO) {
@@ -103,7 +103,7 @@ public class LabTestController {
 	 *
 	 * @param requestDTO Request data containing labtest id.
 	 * @return Boolean True if labtest removed else false.
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/remove", method = RequestMethod.DELETE)
 	public SuccessResponse<Boolean> removeLabTest(@RequestBody RequestDTO requestDTO) {
@@ -116,7 +116,7 @@ public class LabTestController {
 	 *
 	 * @param labTest
 	 * @return labTest Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.PATCH)
 	public SuccessResponse<LabTest> updateLabTest(@Valid @RequestBody LabTest labTest) {
@@ -129,7 +129,7 @@ public class LabTestController {
 	 *
 	 * @param requestDTO Request data containing labtest id.
 	 * @return LabTest Entity
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/details", method = RequestMethod.GET)
 	public SuccessResponse<LabTest> getLabTestById(@RequestBody RequestDTO requestDTO) {
@@ -142,7 +142,7 @@ public class LabTestController {
 	 *
 	 * @param labTestId
 	 * @return LabTest Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/labtest-result/{id}", method = RequestMethod.GET)
 	public SuccessResponse<List<LabTestResult>> getLabTestResultsById(@PathVariable(value = "id") long labTestId) {
@@ -156,7 +156,7 @@ public class LabTestController {
 	 *
 	 * @param labTest
 	 * @return Boolean
-	 * @author Karthick M
+	 * @author Rajkumar
 	 */
 	@RequestMapping(value = "/validate", method = RequestMethod.GET)
 	public SuccessResponse<Boolean> validateLabTest(@Valid @RequestBody LabTest labTest) {

@@ -14,7 +14,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientLifestyle;
  * like SQL. Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface PatientLifestyleRepository extends JpaRepository<PatientLifestyle, Long> {

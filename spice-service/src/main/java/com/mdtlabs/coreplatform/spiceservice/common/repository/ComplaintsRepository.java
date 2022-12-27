@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.common.repository.GenericRepository;
  * like SQL. Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Repository
 public interface ComplaintsRepository extends GenericRepository<Complaints> {

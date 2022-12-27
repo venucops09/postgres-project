@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * This repository class is responsible for communication between database and server side.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Repository
 public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, Long> {
@@ -51,7 +51,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param patientVisitId Patient visit id
      * @param isDeleted
      * @return List of PatientLabTest Entities
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(value = GET_PATIENT_LABTEST_LIST)
     List<PatientLabTest> getPatientLabTestList(@Param("patientTrackId") Long patientTrackId,
@@ -66,7 +66,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param patientVisitId Patient visit id
      * @param isDeleted
      * @return List of PatientLabTest Entities
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(value = GET_PATIENT_LABTEST_LIST_WITH_CONDITION)
     List<PatientLabTest> getPatientLabTestListWithCondition(@Param("patientTrackId") Long patientTrackId,
@@ -80,7 +80,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param id        patientLabtestId
      * @param isDeleted isDeleted
      * @return PatientLabTest entity.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     PatientLabTest findByIdAndIsDeleted(Long id, Boolean isDeleted);
 
@@ -88,7 +88,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param patientVisitId patient visit id.
      * @param isDeleted      isDeleted
      * @return List of PatientLabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     List<PatientLabTest> findAllByPatientVisitIdAndIsDeleted(Long patientVisitId, Boolean isDeleted);
 
@@ -99,7 +99,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param tenantId tenant id
      * @param comments review comments
      * @return Number of affected rows
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Transactional
     @Modifying
@@ -111,7 +111,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      *
      * @param id patientLabTest
      * @return No of affected rows
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Modifying
     @Transactional
@@ -124,7 +124,7 @@ public interface PatientLabTestRepository extends JpaRepository<PatientLabTest, 
      * @param patientTrackId PatientTrackId
      * @param tenantId       TenantId
      * @return List of PatientLabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(GET_PATIENT_LABTEST_WITHOUT_RESULTS)
     List<PatientLabTest> getPatientLabTestsWithoutResults(@Param("patientTrackId") long patientTrackId,

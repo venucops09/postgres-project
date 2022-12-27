@@ -14,7 +14,7 @@ import com.mdtlabs.coreplatform.spiceservice.customizedmodules.service.Customize
 /**
  * This class contains business logic for CustomizedModules entity.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Service
 public class CustomizedModulesServiceImpl implements CustomizedModulesService {

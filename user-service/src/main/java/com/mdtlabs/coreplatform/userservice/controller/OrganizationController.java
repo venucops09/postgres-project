@@ -30,7 +30,7 @@ import com.mdtlabs.coreplatform.userservice.service.OrganizationService;
  * write.
  * </p>
  * 
- * @author VigneshKumar created on Jan 30, 2022
+ * @author Rajkumar created on Jan 30, 2022
  */
 @RestController
 @RequestMapping(value = "/organization")
@@ -132,7 +132,7 @@ public class OrganizationController {
 	 * 
 	 * @param organizationDTO - Object with Organization details and List of users.
 	 * @return Organization - Organization Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@PostMapping("/create")
 	public ResponseEntity<Organization> createOrganization(@RequestBody OrganizationDTO organizationDTO) {

@@ -14,7 +14,7 @@ public interface PatientTreatmentPlanService {
 	 * 
 	 * @param treatmentPlan
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTreatmentPlan addPatientTreatmentPlan(PatientTreatmentPlan treatmentPlan);
 
@@ -23,7 +23,7 @@ public interface PatientTreatmentPlanService {
 	 * 
 	 * @param patientTrackId
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTreatmentPlan getPatientTreatmentPlan(Long patientTrackId);
 
@@ -32,7 +32,7 @@ public interface PatientTreatmentPlanService {
 	 * @param id
 	 * @param tenantId
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTreatmentPlan getPatientTreatmentPlanDetails(Long id, Long tenantId);
 
@@ -42,7 +42,7 @@ public interface PatientTreatmentPlanService {
 	 * @param cvdRiskLevel
 	 * @param tenantId
 	 * @return
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTreatmentPlan getPatientTreatmentPlanDetails(Long id, String cvdRiskLevel, Long tenantId);
 
@@ -53,7 +53,7 @@ public interface PatientTreatmentPlanService {
 	 * @param cvdRiskLevel
 	 * @param tenantId
 	 * @return treatment plan response
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public List<Map<String, String>> createProvisionalTreatmentPlan(PatientTracker patientTracker, String cvdRiskLevel,
 			Long tenantId);
@@ -65,7 +65,7 @@ public interface PatientTreatmentPlanService {
 	 * 
 	 * @param patientTreatmentPlan
 	 * @return boolean
-	 * @author Karthick Muruegesan
+	 * @author Rajkumaruruegesan
 	 */
 	public boolean updateTreatmentPlanData(PatientTreatmentPlan patientTreatmentPlan);
 
@@ -75,7 +75,7 @@ public interface PatientTreatmentPlanService {
 	 * @param patientTrackId
 	 * @param frequencyName
 	 * @return Date
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	Date getNextFollowUpDate(long patientTrackId, String frequencyName);
 

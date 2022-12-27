@@ -7,7 +7,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.BpLog;
 /**
  * This is an interface to perform any actions in bplog related entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface BpLogService {

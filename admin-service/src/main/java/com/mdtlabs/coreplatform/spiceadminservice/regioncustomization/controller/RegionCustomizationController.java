@@ -24,7 +24,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.regioncustomization.service.Re
 /**
  * This controller class maintains CRUD operation for region customization data.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @RestController
 @RequestMapping(value = "/region-customization")
@@ -39,7 +39,7 @@ public class RegionCustomizationController {
 	 * 
 	 * @param regionCustomization
 	 * @return RegionCustomization
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST, path = "/create")
 	public SuccessResponse<RegionCustomization> addCustomization(@Valid @RequestBody RegionCustomization regionCustomization) {
@@ -53,7 +53,7 @@ public class RegionCustomizationController {
 	 * 
 	 * @param regionCustomizationRequestDTO
 	 * @return RegionCustomization entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET, path = "/details")
 	public SuccessResponse<RegionCustomization> getCustomization(
@@ -68,7 +68,7 @@ public class RegionCustomizationController {
 	 * 
 	 * @param regionCustomization
 	 * @return RegionCustomization entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.PUT, path = "/update")
 	public SuccessResponse<RegionCustomization> updateCustomization(

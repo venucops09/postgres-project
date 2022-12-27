@@ -639,7 +639,7 @@ public class PatientTrackerServiceImpl implements PatientTrackerService {
 	 *
 	 * @param id                     PatientTrackId
 	 * @param isMedicationPrescribed isMedicationPrescribed field
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public void updateForFillPrescription(Long id, boolean isMedicationPrescribed, Date lastAssessmentDate,
 			Date nextMedicalReviewDate) {

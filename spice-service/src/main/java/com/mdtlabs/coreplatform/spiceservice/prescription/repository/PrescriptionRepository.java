@@ -14,7 +14,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.Prescription;
 /**
  * This repository will maintains the custom functions for Prescription
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @Repository

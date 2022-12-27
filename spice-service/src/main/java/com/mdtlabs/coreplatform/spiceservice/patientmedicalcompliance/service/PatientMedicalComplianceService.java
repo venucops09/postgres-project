@@ -8,7 +8,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientMedicalComplian
 /**
  * This is an interface to perform any actions in PatientMedicalComplianc related entities
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  *
  */
 public interface PatientMedicalComplianceService {

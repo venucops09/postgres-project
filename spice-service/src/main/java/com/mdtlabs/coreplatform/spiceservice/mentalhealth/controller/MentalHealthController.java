@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.spiceservice.message.SuccessResponse;
 /**
  * This class is a controller class to perform operation on MentalHealth entity.
  * 
- * @author Karthick Murugesan
+ * @author Rajkumar
  * 
  */
 @RestController
@@ -34,7 +34,7 @@ public class MentalHealthController {
 	 *
 	 * @param mentalHealth
 	 * @return MentalHealth Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public SuccessResponse<MentalHealth> createMentalHealth(@RequestBody MentalHealth mentalHealth) {
@@ -47,7 +47,7 @@ public class MentalHealthController {
 	 *
 	 * @param requestData
 	 * @return MentalHealth Entity.
-	 * @author Karthick Murugesan
+	 * @author Rajkumar
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public SuccessResponse<MentalHealthDTO> getMentalHealthDetails(@RequestBody RequestDTO requestData) {

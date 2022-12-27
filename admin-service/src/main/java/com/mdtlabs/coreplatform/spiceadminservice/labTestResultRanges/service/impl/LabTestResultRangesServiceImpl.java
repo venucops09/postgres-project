@@ -26,7 +26,7 @@ import com.mdtlabs.coreplatform.spiceadminservice.labTestResultRanges.service.La
 /**
  * This service maintains the CRUD operations for Lab test result range
  *
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 @Service
 public class LabTestResultRangesServiceImpl implements LabTestResultRangesService {

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * This repository class is responsible for communication between database and server side.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface PatientLabTestResultRepository extends JpaRepository<PatientLabTestResult, Long> {
     /**
@@ -18,7 +18,7 @@ public interface PatientLabTestResultRepository extends JpaRepository<PatientLab
      * @param isDeleted isDeleted field
      * @param tenantId tenantId
      * @return List of PatientLabTestResults.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     List<PatientLabTestResult> findAllByPatientLabTestIdAndIsDeletedAndTenantId(Long patientLabTestId,
                                                                                 Boolean isDeleted, Long tenantId);

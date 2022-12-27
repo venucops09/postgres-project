@@ -18,7 +18,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.LabTest;
  * This class is a repository class to establish communication between database
  * and server side.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @Repository
@@ -41,7 +41,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * @param countryId country id
      * @param name name of the LabTest Entity.
      * @return LabTest entity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(value = GET_LABTEST_BY_MANDATORY_FIELDS)
     public LabTest getByFields(@Param("country") long countryId, @Param("name") String name);
@@ -52,7 +52,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * @param countryId
      * @param pageable
      * @return List of LabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(value = GET_ALL_LABTESTS)
     public Page<LabTest> getAllLabTests(@Param("searchTerm") String searchTerm, @Param("countryId")Long countryId,@Param("tenantId")Long tenantId, Pageable pageable);
@@ -64,7 +64,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * @param searchTerm
      * @param countryId
      * @return List of LabTest Entities
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @Query(value = GET_LABTEST_BY_NAME)
     public List<LabTest> searchLabTests(@Param("searchTerm") String searchTerm, @Param("countryId") Long countryId, @Param("isActive") Boolean isActive);
@@ -73,7 +73,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * This method retrives a single Labtest details using mandatory fields.
      * 
      * @return LabTest Entity
-     * @author Karthick M
+     * @author Rajkumar
      */
     public LabTest findByCountryIdAndNameAndIsDeleted(long countryId, String name, boolean isDeleted);
 
@@ -82,7 +82,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * 
      * @param labTestId
      * @return LabTest Entity
-     * @author Karthick M
+     * @author Rajkumar
      */
     public LabTest findByIdAndIsDeleted(Long labTestId, Boolean isDeleted);
 
@@ -92,7 +92,7 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
      * @param searchTerm
      * @param countryId
      * @return Labtest Entity
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     public LabTest findByNameIgnoreCaseAndCountryId(String searchTerm, long countryId);
 

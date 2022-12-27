@@ -25,7 +25,7 @@ import java.util.List;
  * This class is the controller for the PatientLabTest Entity. This class is responsible for receiving the api request
  * and for sending the request to the corresponding methods.
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 @Validated
 @RequestMapping(value = "/patient-labtest")
@@ -39,7 +39,7 @@ public class PatientLabTestController {
      *
      * @param requestData Request Data
      * @return List of PatientLabTest entities.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(method = RequestMethod.POST)
     public SuccessResponse<PatientLabTest> createPatientLabTest(@Valid @RequestBody PatientLabTestRequestDTO requestData) {
@@ -52,7 +52,7 @@ public class PatientLabTestController {
      *
      * @param requestData Request Data
      * @return List of PatientLabTest entity.
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(method = RequestMethod.GET)
     public SuccessResponse<PatientLabTestResponseDTO> getPatientLabTestList(@RequestBody GetRequestDTO requestData) {
@@ -65,7 +65,7 @@ public class PatientLabTestController {
      *
      * @param requestData Request Data containing id.
      * @return Boolean
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(method = RequestMethod.DELETE)
     public SuccessResponse<String> removePatientLabTest(@RequestBody GetRequestDTO requestData) {
@@ -78,7 +78,7 @@ public class PatientLabTestController {
      *
      * @param requestData RequestData
      * @return SuccessResponse containing success message
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public SuccessResponse<String> reviewPatientLabTest(@RequestBody GetRequestDTO requestData) {
@@ -91,7 +91,7 @@ public class PatientLabTestController {
      *
      * @param requestData Request Data
      * @return SuccessResponse containing success message
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(value = "/result/create", method = RequestMethod.POST)
     public SuccessResponse<List<PatientLabTestResult>> createPatientLabTestResult(
@@ -105,7 +105,7 @@ public class PatientLabTestController {
      *
      * @param requestData Request data
      * @return SuccessResponse containing success message
-     * @author Niraimathi S
+     * @author Rajkumar
      */
     @RequestMapping(value = "/result/details", method = RequestMethod.GET)
     public SuccessResponse<String> getPatientLabTestResults(@RequestBody PatientLabTestResultRequestDTO requestData) {

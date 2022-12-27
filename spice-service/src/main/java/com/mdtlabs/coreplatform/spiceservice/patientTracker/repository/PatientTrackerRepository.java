@@ -324,7 +324,7 @@ public interface PatientTrackerRepository extends JpaRepository<PatientTracker, 
 	 * @param patientTrackId
 	 * @param tenantId
 	 * @param isLabTestReferred
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	@Transactional
 	@Modifying

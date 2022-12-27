@@ -11,7 +11,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.PatientPregnancyDetail
 /**
  * This is an interface to perform any actions in patient related entities
  *
- * @author Niraimathi S
+ * @author Rajkumar
  */
 public interface PatientService {
 	/**
@@ -19,7 +19,7 @@ public interface PatientService {
 	 *
 	 * @param patient
 	 * @return Patient Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public EnrollmentResponseDTO createPatient(EnrollmentRequestDTO patient);
 
@@ -29,7 +29,7 @@ public interface PatientService {
 	 * @param requestData Request data containing fields like patientTrackId,
 	 *                    tenantId to get patient details.
 	 * @return Patient Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientTrackerDTO getPatientDetails(PatientGetRequestDTO requestData);
 
@@ -38,7 +38,7 @@ public interface PatientService {
 	 *
 	 * @param requestData Request data containing pregnancy details
 	 * @return PatientPregnancyDetails Entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientPregnancyDetails createPregnancyDetails(PregnancyRequestDTO requestData);
 
@@ -47,7 +47,7 @@ public interface PatientService {
 	 *
 	 * @param requestData Request data with patientTrackId and PatientPregnancy Id
 	 * @return PatientPregnancyDetails entity.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientPregnancyDetails getPregnancyDetails(GetRequestDTO requestData);
 
@@ -56,7 +56,7 @@ public interface PatientService {
 	 *
 	 * @param requestData Request data containing updated pregnancy details.
 	 * @return Updated Patient's pregnancy details.
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	public PatientPregnancyDetails updatePregnancyDetails(PregnancyRequestDTO requestData);
 }

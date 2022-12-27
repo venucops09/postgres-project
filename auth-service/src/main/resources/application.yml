@@ -13,9 +13,9 @@ spring:
       allow-circular-references: true
    datasource:
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://mypostgres:5432/spice?serverTimezone=UTC
+      url: jdbc:postgresql://mypostgres:5432/spice1?serverTimezone=UTC
       username : postgres
-      password : admin@123
+      password : postgres
    jpa:
       show-sql: true
       properties:

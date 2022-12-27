@@ -19,7 +19,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.Medication;
  * This class is a repository class to establish communication between database
  * and server side.
  * 
- * @author Niraimathi S
+ * @author Rajkumar
  *
  */
 @Repository
@@ -139,7 +139,7 @@ public interface MedicationRepository extends JpaRepository<Medication, Long> {
 	 * @param id medication id
 	 * @param tenantId tenant id
 	 * @return Medication Entity
-	 * @author Niraimathi S
+	 * @author Rajkumar
 	 */
 	Medication findByIdAndIsDeletedFalseAndTenantId(Long id, Long tenantId);
 }

@@ -35,7 +35,7 @@ import com.mdtlabs.coreplatform.spiceservice.prescription.service.PrescriptionSe
  * This class is a controller class to perform operation on prescription
  * entities.
  * 
- * @author Jeyaharini T A
+ * @author Rajkumar
  *
  */
 @RestController

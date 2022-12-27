@@ -21,7 +21,7 @@ import com.mdtlabs.coreplatform.common.model.entity.Role;
  * Otherwise its perform like HQL default value for nativeQuery FALSE
  * </p>
  * 
- * @author VigneshKumar created on Aug 26, 2022
+ * @author Rajkumar created on Aug 26, 2022
  */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long>, PagingAndSortingRepository<Role, Long> {

@@ -9,7 +9,7 @@ import com.mdtlabs.coreplatform.common.model.entity.spice.AccountWorkflow;
 /**
  * This interface maintains the CRUD operation for AccountWorkflow Entity
  *
- * @author Jeyaharini T A
+ * @author Rajkumar
  */
 public interface AccountWorkflowService {
 
@@ -18,7 +18,7 @@ public interface AccountWorkflowService {
 	 * 
 	 * @param accountWorkflow
 	 * @return AccountWorkflow
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountWorkflow addAccountWorkflow(AccountWorkflow accountWorkflow);
 
@@ -28,7 +28,7 @@ public interface AccountWorkflowService {
 	 * 
 	 * @param searchRequestDTO
 	 * @return list of AccountWorkflow entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	List<AccountWorkflow> getAccountWorkflows(SearchRequestDTO searchRequestDTO);
 
@@ -37,7 +37,7 @@ public interface AccountWorkflowService {
 	 * 
 	 * @param accountWorkflow
 	 * @return AccountWorkflow entity
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public AccountWorkflow updateAccountWorkflow(AccountWorkflow accountWorkflow);
 
@@ -47,7 +47,7 @@ public interface AccountWorkflowService {
 	 * 
 	 * @param id
 	 * @return boolean
-	 * @author Jeyaharini T A
+	 * @author Rajkumar
 	 */
 	public boolean removeAccountWorkflow(long id);
 

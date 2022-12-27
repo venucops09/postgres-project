@@ -25,7 +25,7 @@ import com.mdtlabs.coreplatform.spiceservice.patientvisit.service.PatientVisitSe
  * This class implements the PatientVisitService interface and contains actual
  * business logic to perform operations on PatientVisit entity.
  *
- * @author Karthick Murugesan
+ * @author Rajkumar
  */
 @Service
 public class PatientVisitServiceImpl implements PatientVisitService {
